@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Orbitron, Rajdhani, Plus_Jakarta_Sans } from "next/f
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { AIAssistant } from "@/components/ai/AIAssistant";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -89,6 +90,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1 w-full">{children}</main>
           <Footer />
+          <AIAssistant />
         </ThemeProvider>
       </body>
     </html>

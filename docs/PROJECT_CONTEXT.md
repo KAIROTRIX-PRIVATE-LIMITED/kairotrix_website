@@ -42,24 +42,24 @@ These are the **official customer-facing service categories**. Do not rename, me
 | 05 | Data & Business Intelligence |
 | 06 | Technology Integration |
 
-### Service Depth Under Each Category
-Each area follows this hierarchy:
+### Locked Information Architecture & Terminology (2-Tier: L1 + L2, No L3)
+Each area follows this strictly locked terminology hierarchy:
 
-```
-Main Category
-    ↓
-Sub-category
-    ↓
-Individual Service
-    ↓
-Detail / How We Approach / Technology / Examples / Contact
+```text
+L1: CAPABILITY DOMAINS
+    ↓ (e.g. Software & Product Engineering, AI & Intelligent Systems)
+L2: PRACTICE CAPABILITIES
+    ↓ (e.g. AI Agent Development, Custom Software Development)
+L3: SELECTED SOLUTION PATTERNS / REPRESENTATIVE ARCHITECTURES
+    ↓ (e.g. Customer Support Agents, Executive Command Centers, Operational Cockpits)
+DELIVERABLES & STACK
+    ↓ (What is engineered + production technology stack)
+OUTCOMES: TANGIBLE BUSINESS RESULTS
+    (e.g. 85% triage reduction, 10x traffic headroom, complete IP ownership)
 ```
 
-### Known Sub-services (AI & Intelligent Systems — example)
-- AI Application Development → AI-Powered Apps, Custom AI Apps, LLM-Powered Apps, AI Features
-- AI Agent Development → Customer Support Agents, Sales Agents, Internal Agents, Voice AI Agents, Agentic Systems
-- AI / ML Development → Generative AI, Machine Learning, Model Training
-- AI Knowledge Systems → RAG, Knowledge Bases, Document Intelligence, AI Assistants
+> **Firm Architecture Decision: No L3 Pages.**
+> The L2 Discipline page absorbs all capabilities and solution patterns through an embedded interactive **Capability Explorer** with a **Systems Architecture Equation**, allowing full exploration on a single page with zero corporate bloat or fragmentation. Solution cards are framed as **"Selected Solution Patterns"** (`SOLUTION 01`, `SOLUTION 02`, etc.) so clients understand these are proven archetypes of an unlimited custom engineering capability.
 
 ---
 
@@ -221,22 +221,34 @@ Next Steps
 
 ---
 
-## 8. CONTENT ARCHITECTURE — 3-LEVEL SYSTEM
+## 8. CONTENT ARCHITECTURE — 2-TIER CORE ARCHITECTURE (LOCKED)
 
-| Level | Description | Examples |
-|---|---|---|
-| L1 — Discovery | Index/collection pages | Work, Insights, Solutions |
-| L2 — Category | Area overview pages | AI & Intelligent Systems, Projects |
-| L3 — Detail | Individual entity pages (templated) | Project X, Article Y, Service Z |
+| Level | Status | Description | Examples |
+|---|---|---|---|
+| L1 — Discovery | Active (V1) | Master discovery & problem diagnostic hub | Solutions (`/solutions`), Work, Insights |
+| L2 — Discipline | Active (V1) | Complete, self-contained discipline experience | AI & Intelligent Systems (`/solutions/[slug]`) |
+| L3 — Service Detail | Optional (Future) | Selective standalone marketing landing page | Only created if commercially justified |
 
-Every individual content entity gets its own dedicated page using a reusable template.
+### Service Architecture Policy (Locked Decision — September 2026)
+> **KAIROTRIX = L1 + L2 Core Architecture. L3 is NOT part of the active website.**
+
+- **L1 Discovery Hub (`/solutions`)**: Overall discovery & positioning. Houses diagnostic matrix, 6 core discipline cards (name, category, 3D image, and hover animations), 4-phase lifecycle, and obsidian CTA.
+- **L2 Core Discipline Page (`/solutions/[slug]`)**: The complete service experience. Houses the full story so visitors never need to navigate into separate fragmented pages:
+  - Hero with live telemetry
+  - Problems / Outcomes (Operational bottlenecks solved)
+  - Interactive Service Explorer (AI Agents, Applications, Knowledge Systems, etc.)
+  - Engineering Methodology (4-step execution flow)
+  - Core Expertise & Technologies
+  - Featured Projects & Case Studies
+  - Consultation Inquiry Form & Prev/Next Discipline Navigator
+- **L3 Standalone Service Landing Pages**: **Disabled / Not Active for V1**. 24 individual micro-pages fragment the user experience. The underlying data model in `solutionsData.ts` remains future-ready, allowing a dedicated marketing landing page to be spun up only if a specific capability (e.g. AI Agent Development) later generates high-volume dedicated ad spend or inbound commercial demand.
 
 ### Page Templates Needed
 - **Project Detail Template** — Hero, What was built, Context, Challenge, Approach, UX/Design, Engineering, Technology, Result, Visual Demo, Key Learnings, Related Work, CTA
 - **Case Study Template** — Context, Challenge, Discovery, Approach, Solution, Implementation, Technology, Outcome, Learnings, Related Work, CTA
 - **Technical Demo Template** — What we're demonstrating, Live/Interactive Demo, How it works, Architecture, Technology, Capabilities demonstrated, CTA
 - **Article/Insight Template** — Author, Date, Category, Content, Related Insights, CTA
-- **Service Detail Template** — What it is, What we do, How we approach it, Technology, Examples, Related Work, CTA
+- **L2 Discipline Template** — Flanked carousel hero, telemetry marquee, editorial rationale, Service Explorer, expertise split cards, 4-stage methodology, project showcase, consultation form
 
 ---
 

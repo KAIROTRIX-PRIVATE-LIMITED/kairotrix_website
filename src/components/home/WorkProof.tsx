@@ -306,15 +306,25 @@ export function WorkProof() {
               </p>
             </div>
 
-            {/* Specimen Reel Indicator */}
-            <div className="flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-neutral-200/90 shadow-sm self-start lg:self-auto flex-shrink-0">
-              <span className="font-mono text-xs font-semibold text-neutral-700">
-                SPECIMEN REEL
-              </span>
-              <div className="flex items-center gap-1.5">
-                {SPECIMENS.map((_, i) => (
-                  <IndicatorDot key={i} index={i} activeIndex={activeIndex} />
-                ))}
+            {/* Action & Specimen Reel Indicator */}
+            <div className="flex items-center gap-3 self-start lg:self-auto flex-shrink-0">
+              <Link
+                href="/work"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-950 hover:bg-brand-600 text-white font-tech font-semibold text-xs uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md group"
+              >
+                <span>Explore All Work</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+
+              <div className="flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-neutral-200/90 shadow-sm">
+                <span className="font-mono text-xs font-semibold text-neutral-700">
+                  SPECIMEN REEL
+                </span>
+                <div className="flex items-center gap-1.5">
+                  {SPECIMENS.map((_, i) => (
+                    <IndicatorDot key={i} index={i} activeIndex={activeIndex} />
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
@@ -393,7 +403,13 @@ export function WorkProof() {
         <div className="relative z-50 w-full bg-[#FAFAFC] pt-3 border-t border-neutral-200/60 pb-2">
           <div className="mx-auto max-w-6xl flex items-center justify-between text-[11px] font-mono text-neutral-400">
             <span>SCROLL TO ADVANCE SPECIMENS</span>
-            <span className="hidden sm:inline-block">THE WEBSITE ITSELF IS LIVING PROOF</span>
+            <Link
+              href="/work"
+              className="text-brand-600 hover:text-brand-700 font-tech font-semibold uppercase tracking-wider flex items-center gap-1 transition-colors"
+            >
+              <span>VIEW FULL 12-SPECIMEN REPOSITORY</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </div>

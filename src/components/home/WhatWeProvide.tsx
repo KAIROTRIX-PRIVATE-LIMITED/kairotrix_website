@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import clsx from 'clsx';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
@@ -221,12 +221,37 @@ export function WhatWeProvide() {
             </h2>
           </div>
 
-          {/* Live Architecture Scope Pill */}
-          <div className="hidden md:flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/85 border border-neutral-200/80 text-neutral-600 text-xs font-mono shadow-2xs">
-            <span className="h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-            <span className="font-semibold text-neutral-800">6 Production-Grade Disciplines</span>
-            <span className="text-neutral-300">|</span>
-            <span className="text-neutral-500">Autonomous & Distributed</span>
+          {/* Live Architecture Scope Pill & Enhanced AI Discovery Chip */}
+          <div className="hidden md:flex items-center gap-2.5">
+            <Link
+              href="/solutions"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 hover:bg-white border border-neutral-200/80 hover:border-neutral-300 text-neutral-600 hover:text-neutral-900 text-xs font-mono shadow-2xs hover:shadow-xs transition-all duration-200 group cursor-pointer"
+            >
+              <span className="h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+              <span className="font-semibold text-neutral-800 group-hover:text-purple-700 transition-colors">
+                Solutions Hub
+              </span>
+              <span className="text-neutral-300">|</span>
+              <span className="text-neutral-500 group-hover:text-neutral-700">6 Disciplines</span>
+              <ArrowRight className="w-3 h-3 text-neutral-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+
+            <Link
+              href="/solutions#find-solution"
+              className="group relative inline-flex items-center gap-2 pl-3 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-purple-600 via-brand-600 to-indigo-600 hover:opacity-95 text-white font-mono text-xs font-semibold shadow-[0_2px_12px_rgba(147,51,234,0.3)] hover:shadow-[0_4px_18px_rgba(147,51,234,0.45)] transition-all duration-200 active:scale-[0.98] cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-200 group-hover:rotate-12 transition-transform shrink-0" />
+
+              <span className="tracking-tight text-white font-medium">
+                Find Your Solution
+              </span>
+
+              <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30 tracking-wider">
+                AI
+              </span>
+
+              <ArrowRight className="w-3 h-3 text-purple-200 group-hover:text-white group-hover:translate-x-0.5 transition-all shrink-0" />
+            </Link>
           </div>
         </motion.div>
       </div>
@@ -392,14 +417,22 @@ export function WhatWeProvide() {
                     ))}
                   </div>
 
-                  {/* Commercial Action Link */}
-                  <div className="pt-2">
+                  {/* Commercial Action Links */}
+                  <div className="pt-2 flex flex-wrap items-center gap-3">
                     <Link
                       href={currentService.slug}
-                      className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-neutral-950 hover:bg-brand-600 text-white text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-brand-500/25 group cursor-pointer"
+                      className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-3 rounded-xl bg-neutral-950 hover:bg-brand-600 text-white text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-brand-500/25 group cursor-pointer"
                     >
                       <span>Explore Architecture & Scope</span>
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    </Link>
+
+                    <Link
+                      href="/solutions"
+                      className="inline-flex items-center gap-1.5 px-4 py-3 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200/90 hover:border-neutral-300 text-neutral-700 hover:text-neutral-950 text-xs sm:text-sm font-medium transition-colors shadow-2xs group cursor-pointer"
+                    >
+                      <span>Solutions Hub</span>
+                      <ArrowRight className="h-3.5 w-3.5 text-neutral-400 group-hover:text-neutral-700 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </motion.div>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { Sparkles } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { HeroBackgroundCanvas } from '@/components/home/HeroBackgroundCanvas';
 
@@ -370,13 +372,21 @@ export function HeroSection() {
               </p>
 
               {/* CTA Action */}
-              <div className="mt-8 sm:mt-10 pointer-events-auto">
+              <div className="mt-8 sm:mt-10 pointer-events-auto flex flex-wrap items-center gap-3.5">
                 <a
                   href="#what-is-kairotrix"
                   className="inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 text-neutral-0 font-display text-xs md:text-sm font-bold tracking-[0.16em] uppercase shadow-[0_0_30px_rgba(147,51,234,0.5)] transition-all duration-300 hover:scale-105 active:scale-95"
                 >
                   <span>Explore KAIROTRIX</span>
                 </a>
+
+                <Link
+                  href="/solutions#find-solution"
+                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/25 text-neutral-0 font-display text-xs md:text-sm font-bold tracking-[0.16em] uppercase shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 active:scale-95 group"
+                >
+                  <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
+                  <span>Find Your Solution</span>
+                </Link>
               </div>
             </div>
 

@@ -1,0 +1,425 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  ChevronDown,
+  Sparkles,
+  Layers,
+  ShieldCheck,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import type { SolutionDetail, SubCategory } from '@/data/solutionsData';
+
+interface SolutionSubServicesProps {
+  solution: SolutionDetail;
+}
+
+export function SolutionSubServices({ solution }: SolutionSubServicesProps) {
+  const shouldReduceMotion = useReducedMotion();
+  
+  // Track which capability row is currently expanded (defaults to null: all closed by default)
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  // Sync with window.location.hash on mount, on hashchange, and on custom navbar dispatch
+  useEffect(() => {
+    const syncWithHash = (explicitHash?: string) => {
+      if (typeof window === 'undefined') return;
+      const rawHash = explicitHash || window.location.hash;
+      const hash = rawHash.replace('#', '');
+      if (!hash) return;
+
+      const match = solution.subCategories.find(
+        (sub) => sub.anchorId === hash || sub.id === hash || sub.slug === hash
+      );
+      if (match) {
+        setExpandedId(match.id);
+
+        const scrollToTarget = () => {
+          const target =
+            document.getElementById(match.anchorId) ||
+            document.getElementById('capabilities');
+          if (target) {
+            const navOffset = 88;
+            const targetY =
+              target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+            window.scrollTo({
+              top: Math.max(0, targetY),
+              behavior: 'smooth',
+            });
+          }
+        };
+
+        setTimeout(scrollToTarget, 60);
+        setTimeout(scrollToTarget, 260);
+      }
+    };
+
+    syncWithHash();
+
+    const onHashChange = () => syncWithHash();
+    window.addEventListener('hashchange', onHashChange);
+
+    const onCustomNav = (e: Event) => {
+      const customEvent = e as CustomEvent<{ hash: string }>;
+      if (customEvent.detail?.hash) {
+        syncWithHash(customEvent.detail.hash);
+      }
+    };
+    window.addEventListener('kairotrix:navigate-service', onCustomNav);
+
+    return () => {
+      window.removeEventListener('hashchange', onHashChange);
+      window.removeEventListener('kairotrix:navigate-service', onCustomNav);
+    };
+  }, [solution.subCategories]);
+
+  const toggleExpand = (subCat: SubCategory) => {
+    const isCurrentlyExpanded = expandedId === subCat.id;
+    const nextId = isCurrentlyExpanded ? null : subCat.id;
+    setExpandedId(nextId);
+
+    if (typeof window !== 'undefined') {
+      if (nextId && subCat.anchorId) {
+        window.history.replaceState(null, '', `#${subCat.anchorId}`);
+      } else {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    }
+  };
+
+  return (
+    <section
+      id="capabilities"
+      className="relative w-full bg-neutral-50/60 py-14 sm:py-20 lg:py-24 border-b border-neutral-200 scroll-mt-20 overflow-hidden"
+    >
+      <div id="services" className="sr-only" aria-hidden="true" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* ─── 01. SECTION HEADER WITH SCROLL REVEAL ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-10 sm:mb-14"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wider font-tech uppercase mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
+            02 // CAPABILITY EXPLORER
+          </div>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
+            DISCIPLINE <span className="gradient-signature-text">CAPABILITIES</span> & PRODUCTION ENGINEERING.
+          </h2>
+          <p className="mt-2.5 text-xs sm:text-sm text-neutral-600 max-w-2xl mx-auto font-normal leading-relaxed">
+            KAIROTRIX engineers custom digital platforms tailored to your business requirements. Select a capability below to explore what we build, our production delivery standards, and technical architecture.
+          </p>
+        </motion.div>
+
+        {/* ─── 02. MINIMALIST STUDIO STRIPS (EDITORIAL ACCORDION WITH GLOWING ACCENT RAIL) ─── */}
+        <div className="max-w-7xl mx-auto divide-y divide-neutral-200/80 border-y border-neutral-200/80">
+          {solution.subCategories.map((subCat, index) => {
+            const isExpanded = expandedId === subCat.id;
+
+            // Unique set of tech tags for this capability
+            const allTags = Array.from(
+              new Set(subCat.services.flatMap((s) => s.tags))
+            );
+
+            return (
+              <motion.div
+                key={subCat.id}
+                id={subCat.anchorId}
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{
+                  duration: 0.45,
+                  delay: index * 0.06,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className={cn(
+                  'group relative transition-all duration-300 overflow-hidden scroll-mt-24',
+                  isExpanded ? 'bg-white shadow-[0_12px_40px_rgba(147,51,234,0.08)]' : 'hover:bg-white/80'
+                )}
+              >
+                {/* ── Glowing Left Accent Rail on Hover & Active ── */}
+                <div
+                  className={cn(
+                    'absolute left-0 top-0 bottom-0 w-1 sm:w-1.5 transition-all duration-300 pointer-events-none z-30',
+                    isExpanded
+                      ? 'bg-gradient-to-b from-brand-600 via-brand-500 to-brand-400 opacity-100 shadow-[0_0_12px_rgba(147,51,234,0.6)]'
+                      : 'bg-brand-500 opacity-0 group-hover:opacity-100 shadow-[0_0_8px_rgba(147,51,234,0.5)]'
+                  )}
+                  aria-hidden="true"
+                />
+
+                {/* Specular sheen sweep on hover */}
+                <div
+                  className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-brand-500/[0.04] to-transparent z-10"
+                  aria-hidden="true"
+                />
+
+                {/* ── Sleek Editorial Row Header Button ── */}
+                <button
+                  type="button"
+                  onClick={() => toggleExpand(subCat)}
+                  className="w-full text-left py-5 sm:py-6 lg:py-7 px-4 sm:px-6 lg:px-8 flex items-start sm:items-center justify-between gap-4 cursor-pointer select-none transition-colors relative z-20"
+                  aria-expanded={isExpanded}
+                >
+                  <div className="flex items-start sm:items-center gap-4 sm:gap-6 min-w-0">
+                    
+                    {/* Large Studio Mono Number (01.1) */}
+                    <span
+                      className={cn(
+                        'font-mono text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight transition-colors duration-300 w-14 sm:w-20 shrink-0 select-none',
+                        isExpanded
+                          ? 'text-brand-600'
+                          : 'text-neutral-300 group-hover:text-brand-600'
+                      )}
+                    >
+                      {subCat.number}
+                    </span>
+
+                    {/* Title & Editorial Summary */}
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                        <h3
+                          className={cn(
+                            'text-lg sm:text-xl lg:text-2xl font-bold tracking-tight transition-colors duration-300 leading-snug',
+                            isExpanded
+                              ? 'text-brand-600'
+                              : 'text-neutral-900 group-hover:text-brand-600'
+                          )}
+                        >
+                          {subCat.title}
+                        </h3>
+
+                        <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-tech font-semibold bg-neutral-100 text-neutral-600 border border-neutral-200/70 uppercase tracking-wider group-hover:border-brand-200 group-hover:text-brand-700 transition-colors">
+                          <span
+                            className={cn(
+                              'w-1.5 h-1.5 rounded-full transition-colors',
+                              isExpanded ? 'bg-brand-500' : 'bg-neutral-400 group-hover:bg-brand-500'
+                            )}
+                          />
+                          {subCat.services.length} SYSTEMS
+                        </span>
+                      </div>
+
+                      <p className="mt-1 text-xs sm:text-sm text-neutral-600 font-normal line-clamp-1 sm:line-clamp-2 max-w-3xl leading-relaxed">
+                        {subCat.summary}
+                      </p>
+                    </div>
+
+                  </div>
+
+                  {/* Right Action Trigger with Rotating Badge */}
+                  <div className="flex items-center gap-3 shrink-0 pt-1 sm:pt-0">
+                    <span
+                      className={cn(
+                        'hidden md:inline-block text-xs font-tech font-semibold uppercase tracking-wider transition-colors',
+                        isExpanded ? 'text-brand-600' : 'text-neutral-400 group-hover:text-brand-600'
+                      )}
+                    >
+                      {isExpanded ? 'COLLAPSE' : 'EXPLORE SPECS'}
+                    </span>
+
+                    <div
+                      className={cn(
+                        'w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center transition-all duration-300 shadow-2xs',
+                        isExpanded
+                          ? 'bg-brand-600 border-brand-600 text-white shadow-xs rotate-180 ring-2 ring-brand-500/20'
+                          : 'bg-white border-neutral-200 text-neutral-400 group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white group-hover:scale-105'
+                      )}
+                    >
+                      <ChevronDown className="w-4 h-4 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </button>
+
+                {/* Inline Expanded Content Reveal with Cascading Stagger */}
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{
+                        duration: shouldReduceMotion ? 0 : 0.32,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className="overflow-hidden border-t border-neutral-100 relative z-20"
+                    >
+                      <div className="p-5 sm:p-6 lg:p-8 bg-neutral-50/40 space-y-5 sm:space-y-6">
+                        
+                        {/* Capability Overview Banner with Entrance Motion */}
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: 0.05 }}
+                          className="p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                        >
+                          <div className="space-y-1 max-w-3xl">
+                            <div className="flex items-center gap-2">
+                              <span className="font-tech text-xs font-bold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded border border-brand-200 uppercase tracking-wider">
+                                CAPABILITY // {subCat.number}
+                              </span>
+                              <span className="text-[11px] font-tech text-neutral-400 font-semibold uppercase tracking-wider">
+                                END-TO-END PRODUCTION ENGINEERING
+                              </span>
+                            </div>
+
+                            <h4 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900">
+                              {subCat.title}
+                            </h4>
+
+                            <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal pt-0.5">
+                              {subCat.summary}
+                            </p>
+                          </div>
+
+                          <div className="shrink-0 w-full md:w-auto flex flex-col sm:flex-row md:flex-col gap-2">
+                            <Link
+                              href={`/contact?service=${solution.slug}&capability=${subCat.anchorId}&intent=blueprint`}
+                              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-brand-600 text-white text-xs font-semibold font-tech tracking-wider uppercase transition-colors shadow-xs group active:scale-[0.98]"
+                            >
+                              <span>Scope This Capability</span>
+                              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                            </Link>
+
+                            <div className="flex items-center justify-center md:justify-end gap-1.5 text-[11px] font-tech text-neutral-400">
+                              <Sparkles className="w-3 h-3 text-brand-500" />
+                              <span>100% Code & IP Ownership</span>
+                            </div>
+                          </div>
+                        </motion.div>
+
+                        {/* ─── 3-COLUMN CAPABILITY SPECIFICATIONS with Entrance Motion ─── */}
+                        <motion.div
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.35, delay: 0.1 }}
+                          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                        >
+                          {/* Column 1: What We Build */}
+                          <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3">
+                            <div className="flex items-center gap-2 text-brand-600">
+                              <Layers className="w-4 h-4 text-brand-600" />
+                              <span className="text-xs font-tech font-bold uppercase tracking-wider text-neutral-900">
+                                WHAT WE BUILD
+                              </span>
+                            </div>
+                            <ul className="space-y-2 text-xs sm:text-sm text-neutral-700">
+                              {subCat.services.map((s, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-brand-500 mt-1.5 shrink-0" />
+                                  <span className="leading-snug font-medium text-neutral-800">{s.name}</span>
+                                </li>
+                              ))}
+                            </ul>
+                            <p className="text-[11px] text-neutral-500 pt-1 leading-relaxed border-t border-neutral-100 font-normal">
+                              Engineered bespoke to your exact operational data, workflows, and infrastructure requirements.
+                            </p>
+                          </div>
+
+                          {/* Column 2: Included in Production Delivery */}
+                          <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3">
+                            <div className="flex items-center gap-2 text-brand-600">
+                              <ShieldCheck className="w-4 h-4 text-brand-600 stroke-[2.2]" />
+                              <span className="text-xs font-tech font-bold uppercase tracking-wider text-neutral-900">
+                                PRODUCTION DELIVERY
+                              </span>
+                            </div>
+                            <ul className="space-y-2 text-xs sm:text-sm text-neutral-700">
+                              {[
+                                'System & State Architecture Blueprint',
+                                'Strict Schema Guardrails & Error Boundaries',
+                                'Enterprise API & Database Integrations',
+                                'Human-in-the-Loop Review Gates',
+                                'Observability, Telemetry & Audit Logs',
+                                '100% Source Code & IP Ownership',
+                              ].map((deliv, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <div className="w-4 h-4 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center shrink-0 mt-0.5">
+                                    <Check className="w-2.5 h-2.5 text-brand-600 stroke-[3]" />
+                                  </div>
+                                  <span className="leading-snug text-neutral-800 font-medium">{deliv}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* Column 3: Production Tech Stack */}
+                          <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3 flex flex-col justify-between">
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-2 text-brand-600">
+                                <Sparkles className="w-4 h-4 text-brand-600" />
+                                <span className="text-xs font-tech font-bold uppercase tracking-wider text-neutral-900">
+                                  PRODUCTION STACK
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {allTags.map((tag, i) => (
+                                  <span
+                                    key={i}
+                                    className="inline-flex items-center px-2.5 py-1 rounded-md bg-neutral-100/80 border border-neutral-200 text-neutral-800 text-xs font-tech font-medium hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 transition-colors cursor-default"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="pt-3 border-t border-neutral-100">
+                              <Link
+                                href={`/contact?service=${solution.slug}&capability=${subCat.anchorId}`}
+                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-neutral-900 hover:bg-brand-600 text-white font-tech font-semibold text-xs uppercase tracking-wider transition-colors shadow-2xs"
+                              >
+                                <span>Discuss Technical Stack</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </Link>
+                            </div>
+                          </div>
+                        </motion.div>
+
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* ─── 03. COMPACT BLUEPRINT CONSULTATION CALLOUT ─── */}
+        <div className="mt-10 sm:mt-12 p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-xs">
+          <div className="space-y-0.5">
+            <div className="text-[11px] font-tech font-bold uppercase tracking-wider text-brand-600">
+              CUSTOM ARCHITECTURE SCOPING
+            </div>
+            <div className="text-sm sm:text-base font-bold text-neutral-900">
+              Need a custom system engineered around your business?
+            </div>
+            <p className="text-xs text-neutral-600 max-w-2xl font-normal">
+              Tell us your business objective and operational friction — our engineering team blueprints and delivers the exact platform architecture you need.
+            </p>
+          </div>
+
+          <Link
+            href={`/contact?service=${solution.slug}&intent=custom-architecture`}
+            className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-neutral-900 hover:bg-brand-600 text-white text-xs font-semibold font-tech tracking-wider uppercase transition-colors"
+          >
+            <span>Request Custom Blueprint</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+      </div>
+    </section>
+  );
+}

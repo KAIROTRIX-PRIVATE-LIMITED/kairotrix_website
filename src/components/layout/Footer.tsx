@@ -38,7 +38,8 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: 'WORK',
     links: [
-      { label: 'Featured Projects', href: '/work#projects' },
+      { label: 'All Work & Specimens', href: '/work' },
+      { label: 'Production Projects', href: '/work#projects' },
       { label: 'Engineering Experiments', href: '/work#experiments' },
       { label: 'Technical Demonstrations', href: '/work#demos' },
       { label: 'Capabilities & Architecture', href: '/work#capabilities' },
