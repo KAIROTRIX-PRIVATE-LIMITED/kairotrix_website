@@ -2,85 +2,143 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, Terminal, ShieldCheck, Cpu } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 
 export function AboutCTA() {
   return (
-    <section className="w-full bg-neutral-0 py-20 lg:py-28">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl bg-gradient-to-b from-neutral-950 to-black text-white p-8 sm:p-12 lg:p-16 border border-neutral-800 shadow-2xl overflow-hidden">
-          {/* Ambient Purple Glow */}
+    <section className="relative w-full bg-transparent py-16 sm:py-24 overflow-hidden border-t border-neutral-200/60">
+      {/* Background Decorative Rings on Canvas with Brand Tint */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+        <div className="w-[850px] h-[450px] rounded-full border border-brand-500/20" />
+        <div className="absolute w-[1100px] h-[600px] rounded-full border border-neutral-200/70" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="relative rounded-[2.25rem] bg-gradient-to-br from-neutral-950 via-[#1A0E38] to-[#120824] p-8 sm:p-12 lg:p-14 overflow-hidden shadow-[0_20px_50px_rgba(15,15,23,0.3)] border border-brand-500/20"
+        >
+          {/* Ambient Purple Glow inside Banner */}
           <div
-            className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/15 rounded-full blur-3xl pointer-events-none"
+            className="absolute -top-24 -right-24 w-[450px] h-[450px] bg-brand-500/20 rounded-full blur-3xl pointer-events-none"
             aria-hidden="true"
           />
           <div
-            className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-600/10 rounded-full blur-3xl pointer-events-none"
+            className="absolute -bottom-24 -left-24 w-[350px] h-[350px] bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"
             aria-hidden="true"
           />
 
-          <div className="relative z-10 max-w-3xl">
-            {/* Eyebrow */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-brand-300 font-tech text-xs font-semibold tracking-wider uppercase mb-6">
-              <span className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
-              06.CTA // INITIATE COLLABORATION
-            </div>
+          {/* Subtle Curving Radar Accent Lines inside Banner */}
+          <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
+            <svg
+              className="absolute -top-24 -left-24 w-[700px] h-[700px] text-white/50"
+              viewBox="0 0 700 700"
+              fill="none"
+              stroke="currentColor"
+            >
+              <circle cx="350" cy="350" r="200" strokeWidth="1.5" />
+              <circle cx="350" cy="350" r="300" strokeWidth="1.5" strokeDasharray="6 6" />
+              <circle cx="350" cy="350" r="380" strokeWidth="1.5" />
+            </svg>
+          </div>
 
-            {/* Headline */}
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white uppercase leading-[1.08] mb-6">
-              READY TO SOLVE A REAL PROBLEM? <span className="gradient-signature-text">LET&apos;S TALK.</span>
-            </h2>
-
-            {/* Narrative */}
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed font-normal mb-10">
-              Whether you need to eliminate non-deterministic LLM hallucinations, modernize legacy operations into real-time pipelines, or engineer custom enterprise software, our team is ready to build it.
-            </p>
-
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-12">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-tech font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer group"
-              >
-                <span>Start a Conversation</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-
-              <Link
-                href="/work"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-tech font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer"
-              >
-                <span>Explore Verified Work</span>
-                <ArrowUpRight className="w-4 h-4 text-neutral-400" />
-              </Link>
-            </div>
-
-            {/* 3 Trust Pillars */}
-            <div className="pt-8 border-t border-white/15 grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="w-5 h-5 text-brand-400 shrink-0" />
-                <span className="font-tech text-xs uppercase tracking-wider text-neutral-300 font-semibold">
-                  100% IP Ownership Delivered
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 lg:gap-12">
+            {/* Left Column: Heading, Narrative, and Actions */}
+            <div className="max-w-xl">
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3 mb-5">
+                <span className="flex h-2 w-2 rounded-full bg-brand-400 animate-pulse" />
+                <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-300 uppercase">
+                  WORK WITH US
                 </span>
+                <div className="h-px w-10 sm:w-16 bg-neutral-800" />
               </div>
 
-              <div className="flex items-center gap-3">
-                <Terminal className="w-5 h-5 text-brand-400 shrink-0" />
-                <span className="font-tech text-xs uppercase tracking-wider text-neutral-300 font-semibold">
-                  Direct Principal Architects
+              {/* Main Display Headline */}
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-white uppercase leading-[1.12] mb-4">
+                HAVE SOMETHING WORTH{' '}
+                <span className="gradient-signature-text">
+                  BUILDING?
                 </span>
-              </div>
+              </h2>
 
-              <div className="flex items-center gap-3">
-                <Cpu className="w-5 h-5 text-brand-400 shrink-0" />
-                <span className="font-tech text-xs uppercase tracking-wider text-neutral-300 font-semibold">
-                  Zero Premature Lock-In
-                </span>
+              {/* Narrative */}
+              <p className="text-sm sm:text-base text-neutral-300 font-sans leading-relaxed mb-8 max-w-lg">
+                Tell us what you&apos;re trying to improve, create, or solve. We&apos;ll help you understand the need, explore the right direction, and turn it into technology that works for your business.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href="/contact?source=about"
+                  className="inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-medium text-sm transition-all duration-200 shadow-md hover:shadow-brand cursor-pointer group"
+                >
+                  <span>Start a Conversation</span>
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+
+                <Link
+                  href="/solutions"
+                  className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-medium text-sm transition-all duration-200 cursor-pointer"
+                >
+                  <span>Explore Our Solutions</span>
+                  <ArrowUpRight className="w-4 h-4 ml-1.5 text-neutral-400" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column: Floating White Card */}
+            <div className="w-full sm:w-auto shrink-0 flex justify-center lg:justify-end">
+              <div className="w-full sm:w-[320px] rounded-2xl bg-white p-6 shadow-2xl border border-white/90 flex flex-col">
+                {/* Availability Pill */}
+                <div className="self-start inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-[11px] font-mono uppercase tracking-wider text-emerald-700 font-semibold mb-5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>ACCEPTING NEW PROJECTS</span>
+                </div>
+
+                {/* Avatar Stack */}
+                <div className="flex items-center mb-4">
+                  <div className="w-9 h-9 rounded-full overflow-hidden relative border-2 border-white shrink-0 shadow-2xs">
+                    <Image
+                      src="/assets/images/about/team-ethan.jpg"
+                      alt="KAIROTRIX Founder"
+                      fill
+                      sizes="36px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="w-5 h-5 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center text-[10px] font-bold -ml-1.5 border-2 border-white shrink-0 z-10">
+                    +
+                  </div>
+                  <div className="w-9 h-9 rounded-full bg-neutral-950 text-white text-xs font-semibold flex items-center justify-center -ml-1.5 border-2 border-white shrink-0 z-20 shadow-2xs">
+                    You
+                  </div>
+                </div>
+
+                {/* Call Info */}
+                <h3 className="font-display font-semibold text-lg text-neutral-950 mb-1 leading-snug">
+                  Quick 15-minute call.
+                </h3>
+                <p className="text-xs text-neutral-500 font-normal mb-6">
+                  Talk through your problem and explore the right direction.
+                </p>
+
+                {/* Book a call button */}
+                <Link
+                  href="/contact?source=about"
+                  className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 hover:brightness-110 text-white font-medium text-sm transition-all text-center shadow-[0_4px_16px_rgba(147,51,234,0.3)] hover:shadow-brand flex items-center justify-center cursor-pointer"
+                >
+                  <span>Book a call</span>
+                </Link>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

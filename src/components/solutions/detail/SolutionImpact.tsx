@@ -14,7 +14,7 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
   const { editorialSplit } = solution;
 
   return (
-    <section id="impact" className="w-full bg-neutral-0 py-20 lg:py-28 border-b border-neutral-200 scroll-mt-20">
+    <section id="impact" className="w-full bg-[#FAFAFC] py-20 lg:py-28 border-b border-neutral-200/80 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ─── EDITORIAL 3-COLUMN SPREAD (Matching 00:04 - 00:05) ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-16">
@@ -59,12 +59,15 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
 
           {/* Center/Right: Editorial Headline & Narrative */}
           <div className="lg:col-span-8 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wider font-tech uppercase">
-              <span className="w-2 h-2 rounded-full bg-brand-500" />
-              {editorialSplit.badge}
+            <div className="flex items-center gap-3">
+              <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+              <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
+                {editorialSplit.badge}
+              </span>
+              <div className="h-px w-10 sm:w-16 bg-neutral-200" />
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.12]">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]">
               {editorialSplit.headline}
             </h2>
 

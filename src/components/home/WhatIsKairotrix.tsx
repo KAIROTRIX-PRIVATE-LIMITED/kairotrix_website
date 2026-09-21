@@ -84,48 +84,48 @@ const CONTINUUM_STAGES: ContinuumStage[] = [
   {
     step: '01',
     name: 'DISCONNECTED',
-    tag: 'LEGACY_STATE',
+    tag: 'CURRENT_STATE',
     telemetry:
-      'Fragmented software stacks, manual spreadsheet workflows, and isolated data silos trapped in repetitive operations.',
+      'Disconnected software, manual spreadsheet work, and isolated data silos trapped in repetitive daily tasks.',
   },
   {
     step: '02',
     name: 'UNDERSTOOD',
-    tag: 'DIAGNOSTIC',
+    tag: 'DISCOVERY',
     telemetry:
-      'Deep architectural audit mapping operational friction, root bottlenecks, and real economic value before writing code.',
+      'We interview your team and audit workflows to isolate the real bottleneck before writing a single line of code.',
   },
   {
     step: '03',
     name: 'STRUCTURED',
     tag: 'FOUNDATION',
     telemetry:
-      'Clean normalized schemas, decoupled service boundaries, and robust API contracts engineered for enterprise resilience.',
+      'Clean data models, explicit schemas, and decoupled system boundaries engineered to scale reliably without breaking.',
   },
   {
     step: '04',
     name: 'CONNECTED',
     tag: 'INTEGRATION',
     telemetry:
-      'Bi-directional automated event pipelines, real-time message brokers, and sub-100ms multi-system data synchronization.',
+      'Automated event pipelines and live synchronization connecting your CRM, ERP, and internal databases.',
   },
   {
     step: '05',
     name: 'INTELLIGENT',
-    tag: 'COGNITION',
+    tag: 'AI_SYSTEMS',
     telemetry:
-      'Deterministic autonomous agents, context-aware RAG knowledge engines, and LLM orchestration solving high-friction tasks.',
+      'Focused AI agents and verified retrieval systems handling repetitive triage, document parsing, and routine tasks.',
   },
   {
     step: '06',
     name: 'EVOLVING',
     tag: 'LONGEVITY',
     telemetry:
-      'Modular self-healing architecture, continuous adaptability, and 100% client code ownership built to scale indefinitely.',
+      'Modular, maintainable code with full client ownership, built to adapt and expand as your business grows.',
   },
 ];
 
-// ── Part 3 Data: The Three Non-Negotiable Principles ─────────────────────────
+// ── Part 3 Data: The Three Core Principles ───────────────────────────────────
 interface PrincipleItem {
   id: string;
   number: string;
@@ -144,31 +144,31 @@ const PRINCIPLES: PrincipleItem[] = [
     id: 'diagnostic',
     number: '01',
     category: 'STRATEGY',
-    ruleSpec: '[RULE // ZERO_VENDOR_LOCKIN]',
-    title: 'Problem-First Diagnostic',
+    ruleSpec: '[APPROACH // PROBLEM_FIRST]',
+    title: 'Problem-First Discovery',
     thesis:
-      'We reject pre-packaged vendor stacks and vanity technology. Before recommending or writing a single line of code, we diagnose the operational friction and true bottleneck of your business.',
+      'We reject pre-packaged software stacks and decorative technology. Before recommending or writing a single line of code, we first understand what is slowing your business down.',
     axioms: [
-      'Objective root-cause telemetry audit',
-      'Zero proprietary vendor lock-in bias',
-      'Economic validation before implementation',
+      'Workflow and bottleneck audit',
+      'Zero bias toward specific software vendors',
+      'Measurable business value before building',
     ],
-    linkText: 'Explore Solutions',
+    linkText: 'Explore What We Build',
     linkHref: '/solutions',
     icon: Compass,
   },
   {
     id: 'execution',
     number: '02',
-    category: 'EXECUTION',
-    ruleSpec: '[ARCH // PRODUCTION_GRADE]',
-    title: 'Production-Grade Systems',
+    category: 'ENGINEERING',
+    ruleSpec: '[STANDARD // RELIABILITY]',
+    title: 'Reliable Production Systems',
     thesis:
-      'From custom product engineering to autonomous LLM agent networks and event pipelines, we engineer deterministic, fault-tolerant software built to perform under mission-critical loads.',
+      'From custom web applications to automated AI workflows and data pipelines, we engineer reliable, thoroughly tested software built to perform under day-to-day business demands.',
     axioms: [
-      'Deterministic sub-100ms execution',
-      'Comprehensive failover & recovery loops',
-      'Auditable test coverage & observability',
+      'Clean system boundaries and data validation',
+      'Thorough automated testing and error handling',
+      'Fast, dependable performance under load',
     ],
     linkText: 'View Demonstrations',
     linkHref: '/work',
@@ -181,10 +181,10 @@ const PRINCIPLES: PrincipleItem[] = [
     ruleSpec: '[LONGEVITY // EXTENSIBLE]',
     title: 'Built to Evolve',
     thesis:
-      'Technology must never expire or demand a costly rewrite in twelve months. Every architecture we deploy features modular interfaces and decoupled layers engineered to expand alongside your business.',
+      'Technology must never expire or demand an expensive rewrite in twelve months. Every system we deploy features modular architecture and decoupled layers designed to grow with your business.',
     axioms: [
-      'Decoupled micro-modular services',
-      'Continuous model-agnostic AI readiness',
+      'Modular, decoupled architecture',
+      'Easy to extend with future AI and tools',
       '100% full client code ownership',
     ],
     linkText: 'Our Philosophy',
@@ -270,7 +270,7 @@ function PrincipleCard({
         {/* Monospace Axioms List */}
         <div className="mt-8 pt-6 border-t border-neutral-100/90 space-y-2.5">
           <div className="font-tech text-[10px] tracking-[0.2em] text-neutral-400 uppercase mb-3">
-            ARCHITECTURAL AXIOMS
+            WHAT MAKES IT RELIABLE
           </div>
           {item.axioms.map((axiom) => (
             <div
@@ -325,29 +325,33 @@ export function WhatIsKairotrix() {
     { text: 'We', accent: false },
     { text: 'do', accent: false },
     { text: 'not', accent: false },
-    { text: 'write', accent: false },
-    { text: 'code', accent: false },
-    { text: 'for', accent: false },
-    { text: 'vanity.', accent: false },
+    { text: 'build', accent: false },
+    { text: 'software', accent: false },
+    { text: 'just', accent: false },
+    { text: 'to', accent: false },
+    { text: 'look', accent: false },
+    { text: 'impressive.', accent: false },
     { text: 'We', accent: false },
-    { text: 'diagnose', accent: true },
-    { text: 'the', accent: false },
-    { text: 'root', accent: false },
-    { text: 'operational', accent: false },
-    { text: 'friction', accent: false },
-    { text: 'of', accent: false },
+    { text: 'first', accent: true },
+    { text: 'understand', accent: true },
+    { text: 'what', accent: false },
+    { text: 'is', accent: false },
+    { text: 'slowing', accent: false },
     { text: 'your', accent: false },
     { text: 'business', accent: false },
-    { text: 'first—', accent: false },
+    { text: 'down—', accent: false },
     { text: 'then', accent: false },
-    { text: 'architect', accent: true },
+    { text: 'design', accent: true },
     { text: 'and', accent: false },
-    { text: 'engineer', accent: false },
-    { text: 'production-grade', isGradient: true },
+    { text: 'build', accent: false },
+    { text: 'reliable', isGradient: true },
     { text: 'systems', isGradient: true },
-    { text: 'built', accent: false },
-    { text: 'to', accent: false },
-    { text: 'evolve.', accent: true },
+    { text: 'that', accent: false },
+    { text: 'can', accent: false },
+    { text: 'grow', accent: true },
+    { text: 'with', accent: false },
+    { text: 'your', accent: false },
+    { text: 'business.', accent: true },
   ];
 
   return (
@@ -378,14 +382,14 @@ export function WhatIsKairotrix() {
             </span>
             <div className="h-px w-10 sm:w-16 bg-neutral-200" />
             <span className="font-mono text-xs text-neutral-400">
-              OPERATIONAL THESIS
+              HOW WE THINK
             </span>
           </div>
 
           <div className="font-mono text-xs text-neutral-500 flex items-center gap-4">
-            <span>[SYS // KAIROTRIX_FOUNDATION]</span>
+            <span>[KAIROTRIX // CORE APPROACH]</span>
             <span className="hidden md:inline text-neutral-300">•</span>
-            <span className="hidden md:inline">NO_VANITY_TECH</span>
+            <span className="hidden md:inline">PROBLEM_FIRST</span>
           </div>
         </motion.div>
 
@@ -440,15 +444,15 @@ export function WhatIsKairotrix() {
           >
             <div className="md:col-span-4">
               <span className="font-tech text-xs tracking-[0.2em] font-semibold text-neutral-400 uppercase">
-                THE PROBLEM-FIRST DOCTRINE
+                THE PROBLEM-FIRST APPROACH
               </span>
               <p className="mt-2 text-sm font-mono text-neutral-500">
-                Moving past marketing promises into deterministic engineering.
+                Moving past marketing promises into systems that actually work.
               </p>
             </div>
             <div className="md:col-span-8">
               <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
-                Most technology vendors begin with what they want to sell: a proprietary software license, an off-the-shelf template, or a flashy demonstration. At KAIROTRIX, we start by understanding how your business actually functions. We isolate the structural constraints holding your team back, then engineer tailored, production-ready systems that generate immediate operational leverage.
+                Most technology vendors begin with what they want to sell: a recurring software license, an off-the-shelf template, or an impressive presentation. At KAIROTRIX, we start by understanding how your business actually runs. We find the manual bottlenecks holding your team back, then design and build tailored systems that save real time and create lasting leverage.
               </p>
             </div>
           </motion.div>
@@ -466,14 +470,14 @@ export function WhatIsKairotrix() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
             <div className="flex items-center gap-2">
               <span className="font-tech text-xs tracking-[0.2em] font-bold text-neutral-900 uppercase">
-                THE TRANSFORMATION CONTINUUM
+                THE TRANSFORMATION PROCESS
               </span>
               <span className="text-xs font-mono text-neutral-400">
                 [6_STAGES_OF_SYSTEM_EVOLUTION]
               </span>
             </div>
             <span className="text-xs font-mono text-brand-600">
-              Interactive Telemetry • Select Stage
+              Select any stage to explore
             </span>
           </div>
 
@@ -527,7 +531,7 @@ export function WhatIsKairotrix() {
             {/* Live Monospace Telemetry Readout */}
             <div className="px-6 py-4 bg-neutral-950 text-neutral-300 border-t border-neutral-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
               <div className="flex items-center gap-3">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-brand-400 animate-ping" />
+                <span className="flex h-1.5 w-1.5 rounded-full bg-brand-400 animate-pulse" />
                 <span className="text-brand-400 font-semibold">
                   STAGE_{CONTINUUM_STAGES[activeStageIndex].step} // {CONTINUUM_STAGES[activeStageIndex].name}
                 </span>
@@ -537,7 +541,7 @@ export function WhatIsKairotrix() {
                 </span>
               </div>
               <span className="text-[10px] text-neutral-400 tracking-wider shrink-0 uppercase">
-                STATUS: VALIDATED
+                KAIROTRIX STANDARD
               </span>
             </div>
           </div>
@@ -557,15 +561,15 @@ export function WhatIsKairotrix() {
               <div className="flex items-center gap-3 mb-2">
                 <span className="flex h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />
                 <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                  NON-NEGOTIABLE PRINCIPLES
+                  CORE PRINCIPLES
                 </span>
               </div>
               <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950">
-                How We Engineer Systems
+                How We Build Technology
               </h3>
             </div>
             <span className="font-mono text-xs text-neutral-400">
-              Hover to decrypt specifications
+              Hover to explore our engineering standards
             </span>
           </motion.div>
 

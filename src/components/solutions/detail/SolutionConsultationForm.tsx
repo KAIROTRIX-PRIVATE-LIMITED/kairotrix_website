@@ -30,14 +30,17 @@ export function SolutionConsultationForm({ solution }: SolutionConsultationFormP
           {/* Left Column: Editorial Invitation & Contact Info */}
           <div className="lg:col-span-5 space-y-8">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wider font-tech uppercase mb-4">
-                <span className="w-2 h-2 rounded-full bg-brand-500" />
-                INITIATE COLLABORATION
+              <div className="flex items-center gap-3 mb-4">
+                <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+                <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
+                  INITIATE COLLABORATION
+                </span>
+                <div className="h-px w-10 sm:w-16 bg-neutral-200" />
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.12]">
-                LET&apos;S TALK ABOUT YOUR ARCHITECTURE.
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
+                LET&apos;S TALK ABOUT YOUR <span className="gradient-signature-text">ARCHITECTURE.</span>
               </h2>
-              <p className="mt-4 text-base text-neutral-600 leading-relaxed">
+              <p className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
                 Every breakthrough begins with a technical conversation. Tell us about your operational bottlenecks, product vision, or system integration goals.
               </p>
             </div>

@@ -33,10 +33,10 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 interface ProjectSpecimen {
   id: string;
   number: string;
-  badge: string;
+  badge: 'TECHNICAL DEMONSTRATION' | 'KAIROTRIX BUILD' | 'EXPERIMENT';
   title: string;
-  discipline: string;
-  invariant: string;
+  domain: string;
+  description: string;
   tech: string[];
   video: string;
   slug: string;
@@ -48,10 +48,11 @@ const SPECIMENS: ProjectSpecimen[] = [
     number: '01',
     badge: 'TECHNICAL DEMONSTRATION',
     title: 'Autonomous Operations Agent System',
-    discipline: 'AI Systems • Multi-Agent Orchestration',
-    invariant: 'Deterministic multi-agent execution with zero-hallucination guardrails.',
-    tech: ['Python', 'FastAPI', 'Agentic LLMs', 'PgVector'],
-    video: '/assets/videos/203987-923133879_medium.mp4',
+    domain: 'AI & Intelligent Systems',
+    description:
+      'An autonomous AI agent engineered to interpret business requests, query internal databases, and execute multi-step operational tasks with human approval guardrails.',
+    tech: ['Python', 'FastAPI', 'Agentic Workflows', 'PgVector'],
+    video: '/assets/videos/ai-assistant.mp4',
     slug: '/work/autonomous-operations-agent',
   },
   {
@@ -59,21 +60,23 @@ const SPECIMENS: ProjectSpecimen[] = [
     number: '02',
     badge: 'KAIROTRIX BUILD',
     title: 'Enterprise Semantic RAG Engine',
-    discipline: 'Data Architecture • Vector Retrieval',
-    invariant: 'Sub-second heterogeneous document indexing with mathematical citations.',
-    tech: ['Next.js 15', 'Pinecone', 'TypeScript', 'RAG'],
-    video: '/assets/videos/183108-870151713_medium.mp4',
+    domain: 'Knowledge Systems & RAG',
+    description:
+      'A secure enterprise document intelligence system that searches company manuals, contracts, and PDFs to deliver exact answers with verifiable source citations.',
+    tech: ['Next.js 15', 'TypeScript', 'Vector Retrieval', 'Hybrid Search'],
+    video: '/assets/videos/smart-search.mp4',
     slug: '/work/enterprise-semantic-rag',
   },
   {
     id: 'low-latency-telemetry',
     number: '03',
     badge: 'TECHNICAL DEMONSTRATION',
-    title: 'Low-Latency Telemetry & Analytics',
-    discipline: 'Software Engineering • Event Streaming',
-    invariant: 'Sub-50ms WebSocket live event consumption with automated anomaly detection.',
-    tech: ['Next.js App Router', 'WebSockets', 'ClickHouse'],
-    video: '/assets/videos/228908_medium.mp4',
+    title: 'Live Telemetry & Analytics Portal',
+    domain: 'Data & Business Intelligence',
+    description:
+      'A high-performance operational telemetry dashboard that streams live business activity, tracks system health, and alerts operators to anomalies in real time.',
+    tech: ['Next.js App Router', 'ClickHouse', 'Live WebSockets', 'Event Pipelines'],
+    video: '/assets/videos/live-dashboard.mp4',
     slug: '/work/real-time-telemetry-portal',
   },
   {
@@ -81,10 +84,11 @@ const SPECIMENS: ProjectSpecimen[] = [
     number: '04',
     badge: 'EXPERIMENT',
     title: 'Event-Driven Automation Bridge',
-    discipline: 'Automation • Distributed Systems',
-    invariant: 'Fault-tolerant webhook ingestion engine with dead-letter queues & idempotency.',
-    tech: ['Node.js', 'Redis', 'Webhooks', 'Zod Contracts'],
-    video: '/assets/videos/20260904-1034-07.4773812.mp4',
+    domain: 'Automation & Integration',
+    description:
+      'A resilient integration engine that processes incoming webhooks, validates data schemas, and coordinates background synchronization between third-party software tools.',
+    tech: ['Node.js', 'Redis', 'Webhook Routing', 'Schema Validation'],
+    video: '/assets/videos/automated-workflows.mp4',
     slug: '/work/event-driven-workflow-bridge',
   },
 ];
@@ -193,7 +197,7 @@ function RotatedCard({ project, index, progress, prefersReduced }: RotatedCardPr
         </div>
 
         <span className="font-mono text-xs text-neutral-200 hidden sm:inline-block drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-          {project.discipline}
+          {project.domain}
         </span>
       </div>
 
@@ -205,7 +209,7 @@ function RotatedCard({ project, index, progress, prefersReduced }: RotatedCardPr
           </h3>
 
           <p className="text-xs sm:text-sm text-neutral-200 font-normal leading-relaxed mb-4 line-clamp-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-            {project.invariant}
+            {project.description}
           </p>
 
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -288,7 +292,7 @@ export function WorkProof() {
               <div className="flex items-center gap-3 mb-2">
                 <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
                 <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                  04 // Proof & Capability
+                  04 // WORK & PROOF
                 </span>
                 <div className="h-px w-10 sm:w-16 bg-neutral-200 hidden sm:block" />
                 <span className="font-mono text-xs text-neutral-400">Technical Demonstrations & Builds</span>
@@ -302,7 +306,7 @@ export function WorkProof() {
                 <span className="gradient-signature-text">EXECUTION.</span>
               </h2>
               <p className="mt-1 text-xs sm:text-sm text-neutral-500 font-mono">
-                Capability demonstrated through real technical execution.
+                Real software systems, interactive demonstrations, and verified builds.
               </p>
             </div>
 
@@ -367,7 +371,7 @@ export function WorkProof() {
               </h3>
 
               <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed max-w-md mx-auto">
-                Every build demonstrated is backed by production source code, deterministic contracts, and observable telemetry.
+                Every project and demonstration is backed by production source code, explicit data schemas, and verifiable engineering architecture.
               </p>
 
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -393,7 +397,7 @@ export function WorkProof() {
                 <ShieldCheck className="w-3.5 h-3.5 text-brand-500" />
                 100% Client Code Ownership
               </span>
-              <span className="hidden sm:inline-block">Deterministic Guardrails: ACTIVE</span>
+              <span className="hidden sm:inline-block">Zero Synthetic Fabrication</span>
               <span>Next.js 15 • Python • ClickHouse</span>
             </div>
           </motion.div>

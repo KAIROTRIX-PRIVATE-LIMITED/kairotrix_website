@@ -49,7 +49,7 @@ const ROADMAP = [
 
 export function AboutFuture() {
   return (
-    <section className="w-full bg-neutral-0 py-20 lg:py-28 border-b border-neutral-200/80">
+    <section className="w-full bg-[#FAFAFC] py-20 lg:py-28 border-b border-neutral-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

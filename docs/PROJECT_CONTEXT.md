@@ -142,7 +142,7 @@ KAIROTRIX LOGO | Solutions | Work | Insights | About |     Let's Talk →
 
 - **Solutions** → mega menu with 6 categories
 - **Work** → dropdown: Projects, Experiments, Technical Demonstrations, Capabilities & Technology
-- **Insights** → dropdown: Articles / Blog, Case Studies, System Blueprints, Research & Whitepapers
+- **Insights** → Articles & Blog (Engineering Journal, Technical Perspectives & Architectural Breakdowns)
 - **About** → single page
 - **Let's Talk** → persistent primary CTA button (routes to Contact)
 

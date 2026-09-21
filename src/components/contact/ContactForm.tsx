@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, AlertCircle, Loader2, X } from 'lucide-react';
 
 const INTEREST_OPTIONS = [
   'AI & Intelligent Systems',
@@ -15,36 +15,73 @@ const INTEREST_OPTIONS = [
   'General Inquiry',
 ];
 
+// Map URL source/interest params to readable context labels
+function resolveIncomingContext(params: URLSearchParams): string | null {
+  const source = params.get('source');
+  const interest = params.get('interest') || params.get('service');
+  const solution = params.get('solution');
+
+  if (solution) {
+    // Map solution slugs to readable names
+    const solutionMap: Record<string, string> = {
+      'ai-intelligent-systems': 'AI & Intelligent Systems',
+      'software-product-engineering': 'Software & Product Engineering',
+      'automation-digital-operations': 'Automation & Operations',
+      'digital-transformation': 'Digital Transformation',
+      'data-business-intelligence': 'Data & Business Intelligence',
+      'technology-integration': 'Technology Integration',
+    };
+    return solutionMap[solution] || null;
+  }
+
+  if (interest) {
+    const lower = interest.toLowerCase();
+    if (lower.includes('ai') || lower.includes('agent')) return 'AI & Intelligent Systems';
+    if (lower.includes('software') || lower.includes('work') || lower.includes('build'))
+      return 'Software & Product Engineering';
+    if (lower.includes('auto') || lower.includes('workflow')) return 'Automation & Operations';
+    if (lower.includes('data') || lower.includes('bi')) return 'Data & Business Intelligence';
+    if (lower.includes('transform')) return 'Digital Transformation';
+    if (lower.includes('integration') || lower.includes('api')) return 'Technology Integration';
+  }
+
+  // Source pages don't auto-select an interest but could show contextual text
+  if (source) {
+    const sourceLabels: Record<string, string> = {
+      'solutions-hub': 'Solutions',
+      'about': 'About KAIROTRIX',
+      'insights': 'Articles & Insights',
+    };
+    return sourceLabels[source] ? `Arrived from: ${sourceLabels[source]}` : null;
+  }
+
+  return null;
+}
+
 export function ContactForm() {
   const searchParams = useSearchParams();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');
   const [interest, setInterest] = useState<string>('General Inquiry');
   const [message, setMessage] = useState('');
+  const [incomingContext, setIncomingContext] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Auto-detect interest from URL params (?interest=... or ?service=...)
+  // Auto-detect interest and context from URL params
   useEffect(() => {
-    const urlInterest = searchParams.get('interest') || searchParams.get('service');
-    if (urlInterest) {
-      const lower = urlInterest.toLowerCase();
-      if (lower.includes('ai') || lower.includes('agent')) {
-        setInterest('AI & Intelligent Systems');
-      } else if (lower.includes('software') || lower.includes('work') || lower.includes('build')) {
-        setInterest('Software & Product Engineering');
-      } else if (lower.includes('auto') || lower.includes('workflow')) {
-        setInterest('Automation & Operations');
-      } else if (lower.includes('data') || lower.includes('bi')) {
-        setInterest('Data & Business Intelligence');
-      } else if (lower.includes('transform')) {
-        setInterest('Digital Transformation');
-      } else if (lower.includes('integration') || lower.includes('api')) {
-        setInterest('Technology Integration');
+    const context = resolveIncomingContext(searchParams);
+    if (context) {
+      // If context maps to an interest option, pre-select it
+      const matchedInterest = INTEREST_OPTIONS.find((opt) => context === opt);
+      if (matchedInterest) {
+        setInterest(matchedInterest);
       }
+      setIncomingContext(context);
     }
   }, [searchParams]);
 
@@ -57,7 +94,7 @@ export function ContactForm() {
       return;
     }
     if (!email.trim() || !email.includes('@')) {
-      setErrorMessage('Please provide a valid work email address.');
+      setErrorMessage('Please provide a valid email address.');
       return;
     }
     if (!message.trim()) {
@@ -74,6 +111,7 @@ export function ContactForm() {
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
+          company: company.trim() || undefined,
           interest,
           message: message.trim(),
         }),
@@ -90,7 +128,7 @@ export function ContactForm() {
       if (err instanceof Error) {
         setErrorMessage(err.message);
       } else {
-        setErrorMessage('An unexpected error occurred. Please try again.');
+        setErrorMessage('Something went wrong while sending your message. Please try again or email us directly at connect@kairotrix.com.');
       }
     } finally {
       setIsSubmitting(false);
@@ -100,13 +138,14 @@ export function ContactForm() {
   const handleReset = () => {
     setName('');
     setEmail('');
+    setCompany('');
     setMessage('');
     setIsSuccess(false);
     setErrorMessage(null);
   };
 
   return (
-    <div className="w-full bg-neutral-0 rounded-3xl border border-neutral-200/90 p-6 sm:p-8 lg:p-10 shadow-lg">
+    <div className="w-full bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-8 lg:p-10 shadow-lg">
       <AnimatePresence mode="wait">
         {isSuccess ? (
           <motion.div
@@ -122,19 +161,19 @@ export function ContactForm() {
             </div>
 
             <h3 className="text-2xl sm:text-3xl font-bold text-neutral-950 mb-3">
-              Message Received.
+              Thanks — message received.
             </h3>
 
             <p className="text-sm sm:text-base text-neutral-600 max-w-md mx-auto leading-relaxed mb-8">
-              Thank you, <span className="font-semibold text-neutral-900">{name}</span>. We will review your inquiry and follow up directly at{' '}
-              <span className="font-semibold text-neutral-900">{email}</span> within 24 hours.
+              We&apos;ll review what you&apos;ve shared and aim to follow up at{' '}
+              <span className="font-semibold text-neutral-900">{email}</span> within one business day.
             </p>
 
             <button
               onClick={handleReset}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-tech text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
             >
-              <span>Send Another Note</span>
+              <span>Send Another Message</span>
             </button>
           </motion.div>
         ) : (
@@ -148,12 +187,29 @@ export function ContactForm() {
           >
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-neutral-950 mb-1">
-                Start a Direct Conversation
+                Start a Conversation
               </h2>
               <p className="text-xs sm:text-sm text-neutral-500 font-normal">
                 No lengthy questionnaires — just the essentials to get in touch.
               </p>
             </div>
+
+            {/* Incoming Context Banner */}
+            {incomingContext && !INTEREST_OPTIONS.includes(incomingContext) && (
+              <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-brand-50/60 border border-brand-200/50 text-xs">
+                <span className="font-tech font-semibold text-brand-700 uppercase tracking-wider">
+                  {incomingContext}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIncomingContext(null)}
+                  className="p-1 rounded-lg hover:bg-brand-100 text-brand-500 hover:text-brand-700 transition-colors cursor-pointer"
+                  aria-label="Dismiss context"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
 
             {errorMessage && (
               <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2.5">
@@ -162,20 +218,20 @@ export function ContactForm() {
               </div>
             )}
 
-            {/* Name & Email (2 Columns on Tablet/Desktop) */}
+            {/* Name, Email & Company */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label
                   htmlFor="contact-name"
                   className="block font-tech text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-2"
                 >
-                  Your Name <span className="text-brand-600">*</span>
+                  Name <span className="text-brand-600">*</span>
                 </label>
                 <input
                   id="contact-name"
                   type="text"
                   required
-                  placeholder="e.g. Alex Mercer"
+                  placeholder="Your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200/90 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
@@ -187,13 +243,13 @@ export function ContactForm() {
                   htmlFor="contact-email"
                   className="block font-tech text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-2"
                 >
-                  Work Email <span className="text-brand-600">*</span>
+                  Email <span className="text-brand-600">*</span>
                 </label>
                 <input
                   id="contact-email"
                   type="email"
                   required
-                  placeholder="alex@company.com"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200/90 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
@@ -201,10 +257,28 @@ export function ContactForm() {
               </div>
             </div>
 
+            {/* Optional Company */}
+            <div>
+              <label
+                htmlFor="contact-company"
+                className="block font-tech text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-2"
+              >
+                Business / Company <span className="text-neutral-400 font-normal">(Optional)</span>
+              </label>
+              <input
+                id="contact-company"
+                type="text"
+                placeholder="Company name"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200/90 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
+              />
+            </div>
+
             {/* Area of Interest Chips */}
             <div>
               <label className="block font-tech text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-2">
-                What are you looking to build or solve? <span className="text-neutral-400 font-normal">(Optional)</span>
+                What would you like to discuss? <span className="text-neutral-400 font-normal">(Optional)</span>
               </label>
               <div className="flex flex-wrap gap-2">
                 {INTEREST_OPTIONS.map((opt) => {
@@ -239,7 +313,7 @@ export function ContactForm() {
                 id="contact-message"
                 required
                 rows={4}
-                placeholder="Briefly describe your challenge, workflow bottleneck, or what you'd like to build..."
+                placeholder="Briefly describe what you're looking to build, improve, or solve..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200/90 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
@@ -256,7 +330,7 @@ export function ContactForm() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Sending Inquiry...</span>
+                    <span>Sending...</span>
                   </>
                 ) : (
                   <>
@@ -266,7 +340,7 @@ export function ContactForm() {
                 )}
               </button>
               <p className="text-[11px] text-neutral-500 mt-3 font-normal">
-                Direct engineer review • Response within 24 hours • 100% confidential
+                Every inquiry is reviewed • We aim to respond within one business day
               </p>
             </div>
           </motion.form>

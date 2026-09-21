@@ -82,11 +82,14 @@ export function WorkCapabilities() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wider font-tech uppercase mb-4">
-            <span className="w-2 h-2 rounded-full bg-brand-500" />
-            04.2 // ARCHITECTURAL STANDARDS
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
+            <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
+              04.2 // ARCHITECTURAL STANDARDS
+            </span>
+            <span className="h-px w-10 sm:w-16 bg-neutral-200" aria-hidden="true" />
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 uppercase leading-[1.1]">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
             ENGINEERING <span className="gradient-signature-text">INVARIANTS.</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
@@ -105,7 +108,7 @@ export function WorkCapabilities() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="p-6 sm:p-7 rounded-2xl bg-neutral-0 border border-neutral-200/80 hover:border-brand-500/40 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+                className="p-6 sm:p-7 rounded-2xl bg-white border border-neutral-200/80 hover:border-brand-500/40 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">

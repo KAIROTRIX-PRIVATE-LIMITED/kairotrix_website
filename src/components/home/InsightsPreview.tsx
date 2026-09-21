@@ -53,7 +53,7 @@ const INSIGHTS: InsightArticle[] = [
     date: 'Sep 2026',
     tags: ['Autonomous Agents', 'Schema Contracts', 'Tool-Use'],
     slug: '/insights/deterministic-ai-agents',
-    videoSrc: '/assets/videos/183108-870151713_medium.mp4',
+    videoSrc: '/assets/videos/smart-search.mp4',
     icon: Cpu,
   },
   {
@@ -66,7 +66,7 @@ const INSIGHTS: InsightArticle[] = [
     date: 'Aug 2026',
     tags: ['Architecture', 'ROI', 'Software Strategy'],
     slug: '/insights/problem-first-vs-saas-sprawl',
-    videoSrc: '/assets/videos/203987-923133879_medium.mp4',
+    videoSrc: '/assets/videos/ai-assistant.mp4',
     icon: Sparkles,
   },
   {
@@ -79,7 +79,7 @@ const INSIGHTS: InsightArticle[] = [
     date: 'Aug 2026',
     tags: ['Next.js 15', 'WebSockets', 'Telemetry'],
     slug: '/insights/sub-50ms-telemetry-nextjs',
-    videoSrc: '/assets/videos/System_automating_tasks_and_data_202609041239.mp4',
+    videoSrc: '/assets/videos/automated-workflows.mp4',
     icon: Activity,
   },
   {
@@ -92,7 +92,7 @@ const INSIGHTS: InsightArticle[] = [
     date: 'Jul 2026',
     tags: ['Digital Transformation', 'Webhooks', 'ERP Sync'],
     slug: '/insights/legacy-spreadsheets-to-event-bridge',
-    videoSrc: '/assets/videos/228908_medium.mp4',
+    videoSrc: '/assets/videos/live-dashboard.mp4',
     icon: Layers,
   },
   {
@@ -105,16 +105,16 @@ const INSIGHTS: InsightArticle[] = [
     date: 'Jun 2026',
     tags: ['Vector DB', 'RAG Retrieval', 'Benchmarks'],
     slug: '/insights/rag-vector-vs-hybrid-benchmarks',
-    videoSrc: '/assets/videos/327171_medium_202609040105.mp4',
+    videoSrc: '/assets/videos/fast-analytics.mp4',
     icon: BookOpen,
   },
 ];
 
 const TOPIC_TAGS = [
-  'Autonomous Agents',
-  'Sub-50ms Telemetry',
-  'Event-Driven Bridges',
-  'RAG Benchmarks',
+  'AI & Autonomous Agents',
+  'Software Architecture',
+  'Workflow Automation',
+  'Data & Telemetry',
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -158,7 +158,8 @@ function InsightCard({
   };
 
   return (
-    <div
+    <article
+      aria-labelledby={`insight-title-${article.id}`}
       onClick={() => {
         if (!isActive) onSelect();
       }}
@@ -226,7 +227,10 @@ function InsightCard({
           </div>
 
           {/* Main Title */}
-          <h3 className="font-display text-base sm:text-lg lg:text-xl font-bold text-neutral-950 group-hover:text-brand-600 transition-colors duration-200 line-clamp-2 leading-snug">
+          <h3
+            id={`insight-title-${article.id}`}
+            className="font-display text-base sm:text-lg lg:text-xl font-bold text-neutral-950 group-hover:text-brand-600 transition-colors duration-200 line-clamp-2 leading-snug"
+          >
             {article.title}
           </h3>
 
@@ -239,7 +243,7 @@ function InsightCard({
         {/* Action Link Row */}
         <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
           <span className="text-[10px] font-mono tracking-wider uppercase text-neutral-400">
-            KAIROTRIX // ARCHIVE
+            KAIROTRIX // BLOG
           </span>
 
           <Link
@@ -247,12 +251,12 @@ function InsightCard({
             onClick={(e) => e.stopPropagation()}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 group-hover:text-brand-700 transition-colors"
           >
-            <span>Read Blueprint</span>
+            <span>Read Article</span>
             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -358,6 +362,33 @@ export function InsightsPreview() {
       aria-labelledby="insights-preview-heading"
       className="relative w-full bg-[#FAFAFC] bg-[radial-gradient(ellipse_80%_60%_at_100%_0%,rgba(147,51,234,0.04),transparent_70%)] py-16 sm:py-24 lg:py-28 border-t border-neutral-200/80 overflow-hidden"
     >
+      {/* Schema.org Structured Data for Blog & Article Archiving */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Blog',
+            name: 'KAIROTRIX Engineering Blog & Articles',
+            description:
+              'Technical articles, architectural breakdowns, and engineering guides from KAIROTRIX engineers.',
+            blogPost: INSIGHTS.map((article, idx) => ({
+              '@type': 'BlogPosting',
+              position: idx + 1,
+              headline: article.title,
+              description: article.excerpt,
+              datePublished: article.date,
+              url: `https://kairotrix.com${article.slug}`,
+            })),
+          }),
+        }}
+      />
+
+      {/* Screen Reader & AEO/GEO Semantic Narrative Summary */}
+      <p className="sr-only">
+        Read KAIROTRIX technical articles and engineering blog posts covering autonomous AI agents, bespoke software strategy, real-time telemetry pipelines, and enterprise document search.
+      </p>
+
       {/* Background Architectural Grid Pattern */}
       <div
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#00000004_1px,transparent_1px),linear-gradient(to_bottom,#00000004_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
@@ -385,7 +416,7 @@ export function InsightsPreview() {
               <div className="flex items-center gap-3 mb-5">
                 <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
                 <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                  06 // Insights & Perspectives
+                  06 // ARTICLES &amp; BLOG
                 </span>
                 <div className="h-px w-10 sm:w-16 bg-neutral-200" />
               </div>
@@ -395,13 +426,13 @@ export function InsightsPreview() {
                 id="insights-preview-heading"
                 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]"
               >
-                ENGINEERING IN{' '}
-                <span className="gradient-signature-text">PUBLIC.</span>
+                ARTICLES &amp;{' '}
+                <span className="gradient-signature-text">PERSPECTIVES.</span>
               </h2>
 
               {/* Narrative Paragraph */}
               <p className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
-                Thinking, system blueprints, and empirical benchmarks. We dissect production breakthroughs and document battle-tested architectural trade-offs.
+                Technical articles, architectural breakdowns, and engineering guides. We write about how we build real software systems, automate complex workflows, and solve production bottlenecks.
               </p>
 
               {/* Topic Filters / Discipline Tags */}
@@ -426,7 +457,7 @@ export function InsightsPreview() {
                     {String(currentIndex + 1).padStart(2, '0')}
                   </span>
                   <span className="text-xs tracking-wider text-neutral-400 uppercase">
-                    / {String(INSIGHTS.length).padStart(2, '0')} SPECIMENS
+                    / {String(INSIGHTS.length).padStart(2, '0')} ARTICLES
                   </span>
                 </div>
 
@@ -469,10 +500,10 @@ export function InsightsPreview() {
               >
                 <div className="flex flex-col text-left">
                   <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">
-                    Comprehensive Library
+                    Articles &amp; Engineering Blog
                   </span>
                   <span className="font-display font-bold text-neutral-950 group-hover:text-brand-600 transition-colors">
-                    Explore All Insights & Blueprints
+                    Explore All Articles &amp; Guides
                   </span>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-neutral-100 group-hover:bg-brand-soft/50 flex items-center justify-center transition-colors">

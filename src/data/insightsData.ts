@@ -2,10 +2,28 @@ export type InsightCategory = 'all' | 'blueprint' | 'case-study' | 'article' | '
 
 export type InsightBadge =
   | 'SYSTEM BLUEPRINT'
-  | 'CASE STUDY'
-  | 'TECHNICAL DEEP DIVE'
-  | 'RESEARCH'
-  | 'PERSPECTIVE';
+  | 'ARCHITECTURE BREAKDOWN'
+  | 'EXPERIMENT'
+  | 'BUILD NOTE';
+
+export interface TechCategory {
+  id: string;
+  label: string;
+  description?: string;
+}
+
+export const TECH_CATEGORIES: TechCategory[] = [
+  { id: 'all', label: 'All Articles' },
+  { id: 'ai-agents', label: 'AI & Agents' },
+  { id: 'software-engineering', label: 'Software Engineering' },
+  { id: 'automation', label: 'Automation' },
+  { id: 'web-digital', label: 'Web & Digital' },
+  { id: 'data-intelligence', label: 'Data & Intelligence' },
+  { id: 'architecture-integration', label: 'Architecture & Integration' },
+];
+
+/** @deprecated Use TECH_CATEGORIES instead */
+export const INSIGHT_L2_SERVICES = TECH_CATEGORIES;
 
 export interface InsightSpecimen {
   id: string;
@@ -17,6 +35,10 @@ export interface InsightSpecimen {
   badge: InsightBadge;
   disciplineId: string;
   disciplineName: string;
+  techCategoryId: string;
+  techCategoryLabel: string;
+  serviceId?: string;
+  serviceName?: string;
   date: string;
   readTime: string;
   author: string;
@@ -37,6 +59,8 @@ export interface InsightSpecimen {
     outcome: string;
   };
   keySections: string[];
+  content?: string;
+  youtubeUrl?: string;
 }
 
 export const INSIGHT_CATEGORIES = [
@@ -69,25 +93,29 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
     badge: 'SYSTEM BLUEPRINT',
     disciplineId: 'ai-intelligent-systems',
     disciplineName: 'AI & Intelligent Systems',
+    techCategoryId: 'ai-agents',
+    techCategoryLabel: 'AI & Agents',
+    serviceId: 'ai-agents',
+    serviceName: 'AI Agent Development',
     date: 'Sep 2026',
     readTime: '8 min read',
-    author: 'KAIROTRIX Systems Architecture Lab',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'Core Systems & Agent Runtime',
     tags: ['Autonomous Agents', 'Schema Contracts', 'Tool-Use Guardrails', 'State Machines'],
     featured: true,
-    videoSrc: '/assets/videos/183108-870151713_medium.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/smart-search.mp4',
+    image: '/assets/images/service/SERVICE01.png',
     keyTakeaway:
-      'Strict Pydantic JSON schemas and state machine checkpoints eliminate 99.4% of stochastic agent drifts before external execution.',
+      'Strict Pydantic JSON schemas and state machine checkpoints eliminate the vast majority of agent execution drift before external actions are dispatched.',
     empiricalMetric: {
-      label: 'Agent Drift Rate',
-      value: '< 0.06%',
+      label: 'Agent Execution Reliability',
+      value: 'High Fidelity',
     },
     architectureEquation: {
       left: 'Formal JSON Schema Contracts',
       operator: '+',
       right: 'Deterministic State Machine FSM',
-      outcome: 'Zero-Hallucination Enterprise Action Runtime',
+      outcome: 'Controlled Enterprise Action Runtime',
     },
     keySections: [
       'The Fallacy of Unbounded LLM Agency',
@@ -100,32 +128,36 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
   {
     id: 'declarative-automation-bridge',
     slug: 'declarative-automation-bridge',
-    title: 'Zero-Loss Event-Driven Automation Bridge: Idempotent Webhook Architecture',
-    subtitle: 'Guaranteed Exactly-Once Processing Across Heterogeneous SaaS & Cloud Platforms',
+    title: 'Event-Driven Automation Bridge: Idempotent Webhook Architecture',
+    subtitle: 'Reliable Event Ingestion Across Heterogeneous SaaS & Cloud Platforms',
     excerpt:
       'A deep architectural specification on designing fault-tolerant webhook ingestion pipelines featuring cryptographic payload validation, distributed Redis locks, and exponential backoff retry buffers.',
     category: 'blueprint',
     badge: 'SYSTEM BLUEPRINT',
     disciplineId: 'automation-digital-operations',
     disciplineName: 'Automation & Operations',
+    techCategoryId: 'automation',
+    techCategoryLabel: 'Automation',
+    serviceId: 'workflows',
+    serviceName: 'Workflow Orchestration',
     date: 'Aug 2026',
     readTime: '10 min read',
-    author: 'KAIROTRIX Infrastructure Engineering',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'Distributed Systems & Integrations',
     tags: ['Webhook Ingestion', 'Redis Locks', 'Dead-Letter Queues', 'Event Sourcing'],
-    videoSrc: '/assets/videos/System_automating_tasks_and_data_202609041239.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/automated-workflows.mp4',
+    image: '/assets/images/service/SERVICE03.png',
     keyTakeaway:
       'Idempotency keys paired with dead-letter queue buffering prevent duplicate executions during upstream third-party API outages.',
     empiricalMetric: {
-      label: 'Event Loss Ratio',
-      value: '0.00%',
+      label: 'Pipeline Reliability',
+      value: 'Fault-Tolerant',
     },
     architectureEquation: {
       left: 'HMAC Webhook Ingestion',
       operator: '+',
       right: 'Distributed Redis Mutex Queue',
-      outcome: 'Idempotent Exactly-Once Delivery',
+      outcome: 'Reliable Deduplicated Delivery',
     },
     keySections: [
       'The Unreliability of Commercial Webhooks',
@@ -141,18 +173,22 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
     title: 'From Fragile Spreadsheets to an Event-Driven Operations Engine: A Technical Retrospective',
     subtitle: 'How We Modernized Multi-Department Order Tracking into Automated Real-Time Pipelines',
     excerpt:
-      'The architectural journey from manual, formula-corrupted spreadsheets into an event-driven automation engine connecting logistics, ERP, and executive dashboards with zero downtime.',
+      'The architectural journey from manual, formula-corrupted spreadsheets into an event-driven automation engine connecting logistics, ERP, and executive dashboards with minimal disruption.',
     category: 'case-study',
-    badge: 'CASE STUDY',
+    badge: 'BUILD NOTE',
     disciplineId: 'digital-transformation',
     disciplineName: 'Digital Transformation',
+    techCategoryId: 'architecture-integration',
+    techCategoryLabel: 'Architecture & Integration',
+    serviceId: 'process-digitization',
+    serviceName: 'System Modernization & Migration',
     date: 'Jul 2026',
     readTime: '9 min read',
-    author: 'KAIROTRIX Engineering',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'Platform Engineering Lead',
     tags: ['Digital Transformation', 'Event Driven', 'ERP Sync', 'Legacy Migration'],
-    videoSrc: '/assets/videos/228908_medium.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/live-dashboard.mp4',
+    image: '/assets/images/service/SERVICE04.png',
     keyTakeaway:
       'Replaced 14 disconnected spreadsheets with an immutable relational event log, saving 34 manual reconciliation hours every week.',
     empiricalMetric: {
@@ -177,31 +213,35 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
     id: 'document-automation-human-in-loop',
     slug: 'document-automation-human-in-loop',
     title: 'Modernizing High-Volume Document Workflows with Multi-Modal AI & Confidence Escalation',
-    subtitle: 'Automating 10,000+ Monthly Invoices with Deterministic Audit Logging & Zero Data Leakage',
+    subtitle: 'Processing High-Volume Monthly Invoices with Deterministic Audit Logging & Privacy Controls',
     excerpt:
-      'A technical retrospective on building a multi-modal document extraction pipeline that parses unstructured PDF invoices into structured database records with automated human-in-the-loop escalation.',
+      'A technical breakdown of building a multi-modal document extraction pipeline that parses unstructured PDF invoices into structured database records with automated human-in-the-loop escalation.',
     category: 'case-study',
-    badge: 'CASE STUDY',
+    badge: 'ARCHITECTURE BREAKDOWN',
     disciplineId: 'technology-integration',
     disciplineName: 'Technology Integration',
+    techCategoryId: 'automation',
+    techCategoryLabel: 'Automation',
+    serviceId: 'document-automation',
+    serviceName: 'Document & Operations Automation',
     date: 'Jun 2026',
     readTime: '8 min read',
-    author: 'KAIROTRIX Solutions Team',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'Applied AI & Automation',
     tags: ['Document Extraction', 'Multi-Modal AI', 'Human-in-the-Loop', 'Accounting Sync'],
-    videoSrc: '/assets/videos/20260906-1259-43.3976043.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/software-service.mp4',
+    image: '/assets/images/service/SERVICE06.png',
     keyTakeaway:
-      'Confidence-threshold routing automatically triggers manual review when character extraction confidence drops below 98.5%.',
+      'Confidence-threshold routing automatically triggers manual review when character extraction confidence drops below acceptable tolerances.',
     empiricalMetric: {
       label: 'Manual Review Redirection',
-      value: '82% Reduction',
+      value: 'Substantial Reduction',
     },
     architectureEquation: {
       left: 'Vision-LLM OCR Extraction',
       operator: '+',
       right: 'Confidence-Scored Review Queue',
-      outcome: 'Zero-Error Financial Record Ingestion',
+      outcome: 'Validated Financial Record Ingestion',
     },
     keySections: [
       'Document Format Variances & OCR Pitfalls',
@@ -214,32 +254,36 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
   {
     id: 'sub-50ms-telemetry-nextjs',
     slug: 'sub-50ms-telemetry-nextjs',
-    title: 'Engineering Sub-50ms Real-Time Event Telemetry with Next.js 15 & WebSockets',
-    subtitle: 'High-Throughput Ingestion Pipelines and Zero-Reflow Client Canvas Rendering',
+    title: 'Engineering Low-Latency Real-Time Event Telemetry with Next.js 15 & WebSockets',
+    subtitle: 'High-Throughput Ingestion Pipelines and Client Canvas Rendering',
     excerpt:
       'How to ingest and render thousands of high-frequency events per second with memory-efficient client canvas pipelines and WebSocket event streams without blocking the main React render cycle.',
     category: 'article',
-    badge: 'TECHNICAL DEEP DIVE',
+    badge: 'ARCHITECTURE BREAKDOWN',
     disciplineId: 'software-product-engineering',
     disciplineName: 'Software & Product Engineering',
+    techCategoryId: 'software-engineering',
+    techCategoryLabel: 'Software Engineering',
+    serviceId: 'web-apps',
+    serviceName: 'Web Application Development',
     date: 'Aug 2026',
     readTime: '7 min read',
-    author: 'KAIROTRIX Frontend Systems',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'UI/UX & Performance Engineering',
     tags: ['Next.js 15', 'WebSockets', 'Canvas 2D', 'High Throughput'],
-    videoSrc: '/assets/videos/20260905-1049-35.7483547.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/fast-analytics.mp4',
+    image: '/assets/images/service/SERVICE02.png',
     keyTakeaway:
-      'Bypassing React state reconciliation for high-frequency chart streams via direct offscreen Canvas 2D buffers maintains a constant 60 FPS.',
+      'Bypassing React state reconciliation for high-frequency chart streams via direct offscreen Canvas 2D buffers maintains smooth frame rates.',
     empiricalMetric: {
-      label: 'Rendering Frame Rate',
-      value: 'Solid 60 FPS',
+      label: 'Rendering Performance',
+      value: 'Smooth 60 FPS',
     },
     architectureEquation: {
       left: 'Raw WebSocket Binary Framing',
       operator: '+',
       right: 'Offscreen Canvas Buffer Rendering',
-      outcome: 'Zero React DOM Reflow Jitter',
+      outcome: 'Low Jitter Canvas Updates',
     },
     keySections: [
       'The Bottleneck of React Virtual DOM in Telemetry',
@@ -257,27 +301,31 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
     excerpt:
       'A critical breakdown of enterprise software sprawl and how purpose-built bespoke software delivers significantly higher 5-year operational ROI, total IP ownership, and zero monthly per-seat licensing penalties.',
     category: 'article',
-    badge: 'PERSPECTIVE',
+    badge: 'BUILD NOTE',
     disciplineId: 'software-product-engineering',
     disciplineName: 'Software & Product Engineering',
+    techCategoryId: 'software-engineering',
+    techCategoryLabel: 'Software Engineering',
+    serviceId: 'custom-software',
+    serviceName: 'Custom Software Development',
     date: 'Aug 2026',
     readTime: '6 min read',
-    author: 'KAIROTRIX Strategy & Architecture',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'Chief Technology Partner',
     tags: ['Software Strategy', 'TCO Analysis', 'Custom Software', 'ROI Architecture'],
-    videoSrc: '/assets/videos/203987-923133879_medium.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/ai-assistant.mp4',
+    image: '/assets/images/service/SERVICE02.png',
     keyTakeaway:
       'Bespoke systems pay for themselves within 14–18 months by eliminating recurring seat licenses and custom integration maintenance fees.',
     empiricalMetric: {
-      label: '5-Year TCO Savings',
-      value: '42%–68%',
+      label: '5-Year Cost Profile',
+      value: 'Predictable TCO',
     },
     architectureEquation: {
       left: 'Zero Recurring Seat Penalties',
       operator: '+',
       right: '100% Owned Custom Architecture',
-      outcome: 'Uncapped Enterprise Valuation Lift',
+      outcome: 'Long-Term Asset Ownership',
     },
     keySections: [
       'The Hidden Tax of Enterprise SaaS Proliferation',
@@ -290,32 +338,36 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
   {
     id: 'rag-vector-vs-hybrid-benchmarks',
     slug: 'rag-vector-vs-hybrid-benchmarks',
-    title: 'Empirical Benchmarks: Hybrid Dense+Sparse Retrieval vs Pure Vector Search in Production RAG',
-    subtitle: 'Comparing Recall@10, P99 Query Latency, and Ingestion Overhead Across 1.2M Technical Chunks',
+    title: 'Benchmarking Retrieval Approaches: Hybrid Dense+Sparse Retrieval vs Pure Vector Search in Production RAG',
+    subtitle: 'Comparing Recall@10, Latency, and Ingestion Overhead Across Technical Documentation',
     excerpt:
-      'We benchmarked BM25 keyword matching combined with dense vector embeddings across 1.2 million technical engineering documentation chunks to evaluate retrieval precision, recall, and infrastructure costs.',
+      'We benchmarked BM25 keyword matching combined with dense vector embeddings across extensive technical documentation chunks to evaluate retrieval precision, recall, and infrastructure costs.',
     category: 'research',
-    badge: 'RESEARCH',
+    badge: 'EXPERIMENT',
     disciplineId: 'data-business-intelligence',
     disciplineName: 'Data & BI',
+    techCategoryId: 'ai-agents',
+    techCategoryLabel: 'AI & Agents',
+    serviceId: 'knowledge-systems',
+    serviceName: 'AI Knowledge Systems & RAG',
     date: 'Jul 2026',
     readTime: '11 min read',
-    author: 'KAIROTRIX Applied AI Lab',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'Information Retrieval & Data Science',
     tags: ['Hybrid Search', 'Dense Vector Embeddings', 'BM25', 'RAG Benchmarks'],
-    videoSrc: '/assets/videos/327171_medium.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/data-sync.mp4',
+    image: '/assets/images/service/SERVICE05.png',
     keyTakeaway:
-      'Reciprocal Rank Fusion (RRF) combining dense cosine distance and sparse BM25 scores lifted domain-specific retrieval recall from 78.4% to 94.2%.',
+      'Reciprocal Rank Fusion (RRF) combining dense cosine distance and sparse BM25 scores significantly lifted domain-specific retrieval recall over pure semantic matching.',
     empiricalMetric: {
-      label: 'Domain Recall@10',
-      value: '94.2%',
+      label: 'Retrieval Accuracy',
+      value: 'Substantial Precision Lift',
     },
     architectureEquation: {
       left: 'Dense Semantic Vector Search',
       operator: '+',
       right: 'Sparse BM25 Keyword Filter',
-      outcome: 'Sub-30ms Precision Information Retrieval',
+      outcome: 'High-Precision Information Retrieval',
     },
     keySections: [
       'The Limitations of Pure Cosine Similarity in Technical Domains',
@@ -328,32 +380,36 @@ export const INSIGHT_SPECIMENS: InsightSpecimen[] = [
   {
     id: 'llm-context-caching-benchmarks',
     slug: 'llm-context-caching-benchmarks',
-    title: 'KV-Cache Retention & Speculative Decoding in High-Concurrency Agent Runtime Systems',
-    subtitle: 'Measuring TTFT Reduction and Token Cost Amortization in Multi-Turn Multi-Agent Contexts',
+    title: 'KV-Cache Retention & Prompt Stability in Multi-Agent Runtime Systems',
+    subtitle: 'Measuring TTFT Reduction and Token Cost Amortization in Multi-Turn Reasoning Contexts',
     excerpt:
-      'An empirical whitepaper evaluating KV-cache hit rates, prefix prompt stability, and speculative token decoding across high-concurrency multi-agent runtimes serving thousands of parallel reasoning sessions.',
+      'An empirical study evaluating KV-cache hit rates, prefix prompt stability, and speculative token decoding across high-concurrency multi-agent runtimes serving parallel reasoning sessions.',
     category: 'research',
-    badge: 'RESEARCH',
+    badge: 'EXPERIMENT',
     disciplineId: 'ai-intelligent-systems',
     disciplineName: 'AI & Intelligent Systems',
+    techCategoryId: 'ai-agents',
+    techCategoryLabel: 'AI & Agents',
+    serviceId: 'genai-ml',
+    serviceName: 'Generative AI & ML',
     date: 'Jun 2026',
     readTime: '12 min read',
-    author: 'KAIROTRIX Systems Architecture Lab',
+    author: 'KAIROTRIX ENGINEERING',
     authorRole: 'LLM Runtime & Inference',
     tags: ['KV Caching', 'Speculative Decoding', 'Inference Optimization', 'Cost Amortization'],
-    videoSrc: '/assets/videos/20260906-0716-14.5324161.mp4',
-    image: '/images/solutions/hero-3d.png',
+    videoSrc: '/assets/videos/ai-service.mp4',
+    image: '/assets/images/service/SERVICE01.png',
     keyTakeaway:
-      'Static system prompt prefix isolation unlocked a 76% KV-cache hit rate, reducing time-to-first-token (TTFT) by 3.8x.',
+      'Static system prompt prefix isolation substantially improved KV-cache hit rates, reducing time-to-first-token (TTFT) across multi-turn trajectories.',
     empiricalMetric: {
-      label: 'TTFT Improvement',
-      value: '3.8x Faster',
+      label: 'Response Latency',
+      value: 'Accelerated TTFT',
     },
     architectureEquation: {
       left: 'Deterministic Static Prompt Prefixes',
       operator: '+',
       right: 'KV-Cache Memory Layer',
-      outcome: '76% Amortized Token Cost Reduction',
+      outcome: 'Amortized Token Cost Reduction',
     },
     keySections: [
       'The Cost Equation of Multi-Turn Agent Trajectories',

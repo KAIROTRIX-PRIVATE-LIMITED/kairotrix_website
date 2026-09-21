@@ -243,69 +243,18 @@ const SOLUTION_CATEGORIES: SolutionCategory[] = [
   },
 ];
 
-const WORK_ITEMS = [
-  {
-    title: 'Projects',
-    description: 'Production software builds & deployed systems',
-    href: '/work#projects',
-    icon: FolderGit2,
-  },
-  {
-    title: 'Experiments',
-    description: 'R&D exploratory prototypes & advanced AI models',
-    href: '/work#experiments',
-    icon: FlaskConical,
-  },
-  {
-    title: 'Technical Demonstrations',
-    description: 'Interactive live proof of engineering & UI capability',
-    href: '/work#demos',
-    icon: Sparkles,
-  },
-  {
-    title: 'Capabilities & Technology',
-    description: 'Architectural standards, engineering depth & modern tech stack',
-    href: '/work#capabilities',
-    icon: Terminal,
-  },
-];
-
-const INSIGHTS_ITEMS = [
-  {
-    title: 'Articles / Blog',
-    description: 'Technical essays, AI insights & software engineering commentary',
-    href: '/insights#articles',
-    icon: FileText,
-  },
-  {
-    title: 'Case Studies',
-    description: 'System architecture breakdowns & technical implementation blueprints',
-    href: '/insights#case-studies',
-    icon: BookOpen,
-  },
-  {
-    title: 'System Blueprints',
-    description: 'Production-ready system architectures, data flows & reference designs',
-    href: '/insights#blueprints',
-    icon: Cpu,
-  },
-  {
-    title: 'Research & Whitepapers',
-    description: 'In-depth AI evaluations, performance benchmarks & tech reports',
-    href: '/insights#research',
-    icon: BrainCircuit,
-  },
-];
-
 export function Navbar() {
   const pathname = usePathname();
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
   const [isScrolled, setIsScrolled] = useState(false);
   const isDark = false;
 
 
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const [activeMenu, setActiveMenu] = useState<'solutions' | 'work' | 'insights' | null>(null);
+  const [activeMenu, setActiveMenu] = useState<'solutions' | null>(null);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [activeSolutionId, setActiveSolutionId] = useState<string>(SOLUTION_CATEGORIES[0].id);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -325,14 +274,15 @@ export function Navbar() {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 20);
 
-      // Detect whether we are in the Hero video scroll region
+      // Detect whether we are in the Hero video scroll region or on /work page
+      const isWorkPage = pathname?.startsWith('/work');
       const whatIsSection = document.getElementById('what-is-kairotrix');
       const isHeroActive = whatIsSection
         ? currentScrollY < whatIsSection.offsetTop - 100
         : false;
 
-      if (isHeroActive) {
-        // Hero Section: Hide on scroll down to allow full cinematic video immersion
+      if (isHeroActive || isWorkPage) {
+        // Hero Section & Work Page: Hide on scroll down to allow full visual immersion, reveal on scroll up
         if (currentScrollY <= 10) {
           setIsVisible(true);
         } else if (currentScrollY > lastScrollY.current + 4 && currentScrollY > 20) {
@@ -372,7 +322,7 @@ export function Navbar() {
   }, []);
 
   // Smooth hover intent with debounce
-  const handleMouseEnter = (menu: 'solutions' | 'work' | 'insights') => {
+  const handleMouseEnter = (menu: 'solutions') => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveMenu(menu);
     setHoveredNav(menu);
@@ -401,40 +351,6 @@ export function Navbar() {
     }
   };
 
-  const handleWorkNavigate = (href: string) => {
-    setActiveMenu(null);
-    setMobileMenuOpen(false);
-    const hash = href.split('#')[1];
-    if (hash && typeof window !== 'undefined') {
-      const targetPath = href.split('#')[0] || '/work';
-      const currentPath = window.location.pathname;
-      if (currentPath === targetPath) {
-        const el = document.getElementById(hash);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-          window.history.pushState(null, '', `#${hash}`);
-        }
-      }
-    }
-  };
-
-  const handleInsightsNavigate = (href: string) => {
-    setActiveMenu(null);
-    setMobileMenuOpen(false);
-    const hash = href.split('#')[1];
-    if (hash && typeof window !== 'undefined') {
-      const targetPath = href.split('#')[0] || '/insights';
-      const currentPath = window.location.pathname;
-      if (currentPath === targetPath) {
-        const el = document.getElementById(hash);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-          window.history.pushState(null, '', `#${hash}`);
-        }
-      }
-    }
-  };
-
   return (
     <header
       ref={navRef}
@@ -449,9 +365,7 @@ export function Navbar() {
         className={cn(
           'absolute inset-0 -z-10 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none',
           isScrolled
-            ? isDark
-              ? 'opacity-100 bg-[#08080C]/85 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_4px_30px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)]'
-              : 'opacity-100 bg-white/85 backdrop-blur-2xl border-b border-black/[0.08] shadow-[0_8px_32px_rgba(147,51,234,0.12),0_4px_16px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)]'
+            ? 'opacity-100 bg-white/85 backdrop-blur-2xl border-b border-black/[0.08] shadow-[0_8px_32px_rgba(147,51,234,0.12),0_4px_16px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)]'
             : 'opacity-0 bg-transparent backdrop-blur-none border-b border-transparent shadow-none'
         )}
       />
@@ -467,11 +381,7 @@ export function Navbar() {
               aria-label="KAIROTRIX Home"
             >
               <Image
-                src={
-                  isDark
-                    ? '/assets/brand/PRIMARY_LOGO_WIDE/KAIROTRIX_Logo_White_Wide.svg'
-                    : '/assets/brand/PRIMARY_LOGO_WIDE/KAIROTRIX_Logo_Black_Wide.svg'
-                }
+                src="/assets/brand/PRIMARY_LOGO_WIDE/KAIROTRIX_Logo_Black_Wide.svg"
                 alt="KAIROTRIX"
                 width={200}
                 height={46}
@@ -484,12 +394,7 @@ export function Navbar() {
           {/* === DESKTOP NAVIGATION (CENTERED WITH FLOATING 3D GLASS PILLS) === */}
           <nav
             onMouseLeave={() => setHoveredNav(null)}
-            className={cn(
-              'relative hidden lg:flex items-center justify-center gap-1 p-1.5 rounded-2xl border transition-all duration-300',
-              isDark
-                ? 'bg-[#0E0E18]/60 backdrop-blur-xl border-white/[0.07] shadow-[0_4px_24px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.05)]'
-                : 'bg-white/70 backdrop-blur-xl border-black/[0.06] shadow-[0_6px_24px_rgba(147,51,234,0.12),0_2px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.9)]'
-            )}
+            className="relative hidden lg:flex items-center justify-center gap-1 p-1.5 rounded-2xl bg-white/70 backdrop-blur-xl border border-black/[0.06] shadow-[0_6px_24px_rgba(147,51,234,0.12),0_2px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.9)] transition-all duration-300"
           >
             
             {/* 1. Solutions Mega Menu trigger (Static parent centers menu relative to <nav>) */}
@@ -853,258 +758,66 @@ export function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* 2. Work Dropdown */}
+            {/* 2. Work Direct Link */}
             <div
               className="relative"
-              onMouseEnter={() => handleMouseEnter('work')}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={() => setHoveredNav('work')}
+              onMouseLeave={() => setHoveredNav(null)}
             >
               <Link
                 href="/work"
-                onClick={() => setActiveMenu(null)}
                 className={cn(
-                  'relative z-10 flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-                  activeMenu === 'work' || pathname.startsWith('/work')
+                  'relative z-10 px-4 py-2 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 block',
+                  pathname.startsWith('/work')
                     ? isDark ? 'text-white font-medium' : 'text-neutral-900 font-medium'
                     : isDark ? 'text-neutral-300 hover:text-white' : 'text-neutral-600 hover:text-neutral-900'
                 )}
-                aria-expanded={activeMenu === 'work'}
-                aria-haspopup="true"
               >
-                <span>Work</span>
-                <ChevronDown
-                  className={cn(
-                    'w-3.5 h-3.5 transition-transform duration-300',
-                    isDark ? 'text-neutral-400' : 'text-neutral-400',
-                    activeMenu === 'work' && 'rotate-180 text-brand-500'
-                  )}
-                />
+                Work
               </Link>
-
               {hoveredNav === 'work' && (
                 <motion.div
                   layoutId="navHoverPill"
-                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                   className={cn(
                     'absolute inset-0 rounded-xl pointer-events-none -z-0',
                     isDark
-                      ? 'bg-white/[0.10] shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]'
-                      : 'bg-black/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]'
+                      ? 'bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+                      : 'bg-black/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]'
                   )}
                 />
               )}
-
-              {/* Work Dropdown Menu with Refined Gradient Hover Icons */}
-              <AnimatePresence>
-                {activeMenu === 'work' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                    onMouseEnter={() => {
-                      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-                      setActiveMenu('work');
-                    }}
-                    onMouseLeave={handleMouseLeave}
-                    className={cn(
-                      'absolute top-full left-0 mt-3 w-84 p-2.5 rounded-2xl backdrop-blur-3xl border z-50 overflow-hidden before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5 before:content-[\'\']',
-                      isDark
-                        ? 'bg-[#0A0A14]/98 border-white/[0.14] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_25px_70px_rgba(0,0,0,0.95),0_0_35px_rgba(147,51,234,0.15)]'
-                        : 'bg-white/99 border-neutral-300/80 shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_12px_30px_-6px_rgba(0,0,0,0.08),0_25px_50px_-10px_rgba(147,51,234,0.18)]'
-                    )}
-                  >
-                    <div className="space-y-1.5">
-                      {WORK_ITEMS.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                          <Link
-                            key={item.title}
-                            href={item.href}
-                            onClick={() => handleWorkNavigate(item.href)}
-                            className={cn(
-                              'group/item relative flex items-start gap-3.5 p-3 rounded-xl border transition-all duration-300 hover:-translate-y-0.5 overflow-hidden',
-                              isDark
-                                ? 'bg-white/[0.02] border-white/[0.04] hover:border-brand-500/50 hover:bg-gradient-to-r hover:from-brand-500/25 hover:via-brand-500/10 hover:to-transparent hover:shadow-[0_8px_25px_-6px_rgba(147,51,234,0.35)]'
-                                : 'bg-black/[0.01] border-black/[0.04] hover:border-brand-500/35 hover:bg-gradient-to-r hover:from-brand-500/12 hover:via-brand-500/06 hover:to-transparent hover:shadow-[0_8px_20px_-6px_rgba(147,51,234,0.12)]'
-                            )}
-                          >
-                            <div className={cn(
-                              'mt-0.5 p-2 rounded-xl border transition-all duration-300 shrink-0 group-hover/item:scale-105',
-                              isDark
-                                ? 'bg-[#151526] border-white/[0.08] text-brand-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] group-hover/item:bg-gradient-to-br group-hover/item:from-brand-500 group-hover/item:via-purple-600 group-hover/item:to-indigo-600 group-hover/item:border-brand-400/80 group-hover/item:text-white group-hover/item:shadow-[0_0_18px_rgba(147,51,234,0.5)]'
-                                : 'bg-purple-50/70 border-neutral-200/90 text-brand-600 shadow-[0_1px_4px_rgba(147,51,234,0.06),inset_0_1px_0_rgba(255,255,255,1)] group-hover/item:bg-gradient-to-br group-hover/item:from-brand-600 group-hover/item:via-purple-600 group-hover/item:to-indigo-600 group-hover/item:border-brand-400 group-hover/item:text-white group-hover/item:shadow-[0_4px_16px_rgba(147,51,234,0.3)]'
-                            )}>
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h5 className={cn(
-                                'text-sm font-medium transition-colors',
-                                isDark ? 'text-neutral-200 group-hover/item:text-white' : 'text-neutral-700 group-hover/item:text-brand-600'
-                              )}>
-                                {item.title}
-                              </h5>
-                              <p className={cn(
-                                'text-xs mt-0.5 line-clamp-1 font-normal',
-                                isDark ? 'text-neutral-400 group-hover/item:text-neutral-300' : 'text-neutral-500 group-hover/item:text-neutral-600'
-                              )}>
-                                {item.description}
-                              </p>
-                            </div>
-                          </Link>
-                        );
-                      })}
-
-                      {/* Master Portfolio Link */}
-                      <div className="pt-2 mt-1.5 border-t border-neutral-200/80">
-                        <Link
-                          href="/work"
-                          onClick={() => setActiveMenu(null)}
-                          className={cn(
-                            'flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition-all group',
-                            isDark
-                              ? 'bg-brand-500/15 hover:bg-brand-500/25 text-brand-300 hover:text-white border border-brand-500/30'
-                              : 'bg-brand-50 hover:bg-brand-100 text-brand-700 hover:text-brand-800 border border-brand-200/70 shadow-2xs'
-                          )}
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-                            <span>Explore All 12 Specimens & Proof</span>
-                          </span>
-                          <ArrowRight className="w-3.5 h-3.5 text-brand-500 group-hover:translate-x-0.5 transition-transform" />
-                        </Link>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
-            {/* 3. Insights Dropdown */}
+            {/* 3. Insights Direct Link */}
             <div
               className="relative"
-              onMouseEnter={() => handleMouseEnter('insights')}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={() => setHoveredNav('insights')}
+              onMouseLeave={() => setHoveredNav(null)}
             >
               <Link
                 href="/insights"
-                onClick={() => setActiveMenu(null)}
                 className={cn(
-                  'relative z-10 flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-                  activeMenu === 'insights' || pathname.startsWith('/insights')
+                  'relative z-10 px-4 py-2 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 block',
+                  pathname.startsWith('/insights')
                     ? isDark ? 'text-white font-medium' : 'text-neutral-900 font-medium'
                     : isDark ? 'text-neutral-300 hover:text-white' : 'text-neutral-600 hover:text-neutral-900'
                 )}
-                aria-expanded={activeMenu === 'insights'}
-                aria-haspopup="true"
               >
-                <span>Insights</span>
-                <ChevronDown
-                  className={cn(
-                    'w-3.5 h-3.5 transition-transform duration-300',
-                    isDark ? 'text-neutral-400' : 'text-neutral-400',
-                    activeMenu === 'insights' && 'rotate-180 text-brand-500'
-                  )}
-                />
+                Insights
               </Link>
-
               {hoveredNav === 'insights' && (
                 <motion.div
                   layoutId="navHoverPill"
-                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                   className={cn(
                     'absolute inset-0 rounded-xl pointer-events-none -z-0',
                     isDark
-                      ? 'bg-white/[0.10] shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]'
-                      : 'bg-black/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]'
+                      ? 'bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+                      : 'bg-black/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]'
                   )}
                 />
               )}
-
-              {/* Insights Dropdown Menu with Refined Gradient Hover Icons */}
-              <AnimatePresence>
-                {activeMenu === 'insights' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                    onMouseEnter={() => {
-                      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-                      setActiveMenu('insights');
-                    }}
-                    onMouseLeave={handleMouseLeave}
-                    className={cn(
-                      'absolute top-full left-0 mt-3 w-84 p-2.5 rounded-2xl backdrop-blur-3xl border z-50 overflow-hidden before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5 before:content-[\'\']',
-                      isDark
-                        ? 'bg-[#0A0A14]/98 border-white/[0.14] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_25px_70px_rgba(0,0,0,0.95),0_0_35px_rgba(147,51,234,0.15)]'
-                        : 'bg-white/99 border-neutral-300/80 shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_12px_30px_-6px_rgba(0,0,0,0.08),0_25px_50px_-10px_rgba(147,51,234,0.18)]'
-                    )}
-                  >
-                    <div className="space-y-1.5">
-                      {INSIGHTS_ITEMS.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                          <Link
-                            key={item.title}
-                            href={item.href}
-                            onClick={() => handleInsightsNavigate(item.href)}
-                            className={cn(
-                              'group/item relative flex items-start gap-3.5 p-3 rounded-xl border transition-all duration-300 hover:-translate-y-0.5 overflow-hidden',
-                              isDark
-                                ? 'bg-white/[0.02] border-white/[0.04] hover:border-brand-500/50 hover:bg-gradient-to-r hover:from-brand-500/25 hover:via-brand-500/10 hover:to-transparent hover:shadow-[0_8px_25px_-6px_rgba(147,51,234,0.35)]'
-                                : 'bg-black/[0.01] border-black/[0.04] hover:border-brand-500/35 hover:bg-gradient-to-r hover:from-brand-500/12 hover:via-brand-500/06 hover:to-transparent hover:shadow-[0_8px_20px_-6px_rgba(147,51,234,0.12)]'
-                            )}
-                          >
-                            <div className={cn(
-                              'mt-0.5 p-2 rounded-xl border transition-all duration-300 shrink-0 group-hover/item:scale-105',
-                              isDark
-                                ? 'bg-[#151526] border-white/[0.08] text-brand-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] group-hover/item:bg-gradient-to-br group-hover/item:from-brand-500 group-hover/item:via-purple-600 group-hover/item:to-indigo-600 group-hover/item:border-brand-400/80 group-hover/item:text-white group-hover/item:shadow-[0_0_18px_rgba(147,51,234,0.5)]'
-                              : 'bg-purple-50/70 border-neutral-200/90 text-brand-600 shadow-[0_1px_4px_rgba(147,51,234,0.06),inset_0_1px_0_rgba(255,255,255,1)] group-hover/item:bg-gradient-to-br group-hover/item:from-brand-600 group-hover/item:via-purple-600 group-hover/item:to-indigo-600 group-hover/item:border-brand-400 group-hover/item:text-white group-hover/item:shadow-[0_4px_16px_rgba(147,51,234,0.3)]'
-                            )}>
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h5 className={cn(
-                                'text-sm font-medium transition-colors',
-                                isDark ? 'text-neutral-200 group-hover/item:text-white' : 'text-neutral-700 group-hover/item:text-brand-600'
-                              )}>
-                                {item.title}
-                              </h5>
-                              <p className={cn(
-                                'text-xs mt-0.5 line-clamp-1 font-normal',
-                                isDark ? 'text-neutral-400 group-hover/item:text-neutral-300' : 'text-neutral-500 group-hover/item:text-neutral-600'
-                              )}>
-                                {item.description}
-                              </p>
-                            </div>
-                          </Link>
-                        );
-                      })}
-
-                      {/* Master Repository Link */}
-                      <div className="pt-2 mt-1.5 border-t border-neutral-200/80">
-                        <Link
-                          href="/insights"
-                          onClick={() => setActiveMenu(null)}
-                          className={cn(
-                            'flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition-all group',
-                            isDark
-                              ? 'bg-brand-500/15 hover:bg-brand-500/25 text-brand-300 hover:text-white border border-brand-500/30'
-                              : 'bg-brand-50 hover:bg-brand-100 text-brand-700 hover:text-brand-800 border border-brand-200/70 shadow-2xs'
-                          )}
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-                            <span>Explore All 8 Schematics & Papers</span>
-                          </span>
-                          <ArrowRight className="w-3.5 h-3.5 text-brand-500 group-hover:translate-x-0.5 transition-transform" />
-                        </Link>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
             {/* 4. About Direct Link */}
@@ -1175,12 +888,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={cn(
-                'lg:hidden p-2.5 rounded-xl border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-                isDark
-                  ? 'text-neutral-300 hover:text-white bg-white/[0.04] border-white/[0.08] hover:bg-white/[0.08]'
-                  : 'text-neutral-700 hover:text-black bg-black/[0.04] border-black/[0.08] hover:bg-black/[0.08]'
-              )}
+              className="lg:hidden p-2.5 rounded-xl border border-black/[0.08] bg-black/[0.04] text-neutral-700 hover:text-black hover:bg-black/[0.08] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -1334,114 +1042,45 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* Work Accordion */}
-              <div className={cn('border rounded-xl overflow-hidden', isDark ? 'border-white/[0.06] bg-white/[0.02]' : 'border-black/[0.06] bg-black/[0.01]')}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setMobileExpandedSection(
-                      mobileExpandedSection === 'work' ? null : 'work'
-                    )
-                  }
-                  className={cn('w-full flex items-center justify-between p-4 text-left font-medium', isDark ? 'text-neutral-100' : 'text-neutral-800')}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <FolderGit2 className="w-4 h-4 text-brand-500" />
-                    <span>Work</span>
-                  </span>
-                  <ChevronDown
-                    className={cn(
-                      'w-4 h-4 transition-transform duration-200',
-                      isDark ? 'text-neutral-400' : 'text-neutral-500',
-                      mobileExpandedSection === 'work' && 'rotate-180 text-brand-500'
-                    )}
-                  />
-                </button>
-
-                {mobileExpandedSection === 'work' && (
-                  <div className={cn('px-4 pb-4 space-y-2 border-t pt-3', isDark ? 'border-white/[0.04]' : 'border-black/[0.04]')}>
-                    {WORK_ITEMS.map((item) => (
-                      <Link
-                        key={item.title}
-                        href={item.href}
-                        onClick={() => handleWorkNavigate(item.href)}
-                        className={cn(
-                          'block p-2.5 rounded-xl transition-all duration-300',
-                          isDark
-                            ? 'hover:bg-gradient-to-r hover:from-brand-500/25 hover:via-brand-500/10 hover:to-transparent border border-transparent hover:border-brand-500/40'
-                            : 'hover:bg-gradient-to-r hover:from-brand-500/12 hover:via-brand-500/06 hover:to-transparent border border-transparent hover:border-brand-500/30'
-                        )}
-                      >
-                        <span className={cn('text-sm font-medium block', isDark ? 'text-neutral-200' : 'text-neutral-700')}>
-                          {item.title}
-                        </span>
-                        <p className={cn('text-xs mt-0.5 line-clamp-1 font-normal', isDark ? 'text-neutral-400' : 'text-neutral-500')}>
-                          {item.description}
-                        </p>
-                      </Link>
-                    ))}
-
-                    <Link
-                      href="/work"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 pt-2 px-2.5"
-                    >
-                      <span>Browse all 12 work specimens & portfolio</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
+              {/* Work Direct Link */}
+              <Link
+                href="/work"
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  'flex items-center justify-between p-4 border rounded-xl text-sm font-medium transition-colors',
+                  pathname.startsWith('/work')
+                    ? 'border-brand-500/40 bg-brand-500/10 text-brand-600'
+                    : isDark
+                      ? 'border-white/[0.06] bg-white/[0.02] text-neutral-100 hover:bg-white/[0.04]'
+                      : 'border-black/[0.06] bg-black/[0.01] text-neutral-700 hover:bg-black/[0.04]'
                 )}
-              </div>
+              >
+                <span className="flex items-center gap-2.5">
+                  <FolderGit2 className="w-4 h-4 text-brand-500" />
+                  <span>Work</span>
+                </span>
+                <ArrowRight className="w-4 h-4 text-neutral-400" />
+              </Link>
 
-              {/* Insights Accordion */}
-              <div className={cn('border rounded-xl overflow-hidden', isDark ? 'border-white/[0.06] bg-white/[0.02]' : 'border-black/[0.06] bg-black/[0.01]')}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setMobileExpandedSection(
-                      mobileExpandedSection === 'insights' ? null : 'insights'
-                    )
-                  }
-                  className={cn('w-full flex items-center justify-between p-4 text-left font-medium', isDark ? 'text-neutral-100' : 'text-neutral-800')}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <FileText className="w-4 h-4 text-brand-500" />
-                    <span>Insights</span>
-                  </span>
-                  <ChevronDown
-                    className={cn(
-                      'w-4 h-4 transition-transform duration-200',
-                      isDark ? 'text-neutral-400' : 'text-neutral-500',
-                      mobileExpandedSection === 'insights' && 'rotate-180 text-brand-500'
-                    )}
-                  />
-                </button>
-
-                {mobileExpandedSection === 'insights' && (
-                  <div className={cn('px-4 pb-4 space-y-2 border-t pt-3', isDark ? 'border-white/[0.04]' : 'border-black/[0.04]')}>
-                    {INSIGHTS_ITEMS.map((item) => (
-                      <Link
-                        key={item.title}
-                        href={item.href}
-                        onClick={() => handleInsightsNavigate(item.href)}
-                        className={cn(
-                          'block p-2.5 rounded-xl transition-all duration-300',
-                          isDark
-                            ? 'hover:bg-gradient-to-r hover:from-brand-500/25 hover:via-brand-500/10 hover:to-transparent border border-transparent hover:border-brand-500/40'
-                            : 'hover:bg-gradient-to-r hover:from-brand-500/12 hover:via-brand-500/06 hover:to-transparent border border-transparent hover:border-brand-500/30'
-                        )}
-                      >
-                        <span className={cn('text-sm font-medium block', isDark ? 'text-neutral-200' : 'text-neutral-700')}>
-                          {item.title}
-                        </span>
-                        <p className={cn('text-xs mt-0.5 line-clamp-1 font-normal', isDark ? 'text-neutral-400' : 'text-neutral-500')}>
-                          {item.description}
-                        </p>
-                      </Link>
-                    ))}
-                  </div>
+              {/* Insights Direct Link */}
+              <Link
+                href="/insights"
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  'flex items-center justify-between p-4 border rounded-xl text-sm font-medium transition-colors',
+                  pathname.startsWith('/insights')
+                    ? 'border-brand-500/40 bg-brand-500/10 text-brand-600'
+                    : isDark
+                      ? 'border-white/[0.06] bg-white/[0.02] text-neutral-100 hover:bg-white/[0.04]'
+                      : 'border-black/[0.06] bg-black/[0.01] text-neutral-700 hover:bg-black/[0.04]'
                 )}
-              </div>
+              >
+                <span className="flex items-center gap-2.5">
+                  <FileText className="w-4 h-4 text-brand-500" />
+                  <span>Insights</span>
+                </span>
+                <ArrowRight className="w-4 h-4 text-neutral-400" />
+              </Link>
 
               {/* About Direct Link */}
               <Link

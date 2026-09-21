@@ -12,19 +12,22 @@ interface SolutionExpertiseCardsProps {
 
 export function SolutionExpertiseCards({ solution }: SolutionExpertiseCardsProps) {
   return (
-    <section id="expertise" className="w-full bg-neutral-0 py-16 sm:py-20 lg:py-24 border-b border-neutral-200 scroll-mt-20">
+    <section id="expertise" className="w-full bg-[#FAFAFC] py-16 sm:py-20 lg:py-24 border-b border-neutral-200/80 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Centered Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wider font-tech uppercase mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
-            03 // TECHNICAL PROOF
+          <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
+            <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+            <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
+              03 // TECHNICAL PROOF
+            </span>
+            <div className="h-px w-10 sm:w-16 bg-neutral-200" />
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
-            ENGINEERING <span className="gradient-signature-text">DEPTH</span>.
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
+            ENGINEERING <span className="gradient-signature-text">DEPTH.</span>
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-neutral-600 max-w-2xl mx-auto font-normal">
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto font-normal leading-relaxed">
             Representative capabilities and production standards behind our systems.
           </p>
         </div>

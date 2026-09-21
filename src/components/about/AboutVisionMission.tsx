@@ -1,117 +1,178 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Compass, Target, CheckCircle2, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+
+const VISION_TAGS = ['Accessible Intelligence', 'Technology You Own', 'Built to Evolve'];
+const MISSION_TAGS = ['Problem-First', 'Built for Reliability', 'Client Ownership'];
 
 export function AboutVisionMission() {
   return (
-    <section className="w-full bg-neutral-0 py-20 lg:py-28 border-b border-neutral-200/80">
+    <section id="about-vision-mission" className="w-full bg-transparent py-14 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Eyebrow */}
-        <div className="max-w-3xl mb-16">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-            <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-              06.2 // DIRECTION & PURPOSE
-            </span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-950 mb-6">
-            Vision & Mission.
-          </h2>
-          <p className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
-            Clarity of direction defines engineering discipline. We build for longevity, autonomy, and tangible business results.
-          </p>
-        </div>
+        {/* Eyebrow */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.4 }}
+          className="flex items-center gap-3 mb-3 sm:mb-4"
+        >
+          <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
+          <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
+            OUR PURPOSE // VISION & MISSION
+          </span>
+          <div className="h-px w-10 sm:w-16 bg-neutral-200" />
+        </motion.div>
 
-        {/* Dual Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-          
-          {/* VISION CARD */}
-          <div className="group rounded-3xl p-8 sm:p-10 bg-neutral-50/80 border border-neutral-200/90 hover:border-brand-500/50 hover:bg-white hover:shadow-xl transition-all duration-500 flex flex-col justify-between relative overflow-hidden">
-            <div
-              className="absolute -top-16 -right-16 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700"
-              aria-hidden="true"
-            />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-8">
-                <span className="font-tech text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 tracking-wider uppercase">
-                  OUR VISION
-                </span>
-                <div className="p-2.5 rounded-xl bg-purple-100/80 text-purple-700 border border-purple-200 group-hover:scale-110 transition-transform">
-                  <Compass className="w-5 h-5" />
+        {/* Section Title with signature gradient text */}
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.45, delay: 0.05 }}
+          className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12] mb-8 sm:mb-12 max-w-4xl"
+        >
+          PURPOSE ROOTED IN{' '}
+          <span className="gradient-signature-text">
+            EXECUTION.
+          </span>
+        </motion.h2>
+
+        {/* Compact Agnos-Style Master Split Card with Styled Image */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="relative rounded-[2rem] bg-white border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_32px_rgba(147,51,234,0.06)] transition-shadow duration-300 p-6 sm:p-8 lg:p-10"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            
+            {/* Left Content Column: Vision & Mission Duo */}
+            <div className="lg:col-span-7 flex flex-col justify-between">
+              
+              {/* 01 // OUR VISION */}
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-neutral-100 text-brand-700 border border-brand-200/50">
+                      01
+                    </span>
+                    <span className="font-tech text-xs tracking-[0.2em] font-semibold text-brand-600 uppercase">
+                      OUR VISION
+                    </span>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-neutral-100 border border-neutral-200/70 text-[10px] font-mono font-medium text-neutral-600 uppercase tracking-wider">
+                    WHERE WE&apos;RE GOING
+                  </span>
+                </div>
+
+                <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 mb-2 leading-snug">
+                  Technology as an accessible bridge, not a barrier.
+                </h3>
+
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal mb-3.5 max-w-xl">
+                  KAIROTRIX envisions a world where technology is never an expensive barrier, an inflated buzzword, or a rigid vendor trap, but an accessible bridge enabling every business to operate with sovereign intelligence.
+                </p>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {VISION_TAGS.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-50 border border-neutral-200/70 text-[11px] font-mono text-neutral-700 font-medium"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-brand-500" />
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              <h3 className="text-2xl sm:text-3xl font-bold text-neutral-950 leading-tight mb-4">
-                Technology as an Appreciating Bridge.
-              </h3>
+              {/* Subtle Hairline Divider */}
+              <div className="h-px w-full bg-neutral-100 my-6 sm:my-7" />
 
-              <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-normal mb-8">
-                KAIROTRIX envisions a world where technology is not an incomprehensible barrier or a monthly recurring penalty, but a bridge — where every business, regardless of scale, possesses deterministic, well-architected systems that solve real problems, appreciate in value, and enable unconstrained operational evolution.
-              </p>
+              {/* 02 // OUR MISSION */}
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-neutral-100 text-brand-700 border border-brand-200/50">
+                      02
+                    </span>
+                    <span className="font-tech text-xs tracking-[0.2em] font-semibold text-brand-600 uppercase">
+                      OUR MISSION
+                    </span>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-neutral-100 border border-neutral-200/70 text-[10px] font-mono font-medium text-neutral-600 uppercase tracking-wider">
+                    HOW WE GET THERE
+                  </span>
+                </div>
 
-              <div className="space-y-3 pt-6 border-t border-neutral-200/80">
-                <div className="flex items-center gap-2.5 text-xs text-neutral-700 font-tech">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
-                  <span>Durable architecture that outlasts vendor hype cycles</span>
+                <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 mb-2 leading-snug">
+                  Solving real problems with precision engineering.
+                </h3>
+
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal mb-3.5 max-w-xl">
+                  To identify what technology can genuinely improve, build it with precision, and make it accessible to businesses that need it — without overpromising, overcomplicating, or pushing pre-packaged hype.
+                </p>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {MISSION_TAGS.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-50 border border-neutral-200/70 text-[11px] font-mono text-neutral-700 font-medium"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-brand-500" />
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-                <div className="flex items-center gap-2.5 text-xs text-neutral-700 font-tech">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
-                  <span>Democratization of production-grade AI & automated runtimes</span>
+              </div>
+
+            </div>
+
+            {/* Right Media Column: Styled Architectural Technology Image */}
+            <div className="lg:col-span-5 h-full">
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] sm:aspect-[16/11] lg:aspect-auto lg:h-[440px] bg-neutral-100 border border-neutral-200/80 shadow-md group">
+                <Image
+                  src="/assets/images/about/vision-mission.jpg"
+                  alt=""
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 480px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                
+                {/* Subtle Inner Gradient Vignette */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-neutral-950/75 via-transparent to-neutral-950/20 pointer-events-none"
+                  aria-hidden="true"
+                />
+
+                {/* Top-Right Floating Status Pill */}
+                <div className="absolute top-3.5 right-3.5 px-3 py-1 rounded-full bg-neutral-950/80 backdrop-blur-md border border-white/20 text-[10px] font-mono uppercase tracking-wider font-semibold text-white shadow-md">
+                  CORE ARCHITECTURE
                 </div>
-                <div className="flex items-center gap-2.5 text-xs text-neutral-700 font-tech">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
-                  <span>Zero arbitrary per-seat enterprise taxes</span>
+
+                {/* Bottom Floating Glass Card */}
+                <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-xl bg-white/95 backdrop-blur-md border border-neutral-200/80 shadow-lg flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[10px] font-mono text-brand-700 font-semibold uppercase tracking-wider mb-0.5">
+                      OUR COMMITMENT
+                    </div>
+                    <div className="text-xs font-semibold text-neutral-900 leading-snug">
+                      Technology you can own, understand, and evolve.
+                    </div>
+                  </div>
+                  <div className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.7)] shrink-0" />
                 </div>
               </div>
             </div>
+
           </div>
+        </motion.div>
 
-          {/* MISSION CARD */}
-          <div className="group rounded-3xl p-8 sm:p-10 bg-neutral-50/80 border border-neutral-200/90 hover:border-brand-500/50 hover:bg-white hover:shadow-xl transition-all duration-500 flex flex-col justify-between relative overflow-hidden">
-            <div
-              className="absolute -top-16 -right-16 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700"
-              aria-hidden="true"
-            />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-8">
-                <span className="font-tech text-xs font-semibold px-3 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200 tracking-wider uppercase">
-                  OUR MISSION
-                </span>
-                <div className="p-2.5 rounded-xl bg-brand-100/80 text-brand-700 border border-brand-200 group-hover:scale-110 transition-transform">
-                  <Target className="w-5 h-5" />
-                </div>
-              </div>
-
-              <h3 className="text-2xl sm:text-3xl font-bold text-neutral-950 leading-tight mb-4">
-                Precision Engineering for Practical Problems.
-              </h3>
-
-              <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-normal mb-8">
-                To identify what technology can genuinely improve, build it with mathematical precision, and make intelligent systems accessible to the businesses that need them — without overpromising, overcomplicating, or obfuscating behind marketing jargon.
-              </p>
-
-              <div className="space-y-3 pt-6 border-t border-neutral-200/80">
-                <div className="flex items-center gap-2.5 text-xs text-neutral-700 font-tech">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
-                  <span>Root-cause operational bottleneck diagnosis</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-neutral-700 font-tech">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
-                  <span>Mathematically verified performance (P99 latency, 0% event loss)</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-neutral-700 font-tech">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
-                  <span>Uncompromised source code and infrastructure ownership</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
       </div>
     </section>
   );

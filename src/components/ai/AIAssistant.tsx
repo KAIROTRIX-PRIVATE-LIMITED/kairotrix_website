@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -33,12 +34,17 @@ interface ChatMessage {
 }
 
 export function AIAssistant() {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
   const prefersReduced = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [sessionId, setSessionId] = useState<string>('');
   
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
@@ -54,6 +60,18 @@ export function AIAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Initialize or retrieve persistent anonymous sessionId
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let sid = localStorage.getItem('kairotrix_kiro_sid');
+      if (!sid) {
+        sid = `sid_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        localStorage.setItem('kairotrix_kiro_sid', sid);
+      }
+      setSessionId(sid);
+    }
+  }, []);
+
   // Show invitation callout badge after initial delay if user hasn't opened yet
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,14 +86,14 @@ export function AIAssistant() {
   // Auto-scroll chat to latest message
   useEffect(() => {
     if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current?.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' });
     }
-  }, [messages, isTyping, isOpen]);
+  }, [messages, isTyping, isOpen, prefersReduced]);
 
-  // Focus input when opened
+  // Auto-focus input when opened
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 150);
+      setTimeout(() => inputRef.current?.focus(), 250);
     }
   }, [isOpen]);
 
@@ -110,7 +128,7 @@ export function AIAssistant() {
     setInputText('');
   };
 
-  const handleSendMessage = (textToSend?: string) => {
+  const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend ?? inputText).trim();
     if (!query || isTyping) return;
 
@@ -129,8 +147,32 @@ export function AIAssistant() {
     setInputText('');
     setIsTyping(true);
 
-    // Natural assistant reaction delay
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/assistant/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: query, sessionId }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.reply) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `kiro-${Date.now()}`,
+              sender: 'kiro',
+              text: data.reply.text,
+              actions: data.reply.actions,
+              suggestedFollowUps: data.reply.suggestedFollowUps,
+              timestamp: 'Just now',
+            },
+          ]);
+          return;
+        }
+      }
+
+      // Smooth fallback if response was non-200
       const reply = findAssistantResponse(query);
       setMessages((prev) => [
         ...prev,
@@ -143,8 +185,23 @@ export function AIAssistant() {
           timestamp: 'Just now',
         },
       ]);
+    } catch {
+      // Smooth fallback if network failed
+      const reply = findAssistantResponse(query);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `kiro-${Date.now()}`,
+          sender: 'kiro',
+          text: reply.text,
+          actions: reply.actions,
+          suggestedFollowUps: reply.suggestedFollowUps,
+          timestamp: 'Just now',
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 450);
+    }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {

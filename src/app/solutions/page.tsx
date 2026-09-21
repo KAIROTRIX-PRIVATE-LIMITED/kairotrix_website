@@ -6,24 +6,22 @@ import { SolutionsLifecycle } from '@/components/solutions/SolutionsLifecycle';
 import { SolutionsCTA } from '@/components/solutions/SolutionsCTA';
 
 export const metadata: Metadata = {
-  title: 'Solutions Architecture & Core Disciplines — KAIROTRIX',
+  title: 'Solutions & Technology Systems — KAIROTRIX',
   description:
-    'Explore KAIROTRIX’s six core technology disciplines: AI & Intelligent Systems, Software Engineering, Workflow Automation, Digital Transformation, Data Intelligence, and System Integration.',
+    'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
   keywords: [
-    'AI solutions',
-    'autonomous agents',
-    'enterprise RAG',
+    'AI systems & agents',
     'custom software development',
-    'workflow automation',
-    'digital transformation',
-    'data analytics',
-    'system integration',
+    'business automation',
+    'websites & digital experiences',
+    'data & business intelligence',
+    'technology integration',
     'KAIROTRIX solutions',
   ],
   openGraph: {
-    title: 'Solutions Architecture & Core Disciplines — KAIROTRIX',
+    title: 'Solutions & Technology Systems — KAIROTRIX',
     description:
-      'We diagnose operational bottlenecks first — then engineer custom software, autonomous AI, workflow automation, or high-throughput data infrastructure as the deterministic answer.',
+      'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
     type: 'website',
   },
 };

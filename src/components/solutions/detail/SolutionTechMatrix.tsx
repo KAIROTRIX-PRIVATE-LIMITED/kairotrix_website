@@ -11,20 +11,23 @@ interface SolutionTechMatrixProps {
 
 export function SolutionTechMatrix({ solution }: SolutionTechMatrixProps) {
   return (
-    <section id="stack" className="w-full bg-neutral-0 py-20 lg:py-28 border-b border-neutral-200 scroll-mt-24">
+    <section id="stack" className="w-full bg-[#FAFAFC] py-20 lg:py-28 border-b border-neutral-200 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wider font-tech uppercase mb-4">
-            <span className="w-2 h-2 rounded-full bg-brand-500" />
-            04 // SYSTEM ARCHITECTURE
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
+            <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
+              04 // SYSTEM ARCHITECTURE
+            </span>
+            <span className="h-px w-10 sm:w-16 bg-neutral-200" aria-hidden="true" />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-900 leading-tight">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
             <span>TECHNOLOGY </span>
             <span className="gradient-signature-text">STACK</span>
             <span>.</span>
           </h2>
-          <p className="mt-3 text-base sm:text-lg text-neutral-600 leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-neutral-600 font-normal leading-relaxed">
             We operate strictly with production-grade, battle-tested technologies selected for deterministic reliability, sub-millisecond execution, and total enterprise security.
           </p>
         </div>

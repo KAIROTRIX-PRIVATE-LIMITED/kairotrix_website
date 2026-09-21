@@ -15,7 +15,7 @@ export function SolutionNavigationCTA({ solution }: SolutionNavigationCTAProps) 
   const nextSolution = SOLUTIONS_DATA[solution.nextSlug];
 
   return (
-    <div className="w-full bg-neutral-0">
+    <div className="w-full bg-[#FAFAFC]">
       {/* ─── PREVIOUS / NEXT DISCIPLINE NAVIGATOR (Matching 00:24) ─── */}
       <section className="w-full border-b border-neutral-200 py-12 bg-neutral-50/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

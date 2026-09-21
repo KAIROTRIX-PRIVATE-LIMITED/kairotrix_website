@@ -37,7 +37,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
       : 'KAIROTRIX';
 
   return (
-    <section className="relative w-full bg-neutral-0 text-neutral-900 pt-24 pb-8 sm:pt-28 sm:pb-12 lg:pt-28 lg:pb-12 border-b border-neutral-200 overflow-hidden lg:min-h-[calc(100vh-64px)] lg:max-h-[780px] flex flex-col justify-center">
+    <section className="relative w-full bg-[#FAFAFC] text-neutral-900 pt-24 pb-8 sm:pt-28 sm:pb-12 lg:pt-28 lg:pb-12 border-b border-neutral-200 overflow-hidden lg:min-h-[calc(100vh-64px)] lg:max-h-[780px] flex flex-col justify-center">
       
       {/* ─── 00. GIANT BACKGROUND WATERMARK TYPOGRAPHY (PLUMFIX SIGNATURE) ─── */}
       <div 
@@ -113,22 +113,23 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
           <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5">
             
             {/* Eyebrow Badge */}
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wider font-tech uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
+            <div className="flex items-center gap-3">
+              <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+              <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
                 KAIROTRIX DISCIPLINE // {solution.number}
-              </div>
+              </span>
+              <div className="h-px w-10 sm:w-16 bg-neutral-200" />
             </div>
 
             {/* Master Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] xl:text-[3.1rem] font-bold tracking-tight text-neutral-900 leading-[1.08] max-w-2xl">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06] max-w-2xl">
               <span>{solution.displayHeadline.prefix} </span>
               <span className="gradient-signature-text">{solution.displayHeadline.accent}</span>{' '}
               <span>{solution.displayHeadline.suffix}</span>
             </h1>
 
             {/* Executive Value Narrative */}
-            <p className="text-sm sm:text-[0.95rem] lg:text-base text-neutral-600 leading-relaxed font-normal max-w-xl">
+            <p className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal max-w-xl">
               {solution.executiveSummary}
             </p>
 

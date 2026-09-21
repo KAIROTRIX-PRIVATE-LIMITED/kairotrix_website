@@ -27,10 +27,25 @@ export async function POST(request: Request) {
       message: message.trim(),
     });
 
+    // Store in PostgreSQL database
+    try {
+      const prismaModule = await import('@/lib/prisma');
+      await prismaModule.default.contactInquiry.create({
+        data: {
+          name: name.trim(),
+          email: email.trim(),
+          interest: interest || 'General Inquiry',
+          message: message.trim(),
+        },
+      });
+    } catch (dbErr) {
+      console.warn('Could not persist inquiry to database (DB might be offline):', dbErr);
+    }
+
     return NextResponse.json(
       {
         success: true,
-        message: 'Your message has been received. A principal architect will respond within 24 hours.',
+        message: 'Your message has been received. We\u0027ll review what you\u0027ve shared and aim to follow up within one business day.',
       },
       { status: 200 }
     );

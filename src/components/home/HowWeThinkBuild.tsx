@@ -47,13 +47,13 @@ const STAGES: MethodologyStage[] = [
     id: 'understand',
     number: '01',
     stageName: 'UNDERSTAND',
-    headline: 'Discover the real problem beneath the request',
+    headline: 'Uncover the real business problem before writing any code',
     description:
-      'We look past surface-level requests and feature checklists. Through systematic operational interviews and friction analysis, we identify the exact root bottleneck before writing a single line of code.',
+      'Most technology projects fail because teams build the wrong thing. We study how your business actually operates, speak with your key operators, and pinpoint the true bottleneck before touching code.',
     deliverables: [
-      'Operational friction audit & root-cause mapping',
-      'Business outcome & ROI metrics definition',
-      'Risk & legacy system constraint identification',
+      'Workflow & operational friction audit',
+      'Clear business goals & success criteria',
+      'Existing software & legacy risk review',
     ],
     icon: Search,
   },
@@ -61,13 +61,13 @@ const STAGES: MethodologyStage[] = [
     id: 'explore',
     number: '02',
     stageName: 'EXPLORE',
-    headline: 'Assess technology options & map optimal feasibility',
+    headline: 'Find the right technology for the job—not just the latest hype',
     description:
-      'We evaluate whether your challenge is best solved through autonomous AI agents, a custom full-stack web platform, workflow automation, or database restructuring. We select technology strictly for measurable ROI.',
+      "We don't force AI where simple automation is better, and we don't push complex custom builds where off-the-shelf software makes sense. We evaluate trade-offs honestly to choose what delivers the highest value at the lowest long-term cost.",
     deliverables: [
-      'Multi-model AI & tech stack trade-off analysis',
-      'Rapid prototype validation & proof-of-concept',
-      'Target performance, latency & cost modeling',
+      'Technology approach & trade-off matrix',
+      'Working prototype or proof-of-concept',
+      'Clear cost, maintenance & complexity breakdown',
     ],
     icon: Cpu,
   },
@@ -75,13 +75,13 @@ const STAGES: MethodologyStage[] = [
     id: 'architect',
     number: '03',
     stageName: 'ARCHITECT',
-    headline: 'Design fault-tolerant, scalable foundations',
+    headline: 'Design a rock-solid blueprint built to scale with your company',
     description:
-      'We map the complete data architecture, API contracts, security perimeters, and modular boundaries. Every system is engineered so new capabilities can be infused in the future without costly rewrites.',
+      "Before building, we design the complete system blueprint—how data moves, how security is enforced, and how components connect. This ensures your software won't break under load or require costly complete rewrites as you grow.",
     deliverables: [
-      'System topology & component boundary design',
-      'Deterministic data schemas & API contracts',
-      'Extensible modular architecture built to evolve',
+      'System architecture & data flow blueprints',
+      'Security, access control & API specifications',
+      'Modular foundation designed for future expansion',
     ],
     icon: Layers,
   },
@@ -89,13 +89,13 @@ const STAGES: MethodologyStage[] = [
     id: 'build',
     number: '04',
     stageName: 'BUILD',
-    headline: 'Engineer with digital craft and precision',
+    headline: 'Turn the blueprint into reliable, high-performance software',
     description:
-      'We write clean, strictly typed, maintainable software with thorough automated testing. From low-latency backend APIs to deterministic LLM tool-calling agents and reactive frontends, we build for production reliability.',
+      'We turn blueprints into fast, secure, and rigorously tested software. Every feature is engineered with automated tests and safety guardrails so it runs predictably in daily business operations.',
     deliverables: [
-      'Type-safe, modern engineering standards',
-      'Sub-second API response times & caching',
-      'Autonomous agent tool-calling guardrails',
+      'Clean, production-ready source code (100% client-owned)',
+      'Automated test suites & performance optimization',
+      'Built-in safety guardrails & error-handling logic',
     ],
     icon: Code2,
   },
@@ -103,13 +103,13 @@ const STAGES: MethodologyStage[] = [
     id: 'integrate',
     number: '05',
     stageName: 'INTEGRATE',
-    headline: 'Connect, automate, and orchestrate across systems',
+    headline: 'Connect seamlessly into your existing tools without disruption',
     description:
-      'No modern software thrives in a vacuum. We bridge your new technology directly into your existing ERP, CRM, databases, and third-party tools using fault-tolerant webhooks and event-driven middleware.',
+      "New technology is useless if it doesn't talk to the tools you already use. We connect your new system directly into your CRM, ERP, billing, and databases with safe transitions that keep your team working smoothly.",
     deliverables: [
-      'Enterprise ERP, CRM & payment synchronization',
-      'Event-driven webhook pipelines with retry queues',
-      'Zero-interruption operational rollout',
+      'Live connections with CRM, ERP & payment tools',
+      'Automatic data synchronization with retry handling',
+      'Safe rollout plan with zero business downtime',
     ],
     icon: Network,
   },
@@ -117,17 +117,17 @@ const STAGES: MethodologyStage[] = [
     id: 'evolve',
     number: '06',
     stageName: 'EVOLVE',
-    headline: 'Continuously optimize, scale, and infuse intelligence',
+    headline: 'Keep systems fast, secure, and continuously improving as you scale',
     description:
-      'Deployment is where real-world learning begins. We establish live telemetry, performance observability, and continuous feedback loops so your software and AI models self-optimize as your company scales.',
+      'Launch day is the beginning, not the end. We monitor live system health, catch and resolve issues before users notice them, and continuously upgrade features as your team and customer base expand.',
     deliverables: [
-      'Live operational telemetry & health metrics',
-      'Model performance monitoring & drift prevention',
-      'Iterative capability upgrades aligned with business growth',
+      '24/7 system health & performance monitoring',
+      'Automatic error tracking & proactive issue resolution',
+      'Ongoing feature upgrades as your business scales',
     ],
     icon: TrendingUp,
   },
-];
+]
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Custom Visual Components for each stage
@@ -137,178 +137,44 @@ function StageVisual({ stageId }: { stageId: string }) {
   switch (stageId) {
     case 'understand':
       return (
-        <div className="rounded-2xl bg-neutral-950 p-6 sm:p-7 text-neutral-200 border border-neutral-800 shadow-xl font-mono text-xs">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-neutral-800">
-            <span className="text-[11px] text-brand-400 font-tech uppercase tracking-wider">
-              DIAGNOSTIC MATRIX // STAGE 01
-            </span>
-            <span className="text-green-400 text-[10px] font-bold">ANALYSIS: ACTIVE</span>
-          </div>
-          <div className="space-y-3">
-            <div className="p-3 rounded-lg bg-neutral-900/90 border border-neutral-800">
-              <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
-                <span>OBSERVED FRICTION:</span>
-                <span className="text-amber-400">HIGH (42 hrs/wk)</span>
-              </div>
-              <p className="text-neutral-300">Manual data reconciliation across 3 disconnected software silos.</p>
-            </div>
-            <div className="p-3 rounded-lg bg-neutral-900/90 border border-neutral-800">
-              <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
-                <span>ROOT CAUSE IDENTIFIED:</span>
-                <span className="text-brand-400">ARCHITECTURAL</span>
-              </div>
-              <p className="text-neutral-300">No automated webhook bridge or central validation layer.</p>
-            </div>
-            <div className="p-2.5 rounded-lg bg-brand-500/10 border border-brand-500/30 flex items-center justify-between text-brand-300 text-[11px]">
-              <span>Solution Path: Event Bridge + Autonomous Agent</span>
-              <span className="text-green-400 font-bold">ROI: 8.4x</span>
-            </div>
-          </div>
+        <div className="">
+          <img src="assets/images/home/how_we_build/s1.png" alt="Understand" className='w-full h-full object-contain' />
         </div>
+
       );
 
     case 'explore':
       return (
-        <div className="rounded-2xl bg-white p-6 sm:p-7 border border-neutral-200/90 shadow-lg text-xs font-mono">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-neutral-100">
-            <span className="text-[11px] text-brand-600 font-tech font-bold uppercase tracking-wider">
-              FEASIBILITY TRADE-OFFS // STAGE 02
-            </span>
-            <span className="text-neutral-400 text-[10px]">SCORING: COMPLETED</span>
-          </div>
-          <div className="space-y-2.5">
-            {[
-              { tech: 'Custom Full-Stack App', fit: '98%', latency: '<40ms', verdict: 'Recommended' },
-              { tech: 'Autonomous Agent Workflow', fit: '94%', latency: '<400ms', verdict: 'Selected' },
-              { tech: 'Off-the-shelf SaaS tool', fit: '42%', latency: 'N/A', verdict: 'Incompatible' },
-            ].map((row, i) => (
-              <div
-                key={row.tech}
-                className={`p-3 rounded-xl border flex items-center justify-between ${
-                  i === 0
-                    ? 'bg-brand-500/5 border-brand-500/30 text-neutral-900'
-                    : 'bg-neutral-50 border-neutral-200/60 text-neutral-700'
-                }`}
-              >
-                <div>
-                  <span className="font-bold font-display text-sm block text-neutral-900">{row.tech}</span>
-                  <span className="text-[11px] text-neutral-500">Latency: {row.latency} • Fit: {row.fit}</span>
-                </div>
-                <span
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                    i < 2 ? 'bg-green-100 text-green-700' : 'bg-neutral-200 text-neutral-600'
-                  }`}
-                >
-                  {row.verdict}
-                </span>
-              </div>
-            ))}
-          </div>
+        <div className="">
+          <img src="assets/images/home/how_we_build/s2.png" alt="explore" className='w-full h-full object-contain' />
         </div>
       );
 
     case 'architect':
       return (
-        <div className="rounded-2xl bg-neutral-950 p-6 sm:p-7 text-neutral-200 border border-neutral-800 shadow-xl font-mono text-xs">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-neutral-800">
-            <span className="text-[11px] text-brand-400 font-tech uppercase tracking-wider">
-              TOPOLOGY SCHEMATIC // STAGE 03
-            </span>
-            <span className="text-green-400 text-[10px]">SYSTEM READY</span>
-          </div>
-          <div className="grid grid-cols-3 gap-3 text-center my-4">
-            <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
-              <span className="text-brand-400 font-bold block text-sm">CLIENT</span>
-              <span className="text-[10px] text-neutral-400">Next.js 15 UI</span>
-            </div>
-            <div className="p-3 rounded-xl bg-brand-500/20 border border-brand-500/40 text-brand-300">
-              <span className="font-bold block text-sm">API GATEWAY</span>
-              <span className="text-[10px] text-brand-200">FastAPI & Zod</span>
-            </div>
-            <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
-              <span className="text-green-400 font-bold block text-sm">DATA CORE</span>
-              <span className="text-[10px] text-neutral-400">Postgres + RAG</span>
-            </div>
-          </div>
-          <div className="p-2.5 rounded-lg bg-neutral-900/60 border border-neutral-800/80 text-[11px] text-neutral-400 flex items-center justify-between">
-            <span>Security: Zero-Trust JWT</span>
-            <span className="text-brand-400">Modular Extensibility: 100%</span>
-          </div>
+        <div className="">
+          <img src="assets/images/home/how_we_build/s3.png" alt="architect" className='w-full h-full object-contain' />
         </div>
       );
 
     case 'build':
       return (
-        <div className="rounded-2xl bg-white p-6 sm:p-7 border border-neutral-200/90 shadow-lg text-xs font-mono">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-neutral-100">
-            <span className="text-[11px] text-brand-600 font-tech font-bold uppercase tracking-wider">
-              BUILD PIPELINE // STAGE 04
-            </span>
-            <span className="text-green-600 text-[10px] font-bold">ALL TESTS PASSING</span>
-          </div>
-          <div className="space-y-2 font-mono text-[11px]">
-            <div className="p-2.5 rounded-lg bg-neutral-900 text-neutral-200 flex items-center justify-between">
-              <span className="text-green-400">✓ TypeCheck: 0 errors (strict mode)</span>
-              <span className="text-neutral-500">TypeScript 5</span>
-            </div>
-            <div className="p-2.5 rounded-lg bg-neutral-900 text-neutral-200 flex items-center justify-between">
-              <span className="text-green-400">✓ Agent Guardrails: 48/48 assertions</span>
-              <span className="text-neutral-500">Deterministic</span>
-            </div>
-            <div className="p-2.5 rounded-lg bg-neutral-900 text-neutral-200 flex items-center justify-between">
-              <span className="text-green-400">✓ Build Bundle: 142KB gzipped</span>
-              <span className="text-neutral-500">Optimized</span>
-            </div>
-          </div>
+        <div className="">
+          <img src="assets/images/home/how_we_build/s4.png" alt="build" className='w-full h-full object-contain' />
         </div>
       );
 
     case 'integrate':
       return (
-        <div className="rounded-2xl bg-neutral-950 p-6 sm:p-7 text-neutral-200 border border-neutral-800 shadow-xl font-mono text-xs">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-neutral-800">
-            <span className="text-[11px] text-brand-400 font-tech uppercase tracking-wider">
-              EVENT BUS SYNC // STAGE 05
-            </span>
-            <span className="text-green-400 text-[10px] animate-pulse">STREAMING LIVE</span>
-          </div>
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between p-2.5 rounded-lg bg-neutral-900 border border-neutral-800">
-              <span className="text-neutral-300">Salesforce CRM Bridge</span>
-              <span className="text-green-400 text-[10px] font-bold">SYNCED (22ms)</span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded-lg bg-neutral-900 border border-neutral-800">
-              <span className="text-neutral-300">Stripe Billing Webhooks</span>
-              <span className="text-green-400 text-[10px] font-bold">VERIFIED (18ms)</span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded-lg bg-neutral-900 border border-neutral-800">
-              <span className="text-neutral-300">PostgreSQL Data Warehouse</span>
-              <span className="text-green-400 text-[10px] font-bold">STREAMING (31ms)</span>
-            </div>
-          </div>
+        <div className="">
+          <img src="assets/images/home/how_we_build/s5.png" alt="integrate" className='w-full h-full object-contain' />
         </div>
       );
 
     case 'evolve':
       return (
-        <div className="rounded-2xl bg-white p-6 sm:p-7 border border-neutral-200/90 shadow-lg text-xs font-mono">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-neutral-100">
-            <span className="text-[11px] text-brand-600 font-tech font-bold uppercase tracking-wider">
-              TELEMETRY MONITOR // STAGE 06
-            </span>
-            <span className="text-green-600 text-[10px] font-bold">SELF-OPTIMIZING</span>
-          </div>
-          <div className="grid grid-cols-2 gap-3 mb-3">
-            <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200/60">
-              <span className="text-neutral-400 text-[10px] block">SYSTEM UPTIME</span>
-              <span className="font-display font-bold text-xl text-neutral-900">99.99%</span>
-            </div>
-            <div className="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20">
-              <span className="text-brand-600 text-[10px] block">TASK COMPLETION</span>
-              <span className="font-display font-bold text-xl text-brand-600">99.4%</span>
-            </div>
-          </div>
-          <p className="text-[11px] text-neutral-500">Autonomous feedback loops actively tuning model prompts & cache policies.</p>
+        <div className="">
+          <img src="assets/images/home/how_we_build/s6.png" alt="evolve" className='w-full h-full object-contain' />
         </div>
       );
 
@@ -624,14 +490,14 @@ function StepRow({
           {stage.description}
         </p>
 
-        <div className="mt-6 pt-6 border-t border-neutral-200/80 space-y-2.5">
+        <ul className="mt-6 pt-6 border-t border-neutral-200/80 space-y-2.5">
           {stage.deliverables.map((item) => (
-            <div key={item} className="flex items-center gap-3 text-xs sm:text-sm text-neutral-700 font-medium">
+            <li key={item} className="flex items-center gap-3 text-xs sm:text-sm text-neutral-700 font-medium">
               <CheckCircle2 className="w-4 h-4 text-brand-500 flex-shrink-0" />
               <span>{item}</span>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       {/* Visual Column */}
@@ -895,6 +761,37 @@ export function HowWeThinkBuild() {
       aria-labelledby="how-we-think-build-heading"
       className="relative w-full bg-[#FAFAFC] py-28 sm:py-36 lg:py-44 border-t border-neutral-200/80 overflow-hidden"
     >
+      {/* Schema.org Structured Data for SEO / AEO / GEO Entity Indexing */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: 'KAIROTRIX 6-Stage Engineering Journey',
+            description:
+              'A disciplined 6-stage engineering journey from understanding the problem to building, integrating, and continuously improving the system.',
+            itemListElement: STAGES.map((stage, idx) => ({
+              '@type': 'ListItem',
+              position: idx + 1,
+              name: `Stage ${stage.number}: ${stage.stageName} - ${stage.headline}`,
+              description: stage.description,
+            })),
+          }),
+        }}
+      />
+
+      {/* Screen Reader & AEO/GEO Semantic Narrative Summary */}
+      <p className="sr-only">
+        KAIROTRIX follows a disciplined 6-stage engineering journey: 
+        01 Understand (uncovering real bottlenecks before writing code), 
+        02 Explore (finding the right technology for the job rather than hype), 
+        03 Architect (designing a rock-solid blueprint built to scale), 
+        04 Build (turning blueprints into reliable, client-owned software), 
+        05 Integrate (connecting seamlessly into existing tools without disruption), and 
+        06 Evolve (monitoring performance and keeping systems continuously improving).
+      </p>
+
       {/* Background Architectural Grid Lines */}
       <div
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#00000004_1px,transparent_1px),linear-gradient(to_bottom,#00000004_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
@@ -914,12 +811,12 @@ export function HowWeThinkBuild() {
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                05 // Methodology & Architecture
+                05 // HOW WE BUILD
               </span>
               <div className="h-px w-10 sm:w-16 bg-neutral-200 hidden sm:block" />
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/25 text-[10px] font-mono text-brand-600 font-semibold uppercase tracking-wider">
                 <Navigation className="w-2.5 h-2.5 text-brand-500 animate-pulse" />
-                Live Route Tracking
+                6-Stage Engineering Journey
               </span>
             </div>
 
@@ -934,7 +831,7 @@ export function HowWeThinkBuild() {
 
           <div className="max-w-md">
             <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
-              A disciplined, transparent 6-stage engineering journey. From discovering the hidden problem to shipping production-grade software and self-optimizing telemetry.
+              A disciplined 6-stage engineering journey—from understanding the real business problem to building, connecting, and continuously improving your software.
             </p>
           </div>
         </motion.div>

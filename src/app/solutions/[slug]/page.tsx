@@ -92,7 +92,7 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main className="w-full min-h-screen bg-neutral-0 text-neutral-900">
+      <main className="w-full min-h-screen bg-[#FAFAFC] text-neutral-900">
         {/* 01. Hero with Flanked Carousel */}
         <SolutionHero solution={solution} />
 

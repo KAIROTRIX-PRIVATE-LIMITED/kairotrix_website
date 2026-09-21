@@ -1,0 +1,143 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  headline        String
+  badge           String   @default("KAIROTRIX BUILD") // 'CLIENT PROJECT' | 'KAIROTRIX BUILD' | 'EXPERIMENT' | 'TECHNICAL DEMO' | 'CAPABILITY'
+  type            String   @default("project")        // 'project' | 'experiment' | 'demo' | 'capability'
+  disciplineId    String                              // e.g. 'ai-intelligent-systems'
+  disciplineName  String                              // e.g. 'AI & Intelligent Systems'
+  summary         String   @db.Text
+  invariant       String   @db.Text
+  metric          String
+  metricLabel     String
+  techStack       String[]                            // Native string array in PostgreSQL
+  video           String?
+  image           String
+  featured        Boolean  @default(false)
+  year            String
+  client          String
+  systemEquation  Json?                               // Native JSON object: { left, operator, right, outcome }
+  keyDeliverables String[]                            // Native string array in PostgreSQL
+  status          String   @default("ACTIVE")         // "ACTIVE" | "PAUSED"
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Insight {
+  id                    String   @id @default(cuid())
+  slug                  String   @unique
+  title                 String
+  subtitle              String
+  excerpt               String   @db.Text
+  content               String?  @db.Text
+  category              String   @default("article")  // 'blueprint' | 'case-study' | 'article' | 'research'
+  badge                 String   @default("TECHNICAL DEEP DIVE") // 'SYSTEM BLUEPRINT' | 'CASE STUDY' | 'TECHNICAL DEEP DIVE' | 'RESEARCH' | 'PERSPECTIVE'
+  disciplineId          String
+  disciplineName        String
+  date                  String
+  readTime              String
+  author                String
+  authorRole            String
+  tags                  String[]                      // Native string array in PostgreSQL
+  featured              Boolean  @default(false)
+  videoSrc              String?
+  image                 String
+  keyTakeaway           String   @db.Text
+  empiricalMetricLabel  String?
+  empiricalMetricValue  String?
+  architectureEquation  Json?                         // Native JSON object
+  keySections           String[]                      // Native string array in PostgreSQL
+  status                String   @default("PUBLISHED") // "PUBLISHED" | "PAUSED" | "DRAFT"
+  order                 Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model ContactInquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  interest  String   @default("General Inquiry")
+  message   String   @db.Text
+  status    String   @default("NEW")              // "NEW" | "IN_PROGRESS" | "RESOLVED" | "ARCHIVED"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// === AI AGENT (KIRO) MODELS ===
+
+model AiAgentConfig {
+  id           String   @id @default("default")
+  isEnabled    Boolean  @default(true)               // 1-Click Master Site-Wide Toggle
+  mode         String   @default("HYBRID")           // "HYBRID" | "LLM_ONLY" | "DETERMINISTIC"
+  model        String   @default("gpt-4o-mini")
+  systemPrompt String   @db.Text
+  temperature  Float    @default(0.3)
+  updatedAt    DateTime @updatedAt
+}
+
+model Conversation {
+  id                 String        @id @default(cuid())
+  sessionId          String        @unique
+  status             String        @default("ACTIVE") // "ACTIVE" | "QUALIFIED_LEAD" | "CLOSED"
+  leadName           String?
+  leadEmail          String?
+  requirementSummary String?       @db.Text
+  messages           ChatMessage[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model ChatMessage {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         String       // "user" | "kiro"
+  text           String       @db.Text
+  actions        Json?        // Navigation actions: [{ label, href, variant }]
+  createdAt      DateTime     @default(now())
+}
+
+// === TEAM & ABOUT SECTION MODELS ===
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  badge     String?
+  image     String
+  twitter   String?
+  linkedin  String?
+  github    String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AboutConfig {
+  id                   String   @id @default("default")
+  isTeamSectionVisible Boolean  @default(true)
+  updatedAt            DateTime @updatedAt
+}

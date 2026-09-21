@@ -5,27 +5,26 @@ import { ContactForm } from '@/components/contact/ContactForm';
 import { ContactSidebar } from '@/components/contact/ContactSidebar';
 
 export const metadata: Metadata = {
-  title: 'Contact KAIROTRIX — Start a Direct Conversation',
+  title: 'Contact KAIROTRIX — Start a Conversation',
   description:
-    'Have an operational challenge, custom software requirement, or AI architecture to build? Contact KAIROTRIX. Every inquiry is reviewed directly by a principal engineer.',
+    'Have a business challenge, product idea, or technology project to discuss? Start a conversation with KAIROTRIX about what you\'re looking to build, improve, or solve.',
   keywords: [
     'Contact KAIROTRIX',
-    'Hire AI engineers',
-    'Custom software development inquiry',
-    'AI solutions consultation',
-    'Enterprise software engineering',
+    'Start a conversation',
+    'Custom software inquiry',
+    'Technology project discussion',
   ],
   openGraph: {
-    title: 'Contact KAIROTRIX — Let’s Build Something',
+    title: 'Contact KAIROTRIX — Start a Conversation',
     description:
-      'Start a direct conversation with our engineering team. We review every technical inquiry within 24 hours.',
+      'Tell us what you\'re working on and what you\'re looking to build, improve, or solve. Start a conversation with KAIROTRIX.',
     type: 'website',
   },
 };
 
 export default function ContactPage() {
   return (
-    <main className="w-full min-h-screen bg-neutral-0">
+    <main className="w-full min-h-screen bg-[#FAFAFC]">
       <ContactHero />
 
       <section className="w-full py-12 sm:py-16 lg:py-20">
@@ -37,7 +36,7 @@ export default function ContactPage() {
                 fallback={
                   <div className="w-full p-12 rounded-3xl bg-neutral-50 border border-neutral-200 text-center">
                     <span className="font-tech text-xs uppercase tracking-widest text-neutral-400">
-                      Loading Contact Interface...
+                      Loading...
                     </span>
                   </div>
                 }

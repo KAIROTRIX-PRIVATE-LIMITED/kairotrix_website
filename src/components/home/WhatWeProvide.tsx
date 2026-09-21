@@ -8,27 +8,27 @@ import clsx from 'clsx';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// KAIROTRIX Section 03 — "Core Disciplines" (Rotating Curved Orbital Dial)
+// KAIROTRIX Section 03 — "Core Solutions" (Rotating Curved Orbital Dial)
 //
 // 1. Frozen Big Section Header: Locked at top-16/top-20 with full bold presence
 //    (Eyebrow, "WHAT WE BUILD.", and narrative description; NO top tabs).
 // 2. Preserved Scroll Animation: Full-height rotating curved orbital wheel where
 //    active node centers at vertical midpoint (y = 50%) as user scrolls.
-// 3. Centralized service specs: Category badge, display title, description,
-//    capability pills, and "Explore Architecture & Scope →" button.
+// 3. Centralized solution specs: Category badge, display title, dual-layer
+//    Challenge/Solution/Outcome specs, and "Explore Solutions →" button.
 // 4. Floating 3D circuit brain illustration with ambient depth & telemetry.
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface ServiceData {
   number: string;
+  shortLabel: string;
   title: string;
-  subtitle: string;
+  architectureBadge: string;
   description: string;
   pills: string[];
-  statusBadge: string;
   telemetry: {
-    liveMetric: string;
-    systemTag: string;
+    topBadge: string;
+    bottomTag: string;
   };
   image: string;
   slug: string;
@@ -37,90 +37,90 @@ interface ServiceData {
 const SERVICES: ServiceData[] = [
   {
     number: '01',
+    shortLabel: '01 AI Systems',
     title: 'AI & Intelligent Systems',
-    subtitle: 'Autonomous Agents, Enterprise RAG & Custom LLM Fine-Tuning',
+    architectureBadge: 'Human-in-the-Loop Validation',
     description:
-      'We engineer deterministic autonomous agents, custom LLMs, and enterprise RAG pipelines that embed directly into your core business operations.',
-    pills: ['Autonomous Agents', 'Enterprise RAG', 'Custom LLMs', 'Decision ML'],
-    statusBadge: 'Production Ready',
+      'AI applications, intelligent agents, voice systems, machine learning, and knowledge systems built for real business use.',
+    pills: ['AI Agents & Voice', 'Custom AI Apps', 'RAG Knowledge Bases', 'Machine Learning'],
     telemetry: {
-      liveMetric: '99.98% Tool Execution SLA',
-      systemTag: 'Autonomous Multi-Agent Swarm',
+      topBadge: 'Verified Source Citations',
+      bottomTag: 'Deterministic AI Architecture',
     },
     image: '/assets/images/service/SERVICE01.png',
     slug: '/solutions/ai-intelligent-systems',
   },
   {
     number: '02',
+    shortLabel: '02 Custom Software',
     title: 'Software & Product Engineering',
-    subtitle: 'Full-Stack Digital Platforms & High-Throughput Distributed APIs',
+    architectureBadge: 'Full Source Code Ownership',
     description:
-      'Full-stack digital platforms and distributed microservices purpose-built for enterprise concurrency, sub-20ms latency, and complete source code ownership.',
-    pills: ['Web Platforms', 'Distributed APIs', 'Cloud Native', 'Design Systems'],
-    statusBadge: 'Sub-20ms Latency',
+      'Custom business software, web applications, internal operations tools, and SaaS products engineered to scale with your company.',
+    pills: ['Custom Business Software', 'Web & SaaS Apps', '0→1 Product Dev', 'Product UI/UX'],
     telemetry: {
-      liveMetric: 'P99 Latency < 16ms',
-      systemTag: 'Next.js 15 Microservices',
+      topBadge: 'Production-Grade Quality',
+      bottomTag: 'Modern Web & API Systems',
     },
     image: '/assets/images/service/SERVICE02.png',
     slug: '/solutions/software-product-engineering',
   },
   {
     number: '03',
+    shortLabel: '03 Automation',
     title: 'Automation & Digital Operations',
-    subtitle: 'End-to-End Workflow Orchestration & Self-Healing Bots',
+    architectureBadge: 'Controlled Failure Handling',
     description:
-      'Eliminate manual operational bottlenecks with autonomous workflow orchestration, multi-system webhook synchronization, and self-healing background bots.',
-    pills: ['Workflow Automation', 'Ops Bots', 'Approval Engines', 'Data Sync'],
-    statusBadge: 'Zero Human Bottlenecks',
+      'End-to-end workflow automation, document processing, approval chains, and task orchestration that eliminate manual administrative busywork.',
+    pills: ['Workflow Automation', 'Document Processing', 'Approval Chains', 'Task Automation'],
     telemetry: {
-      liveMetric: '14,200 Events / Min',
-      systemTag: 'Self-Healing Event Workers',
+      topBadge: 'Automated Event Triggers',
+      bottomTag: 'Event-Driven Workflow Engine',
     },
     image: '/assets/images/service/SERVICE03.png',
     slug: '/solutions/automation-digital-operations',
   },
   {
     number: '04',
+    shortLabel: '04 Modernization',
     title: 'Digital Transformation',
-    subtitle: 'Legacy Monolith Decoupling & Zero-Downtime Cloud Migration',
+    architectureBadge: 'Zero-Downtime Migration',
     description:
-      'Modernize legacy monoliths without business downtime. We decouple legacy systems, migrate workloads to cloud-native serverless architecture, and tune database performance.',
-    pills: ['Cloud Migration', 'Monolith Decoupling', 'Audits & SLAs', 'Optimization'],
-    statusBadge: '100% SLA Guarantee',
+      'Modern web and e-commerce development, process digitization, legacy modernization, and thoughtful UI/UX design.',
+    pills: ['Web & E-Commerce', 'Process Digitization', 'Legacy Modernization', 'UI/UX Design'],
     telemetry: {
-      liveMetric: '100% Data Integrity',
-      systemTag: 'Zero Cutover Downtime',
+      topBadge: 'Staged System Cutover',
+      bottomTag: 'Pragmatic Cloud Modernization',
     },
     image: '/assets/images/service/SERVICE04.png',
     slug: '/solutions/digital-transformation',
   },
   {
     number: '05',
+    shortLabel: '05 Data & BI',
     title: 'Data & Business Intelligence',
-    subtitle: 'Real-Time Telemetry Streaming & Governed Executive Dashboards',
+    architectureBadge: 'Structured Metric Models',
     description:
-      'Transform distributed raw event streams into sub-second visual intelligence, automated anomaly alerts, and trustworthy governed semantic metrics.',
-    pills: ['Real-Time Streaming', 'Fast Dashboards', 'Data Warehousing', 'Metrics'],
-    statusBadge: 'Sub-Second Analytics',
+      'Business data analytics, real-time KPI dashboards, automated management reporting, and natural-language data query tools.',
+    pills: ['KPI Dashboards', 'Business Analytics', 'Automated Reporting', 'NL Data Queries'],
     telemetry: {
-      liveMetric: '< 420ms Query Times',
-      systemTag: '10M+ Rows Scanned / Sec',
+      topBadge: 'Single Source of Truth',
+      bottomTag: 'Unified Business Dashboards',
     },
     image: '/assets/images/service/SERVICE05.png',
     slug: '/solutions/data-business-intelligence',
   },
   {
     number: '06',
+    shortLabel: '06 Integrations',
     title: 'Technology Integration',
-    subtitle: 'Multi-Protocol Middleware & Enterprise System Bridges',
+    architectureBadge: 'Validated Data Contracts',
     description:
-      'Bridge disparate software stacks, IoT hardware sensors, and enterprise ERP backbones with robust, resilient multi-protocol middleware adapters.',
-    pills: ['Multi-Protocol', 'ERP/CRM Sync', 'IoT Telemetry', 'Webhook Routers'],
-    statusBadge: 'Multi-Protocol Active',
+      'API, CRM & ERP integrations, payment connections, and data synchronization that keep your core business systems working together.',
+    pills: ['CRM & ERP Integration', 'API & System Bridges', 'Real-Time Data Sync', 'Payment Gateways'],
     telemetry: {
-      liveMetric: 'Bi-Directional Sync Active',
-      systemTag: 'Multi-Protocol Protocol Routing',
+      topBadge: 'Bi-Directional Sync',
+      bottomTag: 'Multi-System Middleware',
     },
     image: '/assets/images/service/SERVICE06.png',
     slug: '/solutions/technology-integration',
@@ -185,11 +185,11 @@ export function WhatWeProvide() {
 
   return (
     <section
-      id="core-disciplines"
+      id="what-we-build"
       ref={containerRef}
       className="relative w-full bg-[#FAFAFC] border-t border-neutral-200/80"
       style={{ height: '380vh' }}
-      aria-label="Section 03: Core Disciplines"
+      aria-label="Section 03: What We Build"
     >
       {/* Background Architectural Grid Lines */}
       <div
@@ -210,7 +210,7 @@ export function WhatWeProvide() {
             <div className="flex items-center gap-3 mb-2">
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                03 // Core Disciplines
+                03 // What We Build
               </span>
               <div className="h-px w-10 sm:w-16 bg-neutral-200" />
             </div>
@@ -232,7 +232,7 @@ export function WhatWeProvide() {
                 Solutions Hub
               </span>
               <span className="text-neutral-300">|</span>
-              <span className="text-neutral-500 group-hover:text-neutral-700">6 Disciplines</span>
+              <span className="text-neutral-500 group-hover:text-neutral-700">6 Solutions</span>
               <ArrowRight className="w-3 h-3 text-neutral-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-transform" />
             </Link>
 
@@ -325,7 +325,7 @@ export function WhatWeProvide() {
                       mass: 0.8,
                     }}
                     className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer focus:outline-hidden z-10"
-                    aria-label={`Select service ${srv.number}`}
+                    aria-label={`Select solution ${srv.number}: ${srv.title}`}
                   >
                     <div
                       className={clsx(
@@ -361,19 +361,19 @@ export function WhatWeProvide() {
             {/* ── CENTER: STREAMLINED SERVICE SPECIFICATION (Maintains Bold Single-Line Title) ── */}
             <div className="lg:col-span-5 flex flex-col justify-center min-w-0">
               {/* Mobile Quick Stepper Pills (visible only on < lg) */}
-              <div className="flex lg:hidden items-center gap-1.5 pb-3 overflow-x-auto no-scrollbar">
+              <div className="flex lg:hidden items-center gap-2 pb-3 overflow-x-auto no-scrollbar">
                 {SERVICES.map((srv, idx) => (
                   <button
                     key={srv.number}
                     onClick={() => handleSelect(idx)}
                     className={clsx(
-                      'px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer',
+                      'px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all whitespace-nowrap cursor-pointer shrink-0',
                       activeIndex === idx
                         ? 'bg-neutral-900 text-white shadow-xs'
-                        : 'bg-white border border-neutral-200 text-neutral-500 hover:text-neutral-900'
+                        : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-900'
                     )}
                   >
-                    {srv.number}
+                    {srv.shortLabel}
                   </button>
                 ))}
               </div>
@@ -385,25 +385,30 @@ export function WhatWeProvide() {
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -16, filter: 'blur(4px)' }}
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="space-y-4 sm:space-y-5"
+                  className="space-y-3 sm:space-y-3.5"
                 >
-                  {/* Category Header: SERVICE 01 // 06 • Status Badge */}
+                  {/* Category Header: SOLUTION 01 // 06 • Architecture Badge */}
                   <div className="flex items-center gap-2.5 flex-wrap">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200/70 shadow-2xs">
                       <span className="h-1.5 w-1.5 rounded-full bg-brand-600 animate-pulse" />
                       <span className="font-mono text-xs font-bold uppercase tracking-widest text-brand-700">
-                        SERVICE {currentService.number} // 06
+                        SOLUTION {currentService.number} // 06
                       </span>
                     </div>
-                    <span className="font-mono text-[11px] text-neutral-500 font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-neutral-100 border border-neutral-200/60">
-                      {currentService.statusBadge}
+                    <span className="font-mono text-[11px] text-neutral-600 font-medium px-2.5 py-0.5 rounded-md bg-neutral-100 border border-neutral-200/80">
+                      {currentService.architectureBadge}
                     </span>
                   </div>
 
                   {/* Title: Big display typography strictly on ONE line */}
-                  <h3 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-[1.8rem] xl:text-[2.15rem] 2xl:text-[2.35rem] font-bold tracking-tight text-neutral-950 leading-tight whitespace-nowrap">
+                  <h3 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-[1.7rem] xl:text-[2rem] 2xl:text-[2.25rem] font-bold tracking-tight text-neutral-950 leading-tight whitespace-nowrap">
                     {currentService.title}
                   </h3>
+
+                  {/* Short and Sweet Plain-English Description */}
+                  <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-normal">
+                    {currentService.description}
+                  </p>
 
                   {/* Capability Pills */}
                   <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -423,7 +428,7 @@ export function WhatWeProvide() {
                       href={currentService.slug}
                       className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-3 rounded-xl bg-neutral-950 hover:bg-brand-600 text-white text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-brand-500/25 group cursor-pointer"
                     >
-                      <span>Explore Architecture & Scope</span>
+                      <span>Explore Solutions</span>
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
 
@@ -482,7 +487,7 @@ export function WhatWeProvide() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                       </span>
-                      <span className="font-semibold tracking-tight">{currentService.telemetry.liveMetric}</span>
+                      <span className="font-semibold tracking-tight">{currentService.telemetry.topBadge}</span>
                     </motion.div>
 
                     {/* Floating Tag Chip (Obsidian Glass) */}
@@ -493,7 +498,7 @@ export function WhatWeProvide() {
                       className="absolute bottom-3 left-1 sm:bottom-4 sm:left-2 flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-neutral-950/90 backdrop-blur-xl border border-white/15 text-white text-xs font-mono shadow-[0_12px_30px_rgba(0,0,0,0.2)] z-10"
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-brand-400 shadow-[0_0_8px_rgba(192,132,252,0.9)]" />
-                      <span className="text-brand-200 font-semibold tracking-wide">{currentService.telemetry.systemTag}</span>
+                      <span className="text-brand-200 font-semibold tracking-wide">{currentService.telemetry.bottomTag}</span>
                     </motion.div>
                   </motion.div>
                 </motion.div>

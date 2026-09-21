@@ -12,22 +12,46 @@ import {
 } from '@/data/solutionsData';
 
 const LEFT_RIBBON_ITEMS = [
-  '01 // AUTONOMOUS SYSTEMS',
-  '02 // PRODUCT ENGINEERING',
-  '03 // WORKFLOW ORCHESTRATION',
-  '04 // DIGITAL MODERNIZATION',
-  '05 // BUSINESS INTELLIGENCE',
+  '01 // AI SYSTEMS & AGENTS',
+  '02 // CUSTOM SOFTWARE & PRODUCTS',
+  '03 // BUSINESS AUTOMATION',
+  '04 // WEBSITES & EXPERIENCES',
+  '05 // DATA & INTELLIGENCE',
   '06 // SYSTEM INTEGRATION',
 ];
 
 const RIGHT_RIBBON_ITEMS = [
   'DETERMINISTIC ARCHITECTURE',
   'FULL CODE OWNERSHIP',
-  'ENTERPRISE SLA 99.99%',
+  'DESIGNED FOR RELIABILITY',
   'PRODUCTION GRADE DEPLOYMENT',
   'ZERO DOWNTIME MIGRATION',
   'BUILT TO EVOLVE',
 ];
+
+const SOLUTION_DESCRIPTIONS: Record<string, string> = {
+  'ai-intelligent-systems':
+    'Build AI-powered applications, intelligent agents, machine learning systems, and knowledge tools that help businesses automate work, use information, and make better decisions.',
+  'software-product-engineering':
+    'Design and build custom business software, web applications, SaaS platforms, and digital products—from the first idea and MVP to ongoing development and improvement.',
+  'automation-digital-operations':
+    'Automate repetitive workflows, documents, approvals, communications, and administrative tasks so everyday operations require less manual work.',
+  'digital-transformation':
+    'Modernize how your business works and interacts online through websites, digital workflows, process digitization, and user-focused UI/UX design.',
+  'data-business-intelligence':
+    'Turn business data into useful insights through analytics, KPI dashboards, interactive reports, and natural-language tools for exploring information.',
+  'technology-integration':
+    'Connect the software your business already uses through APIs, CRM and ERP integrations, payment services, and reliable data synchronization between systems.',
+};
+
+const CORE_SERVICE_COUNTS: Record<string, string> = {
+  'ai-intelligent-systems': '4 CORE SERVICES',
+  'software-product-engineering': '4 CORE SERVICES',
+  'automation-digital-operations': '1 CORE SERVICE',
+  'digital-transformation': '3 CORE SERVICES',
+  'data-business-intelligence': '2 CORE SERVICES',
+  'technology-integration': '2 CORE SERVICES',
+};
 
 interface DisciplineRowProps {
   discipline: SolutionDetail;
@@ -95,13 +119,10 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
 
           {/* Discipline Text Stack */}
           <div className="space-y-1.5 min-w-0">
-            {/* Meta Eyebrow */}
-            <div className="flex items-center gap-2.5">
-              <span className="font-mono text-xs font-bold text-brand-700 bg-brand-50 group-hover:bg-brand-600 group-hover:text-white px-2 py-0.5 rounded-md border border-brand-200 group-hover:border-brand-600 transition-colors duration-300 shrink-0">
-                {discipline.number}
-              </span>
-              <span className="font-tech text-[10px] sm:text-[11px] tracking-[0.16em] font-semibold text-neutral-400 group-hover:text-neutral-600 uppercase transition-colors truncate">
-                {discipline.categoryTag}
+            {/* Meta Eyebrow: SOLUTION XX // 06 */}
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-brand-700 bg-brand-50 group-hover:bg-brand-600 group-hover:text-white px-2.5 py-0.5 rounded-md border border-brand-200 group-hover:border-brand-600 transition-colors duration-300 shrink-0">
+                SOLUTION {discipline.number} // 06
               </span>
             </div>
 
@@ -110,15 +131,15 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
               {discipline.title}
             </h3>
 
-            {/* Concise Subtitle / Description */}
-            <p className="text-xs sm:text-sm text-neutral-600 font-normal line-clamp-1 sm:line-clamp-2 max-w-2xl leading-relaxed">
-              {discipline.subtitle || discipline.editorialHeadline}
+            {/* Plain-English Purpose Description */}
+            <p className="text-xs sm:text-sm text-neutral-600 font-normal line-clamp-2 max-w-2xl leading-relaxed">
+              {SOLUTION_DESCRIPTIONS[discipline.slug] || discipline.subtitle}
             </p>
           </div>
 
         </div>
 
-        {/* Right Side: Capabilities Counter & Circular Arrow Trigger */}
+        {/* Right Side: Exact Core Services Count & Circular Arrow Trigger */}
         <div className="flex items-center gap-3 shrink-0 z-20">
           {/* Mobile Image (shown only on small screens < sm) */}
           <div className="sm:hidden relative w-12 h-12 shrink-0 rounded-lg overflow-hidden border border-neutral-200/80 bg-neutral-50 p-1">
@@ -132,7 +153,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
           </div>
 
           <span className="hidden md:inline-block text-xs font-tech font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-brand-600 transition-colors">
-            {discipline.subCategories.length} CAPABILITIES
+            {CORE_SERVICE_COUNTS[discipline.slug] || `${discipline.subCategories.length} CORE SERVICES`}
           </span>
 
           <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-neutral-200/90 flex items-center justify-center text-neutral-400 group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-[0_4px_16px_rgba(147,51,234,0.25)] transition-all duration-300 shadow-2xs">
@@ -150,7 +171,10 @@ export function SolutionsGrid() {
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
 
   return (
-    <section className="relative w-full py-14 sm:py-18 lg:py-20 bg-[#FAFAFC] overflow-hidden">
+    <section
+      id="solutions-directory"
+      className="relative w-full py-14 sm:py-18 lg:py-20 bg-[#FAFAFC] overflow-hidden scroll-mt-24"
+    >
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* ── LEFT FLANK: Vertical Ribbon Flowing UPWARDS (↑) ── */}
@@ -232,21 +256,22 @@ export function SolutionsGrid() {
         </div>
         
         {/* Section Header */}
-        <div className="mb-6 sm:mb-8 max-w-5xl mx-auto">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-brand-600 animate-pulse" />
+        <div className="mb-8 sm:mb-12 max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-3 sm:mb-4">
+            <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
             <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-              THE 6 DISCIPLINES
+              02 // EXPLORE SOLUTIONS
             </span>
+            <div className="h-px w-10 sm:w-16 bg-neutral-200" />
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900 leading-tight">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
             SIX CORE{' '}
             <span className="gradient-signature-text">
-              DISCIPLINES.
+              SOLUTIONS.
             </span>
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-neutral-600 max-w-2xl font-normal">
-            Deterministic architecture, verified engineering, and full source code ownership across six core technology disciplines.
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-2xl font-normal leading-relaxed">
+            From AI and custom software to automation, digital experiences, data, and integration—explore the technology we design and build around real business needs.
           </p>
         </div>
 

@@ -1,43 +1,49 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { AboutHero } from '@/components/about/AboutHero';
-import { AboutIdentity } from '@/components/about/AboutIdentity';
+import { AboutPhilosophy } from '@/components/about/AboutPhilosophy';
 import { AboutVisionMission } from '@/components/about/AboutVisionMission';
 import { AboutValues } from '@/components/about/AboutValues';
-import { AboutApproach } from '@/components/about/AboutApproach';
-import { AboutFuture } from '@/components/about/AboutFuture';
 import { AboutCTA } from '@/components/about/AboutCTA';
+import { getTeamConfig } from '@/lib/services/teamService';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'About KAIROTRIX — AI Technology & Software Solutions Company',
+  title: 'About KAIROTRIX — Technology & Innovation Company',
   description:
-    'KAIROTRIX is an AI technology and software solutions company that identifies real operational problems first, then engineers custom AI, software, automation, or integration systems. Built to evolve.',
+    'KAIROTRIX is a technology and innovation company that identifies real business problems first, then designs and builds custom software, AI systems, automation, and connected digital infrastructure. Built to evolve.',
   keywords: [
     'About KAIROTRIX',
-    'AI solutions company',
+    'technology company',
     'custom software engineering',
     'problem-first technology',
-    'business automation architecture',
+    'business automation',
     'software development company',
-    'enterprise AI systems',
   ],
   openGraph: {
     title: 'About KAIROTRIX — Built to Evolve',
     description:
-      'We don’t just claim capability — we demonstrate it. Learn why KAIROTRIX exists, our problem-first engineering philosophy, and our vision for enterprise technology.',
+      'Learn why KAIROTRIX exists, the principles behind our work, and how we approach building useful, reliable technology around real business needs.',
     type: 'website',
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { isTeamSectionVisible, members } = await getTeamConfig();
+
   return (
-    <main className="w-full min-h-screen bg-neutral-0">
+    <main className="relative w-full min-h-screen bg-neutral-50 overflow-hidden">
+      {/* Subtle brand ambient glow for page continuity */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-brand-500/5 to-transparent rounded-full blur-3xl pointer-events-none"
+        aria-hidden="true"
+      />
       <AboutHero />
-      <AboutIdentity />
+      <AboutPhilosophy />
       <AboutVisionMission />
-      <AboutValues />
-      <AboutApproach />
-      <AboutFuture />
+      {isTeamSectionVisible && <AboutValues members={members} />}
       <AboutCTA />
     </main>
   );

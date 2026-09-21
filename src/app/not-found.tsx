@@ -11,7 +11,7 @@ export default function NotFound() {
   const prefersReduced = useReducedMotion();
 
   return (
-    <main className="relative w-full min-h-[85vh] bg-neutral-0 flex items-center justify-center pt-32 sm:pt-36 lg:pt-40 pb-20 overflow-hidden">
+    <main className="relative w-full min-h-[85vh] bg-[#FAFAFC] flex items-center justify-center pt-32 sm:pt-36 lg:pt-40 pb-20 overflow-hidden">
       {/* Ambient background engineering grid */}
       <div
         className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none"
@@ -59,12 +59,13 @@ export default function NotFound() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
-          className="flex items-center gap-2 mb-4"
+          className="flex items-center gap-3 mb-4"
         >
           <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
           <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
             404 // ROUTE EXCEPTION
           </span>
+          <span className="h-px w-10 sm:w-16 bg-neutral-200" aria-hidden="true" />
         </motion.div>
 
         {/* Exact User Headline */}

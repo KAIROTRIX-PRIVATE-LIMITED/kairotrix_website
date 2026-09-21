@@ -157,11 +157,11 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     },
     editorialHeadline: 'Where Intelligence Meets Execution',
     categoryTag: 'Autonomous Systems & Machine Intelligence',
-    subtitle: 'Deterministic Multi-Agent Swarms, Enterprise RAG & Custom Fine-Tuned LLMs',
+    subtitle: 'Build AI-powered applications, intelligent agents, machine learning systems, and knowledge tools that help businesses automate work, use information, and make better decisions.',
     executiveSummary:
       'We engineer deterministic autonomous agents, custom fine-tuned LLMs, and high-precision enterprise RAG pipelines that bridge proprietary company knowledge directly into frontline business workflows.',
     image: '/assets/images/service/SERVICE01.png',
-    heroVideo: '/assets/videos/hero_vid1.mp4',
+    heroVideo: '/assets/videos/ai-service.mp4',
     statusBadge: 'Production Ready',
     telemetry: {
       sla: '99.98% Tool Execution SLA',
@@ -558,11 +558,11 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     },
     editorialHeadline: 'Where Engineering Meets Velocity',
     categoryTag: 'Digital Platforms & Engineering Architecture',
-    subtitle: 'Full-Stack Modern Platforms, High-Throughput Distributed APIs & Zero-Downtime Architecture',
+    subtitle: 'Design and build custom business software, web applications, SaaS platforms, and digital products—from the first idea and MVP to ongoing development and improvement.',
     executiveSummary:
       'We design, engineer, and scale full-stack digital platforms and distributed backend microservices purpose-built for enterprise concurrency, sub-20ms latency, and 100% proprietary code ownership.',
     image: '/assets/images/service/SERVICE02.png',
-    heroVideo: '/assets/videos/hero_vid2.mp4',
+    heroVideo: '/assets/videos/software-service.mp4',
     statusBadge: 'Sub-20ms Latency',
     telemetry: {
       sla: '99.99% Production Uptime',
@@ -888,7 +888,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     },
     editorialHeadline: 'Where Operations Meet Autonomy',
     categoryTag: 'Workflow Orchestration & Operations Automation',
-    subtitle: 'End-to-End Operational Workflow Automation, Document AI & Self-Healing Bots',
+    subtitle: 'Automate repetitive workflows, documents, approvals, communications, and administrative tasks so everyday operations require less manual work.',
     executiveSummary:
       'We eliminate manual operational bottlenecks with autonomous workflow orchestration, multi-system webhook synchronization, and self-healing background workers that run 24/7 with zero human intervention.',
     image: '/assets/images/service/SERVICE03.png',
@@ -1182,7 +1182,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     },
     editorialHeadline: 'Where Craft Meets Modernity',
     categoryTag: 'Modernization & Enterprise Web Craft',
-    subtitle: 'Legacy Monolith Decoupling, Headless Modernization & Zero-Downtime Cloud Migration',
+    subtitle: 'Modernize how your business works and interacts online through websites, digital workflows, process digitization, and user-focused UI/UX design.',
     executiveSummary:
       'We modernize traditional businesses by decoupling legacy monoliths, architecting bespoke high-performance web experiences, and migrating outdated digital workflows to resilient cloud-native systems.',
     image: '/assets/images/service/SERVICE04.png',
@@ -1476,7 +1476,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     },
     editorialHeadline: 'Where Data Meets Decision Command',
     categoryTag: 'Analytics, Data Pipelines & Decision Systems',
-    subtitle: 'Deterministic Data Pipelines, Real-Time Executive Dashboards & Predictive ML Models',
+    subtitle: 'Turn business data into useful insights through analytics, KPI dashboards, interactive reports, and natural-language tools for exploring information.',
     executiveSummary:
       'We transform fragmented raw data into sub-second visual intelligence, automated anomaly alerts, and trustworthy semantic metrics that empower executive decision-making with zero guesswork.',
     image: '/assets/images/service/SERVICE05.png',
@@ -1770,7 +1770,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     },
     editorialHeadline: 'Where Systems Meet Seamless Flow',
     categoryTag: 'API Fabrics, Middleware & System Synchronization',
-    subtitle: 'Secure API Gateways, Real-Time Webhook Meshes & Enterprise CRM/ERP Bridges',
+    subtitle: 'Connect the software your business already uses through APIs, CRM and ERP integrations, payment services, and reliable data synchronization between systems.',
     executiveSummary:
       'We bridge disparate software stacks, IoT hardware telemetry, and enterprise ERP backbones with robust, resilient multi-protocol middleware adapters that guarantee zero data divergence.',
     image: '/assets/images/service/SERVICE06.png',

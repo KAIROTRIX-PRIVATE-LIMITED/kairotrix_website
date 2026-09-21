@@ -196,7 +196,7 @@ export function HeroSection() {
           muted
           loop
           playsInline
-          src="/assets/videos/hero_vid.mp4"
+          src="/assets/videos/home-hero.mp4"
         />
         {/* Full-height Left Cinema Gradient anchored to left edge */}
         <div
@@ -207,21 +207,21 @@ export function HeroSection() {
           <div className="lg:col-span-7 xl:col-span-7 flex flex-col items-start text-left">
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-black/30 backdrop-blur-xl border border-white/20 text-neutral-100 font-display text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-6 shadow-[0_4px_24px_rgba(0,0,0,0.35)]">
               <span className="w-2 h-2 rounded-full bg-brand-400 shadow-[0_0_10px_bg-brand-400] animate-pulse" />
-              <span>AI &bull; Software Solutions &bull; Automation</span>
+              <span>Custom Software &bull; AI Systems &bull; Business Automation</span>
             </div>
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[56px] xl:text-[64px] font-extrabold text-neutral-0 uppercase leading-[1.05] tracking-[-0.025em] text-left drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              Technology That Moves Ideas Into Real Solutions
+              Technology Built to Solve Real Problems
             </h1>
             <p className="mt-6 text-neutral-200 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed font-sans text-left drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-              We identify the core business problem first—then engineer the custom AI, software platforms, and automated systems to solve it.
+              We are a technology company that builds custom software, AI systems, automation, and data integrations to solve real business problems.
             </p>
             <div className="mt-8 sm:mt-10">
-              <a
-                href="#what-is-kairotrix"
+              <Link
+                href="/solutions"
                 className="inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 text-neutral-0 font-display text-xs md:text-sm font-bold tracking-[0.16em] uppercase shadow-[0_0_30px_rgba(147,51,234,0.5)] transition-all"
               >
-                <span>Explore KAIROTRIX</span>
-              </a>
+                <span>Explore What We Build</span>
+              </Link>
             </div>
           </div>
           <div className="hidden lg:block lg:col-span-5 xl:col-span-5 pointer-events-none" aria-hidden="true" />
@@ -265,7 +265,7 @@ export function HeroSection() {
         <div className="absolute inset-0 z-10 pointer-events-none">
           {/* Main Symmetrical Lockup: EXACTLY CENTERED at 50vh, locked to the video logo mark */}
           <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex items-center justify-center px-4">
-            {/* Left Tagline */}
+            {/* Left Tagline: BUILT TO EVOLVE */}
             <span
               ref={taglineLeftRef}
               className="font-tech text-base sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-[0.2em] uppercase select-none text-neutral-950 whitespace-nowrap text-right leading-none will-change-[opacity,transform]"
@@ -281,30 +281,30 @@ export function HeroSection() {
               aria-hidden="true"
             />
 
-            {/* Right Tagline */}
+            {/* Right Tagline: MADE TO SOLVE (tracking tuned to [0.26em] for exact equal visual weight to Built to Evolve) */}
             <span
               ref={taglineRightRef}
-              className="font-tech text-base sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-[0.2em] uppercase select-none text-neutral-950 whitespace-nowrap text-left leading-none will-change-[opacity,transform]"
+              className="font-tech text-base sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-[0.26em] uppercase select-none text-neutral-950 whitespace-nowrap text-left leading-none will-change-[opacity,transform]"
               style={{ transition: 'none' }}
               aria-hidden="true"
             >
-              Born to Create
+              Made to Solve
             </span>
           </div>
 
           {/* SEO & Accessibility Headline (accessible to search engines & screen readers) */}
           <h1 className="sr-only">
-            KAIROTRIX — AI Technology, Custom Software Engineering &amp; Intelligent Systems | Built to Evolve
+            KAIROTRIX — Technology Company | Custom Software, AI Systems &amp; Business Automation | Built to Evolve
           </h1>
 
-          {/* Technical Domain Taxonomy: Generously spaced below the 150px logo */}
+          {/* Category Descriptors: Generously spaced below the 150px logo */}
           <div
             ref={identitySubRef}
             className="absolute top-[calc(50%+112px)] sm:top-[calc(50%+122px)] left-0 right-0 flex items-center justify-center text-center px-6 will-change-[opacity,transform]"
             style={{ transition: 'none' }}
           >
             <p className="font-tech text-[9px] sm:text-[10px] md:text-[11px] font-semibold tracking-[0.28em] uppercase text-neutral-600/80 whitespace-nowrap text-center">
-              Intelligent Systems &bull; Software Engineering &bull; Autonomous Operations
+              Custom Software &bull; AI Systems &bull; Business Automation
             </p>
           </div>
         </div>
@@ -326,9 +326,6 @@ export function HeroSection() {
             transition: 'none',
           }}
         >
-          
-         
-
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
@@ -336,7 +333,7 @@ export function HeroSection() {
             loop
             playsInline
             preload="auto"
-            src="/assets/videos/hero_vid.mp4"
+            src="/assets/videos/home-hero.mp4"
           />
         </div>
 
@@ -358,27 +355,27 @@ export function HeroSection() {
               {/* Eyebrow badge */}
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-xl border border-white/20 text-neutral-100 font-display text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-6 shadow-[0_4px_24px_rgba(0,0,0,0.35)]">
                 <span className="w-2 h-2 rounded-full bg-brand-400 shadow-[0_0_10px_rgba(251,191,36,0.9)] animate-pulse" />
-                <span>AI &bull; Software Solutions &bull; Automation</span>
+                <span>Custom Software &bull; AI Systems &bull; Business Automation</span>
               </div>
 
               {/* Main Display Headline */}
               <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[54px] xl:text-[62px] font-extrabold text-neutral-0 uppercase leading-[1.08] tracking-[-0.025em] text-left drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                Technology That Moves Ideas Into Real Solutions
+                Technology Built to Solve Real Problems
               </h2>
 
               {/* Description */}
               <p className="mt-6 text-neutral-200 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed font-sans text-left drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-                We identify the core business problem first—then engineer the custom AI, software platforms, and automated systems to solve it.
+                We are a technology company that builds custom software, AI systems, automation, and data integrations to solve real business problems.
               </p>
 
               {/* CTA Action */}
               <div className="mt-8 sm:mt-10 pointer-events-auto flex flex-wrap items-center gap-3.5">
-                <a
-                  href="#what-is-kairotrix"
+                <Link
+                  href="/solutions"
                   className="inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 text-neutral-0 font-display text-xs md:text-sm font-bold tracking-[0.16em] uppercase shadow-[0_0_30px_rgba(147,51,234,0.5)] transition-all duration-300 hover:scale-105 active:scale-95"
                 >
-                  <span>Explore KAIROTRIX</span>
-                </a>
+                  <span>Explore What We Build</span>
+                </Link>
 
                 <Link
                   href="/solutions#find-solution"

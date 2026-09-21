@@ -2,49 +2,56 @@ import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { WorkHero } from '@/components/work/WorkHero';
 import { WorkGrid } from '@/components/work/WorkGrid';
-import { WorkCapabilities } from '@/components/work/WorkCapabilities';
 import { WorkCTA } from '@/components/work/WorkCTA';
+import { getActiveWorkSpecimens } from '@/lib/services/workService';
 
 export const metadata: Metadata = {
-  title: 'Work & Technical Capability Proof — KAIROTRIX',
+  title: 'Projects & Work — KAIROTRIX',
   description:
-    'Explore KAIROTRIX’s verified production builds, exploratory R&D experiments, interactive technical demonstrations, and engineering invariants across AI, software engineering, automation, and data systems.',
+    'A selection of projects, experiments, and technical demonstrations built by KAIROTRIX across software, AI, automation, digital systems, data, and integration.',
   keywords: [
     'KAIROTRIX work',
+    'KAIROTRIX projects',
     'AI agent systems',
-    'enterprise RAG engine',
-    'fintech trading portal',
-    'low-latency telemetry',
-    'workflow automation bridge',
-    'technical demonstrations',
-    'software engineering proof',
+    'custom software development',
+    'web applications',
+    'workflow automation',
+    'data systems',
+    'integration',
   ],
   openGraph: {
-    title: 'Work & Technical Capability Proof — KAIROTRIX',
+    title: 'Projects & Work — KAIROTRIX',
     description:
-      'We don’t just claim capability — we demonstrate it. Explore our deployed production systems, technical experiments, and live demonstrations.',
+      'A selection of projects, experiments, and technical demonstrations built by KAIROTRIX across software, AI, automation, digital systems, data, and integration.',
     type: 'website',
   },
 };
 
-export default function WorkPage() {
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function WorkPage() {
+  const specimens = await getActiveWorkSpecimens();
+
   return (
-    <main className="w-full min-h-screen bg-neutral-0">
+    <main className="w-full min-h-screen bg-[#FAFAFC] text-neutral-900 selection:bg-brand-500 selection:text-white">
       <WorkHero />
-      <Suspense
-        fallback={
-          <div className="w-full py-24 flex items-center justify-center">
-            <div className="flex items-center gap-3 font-tech text-xs uppercase tracking-widest text-neutral-500">
-              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-              <span>Loading Specimen Repository...</span>
+      {/* ─── OVERLAY CURTAIN: SELECTED WORK & STACKING CARDS (Slides UP OVER still Hero) ─── */}
+      <div className="relative z-10 w-full bg-[#FAFAFC] shadow-[0_-30px_70px_rgba(0,0,0,0.06)] border-t border-neutral-200/80">
+        <Suspense
+          fallback={
+            <div className="w-full h-screen flex items-center justify-center bg-[#FAFAFC]">
+              <div className="flex items-center gap-3 font-tech text-xs uppercase tracking-widest text-neutral-600">
+                <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+                <span>Loading Work...</span>
+              </div>
             </div>
-          </div>
-        }
-      >
-        <WorkGrid />
-      </Suspense>
-      <WorkCapabilities />
-      <WorkCTA />
+          }
+        >
+          <WorkGrid initialSpecimens={specimens} />
+        </Suspense>
+        <WorkCTA />
+      </div>
     </main>
   );
 }
