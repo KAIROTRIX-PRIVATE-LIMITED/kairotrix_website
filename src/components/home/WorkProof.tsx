@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   motion,
   useScroll,
@@ -12,95 +13,36 @@ import {
 } from 'framer-motion';
 import { ArrowUpRight, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { EASE_PRECISE, MaskedReveal, DrawLine } from '@/lib/animations';
+import type { WorkSpecimen } from '@/data/workData';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KAIROTRIX Section 04 — "Work / Proof + Capability"
-//
-// 3D Rotated Perspective Scroll Gallery (Zero Overlay Collision Architecture)
-//
-// 1. Frozen Header with Opaque Canvas Shield (bg-[#FAFAFC] z-50):
-//    - pt-24 sm:pt-28 navbar clearance so floating navbar never covers heading.
-//    - Solid architectural background ensures zero cards bleed behind text.
-// 2. Early Fade-Out on Upward Exit (y: -55%, opacity: 0):
-//    - Cards dissolve into ambient background BEFORE touching the top header.
-// 3. Sequential Conclusion Stage (0.94 -> 1.0):
-//    - Conclusion card triggers strictly AFTER Card 04 has completely dissolved.
-//    - Zero double-exposure text collision.
-// 4. Liquid Smooth Spring Physics:
-//    - scrollYProgress piped through useSpring (stiffness: 70, damping: 24, mass: 0.5)
+// 3D Rotated Perspective Scroll Gallery (Dynamic DB-backed)
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface ProjectSpecimen {
   id: string;
   number: string;
-  badge: 'TECHNICAL DEMONSTRATION' | 'KAIROTRIX BUILD' | 'EXPERIMENT';
+  badge: string;
   title: string;
   domain: string;
   description: string;
   tech: string[];
-  video: string;
+  video?: string;
+  image?: string;
   slug: string;
 }
-
-const SPECIMENS: ProjectSpecimen[] = [
-  {
-    id: 'autonomous-operations-agent',
-    number: '01',
-    badge: 'TECHNICAL DEMONSTRATION',
-    title: 'Autonomous Operations Agent System',
-    domain: 'AI & Intelligent Systems',
-    description:
-      'An autonomous AI agent engineered to interpret business requests, query internal databases, and execute multi-step operational tasks with human approval guardrails.',
-    tech: ['Python', 'FastAPI', 'Agentic Workflows', 'PgVector'],
-    video: '/assets/videos/ai-assistant.mp4',
-    slug: '/work/autonomous-operations-agent',
-  },
-  {
-    id: 'enterprise-semantic-rag',
-    number: '02',
-    badge: 'KAIROTRIX BUILD',
-    title: 'Enterprise Semantic RAG Engine',
-    domain: 'Knowledge Systems & RAG',
-    description:
-      'A secure enterprise document intelligence system that searches company manuals, contracts, and PDFs to deliver exact answers with verifiable source citations.',
-    tech: ['Next.js 15', 'TypeScript', 'Vector Retrieval', 'Hybrid Search'],
-    video: '/assets/videos/smart-search.mp4',
-    slug: '/work/enterprise-semantic-rag',
-  },
-  {
-    id: 'low-latency-telemetry',
-    number: '03',
-    badge: 'TECHNICAL DEMONSTRATION',
-    title: 'Live Telemetry & Analytics Portal',
-    domain: 'Data & Business Intelligence',
-    description:
-      'A high-performance operational telemetry dashboard that streams live business activity, tracks system health, and alerts operators to anomalies in real time.',
-    tech: ['Next.js App Router', 'ClickHouse', 'Live WebSockets', 'Event Pipelines'],
-    video: '/assets/videos/live-dashboard.mp4',
-    slug: '/work/real-time-telemetry-portal',
-  },
-  {
-    id: 'event-driven-workflow-bridge',
-    number: '04',
-    badge: 'EXPERIMENT',
-    title: 'Event-Driven Automation Bridge',
-    domain: 'Automation & Integration',
-    description:
-      'A resilient integration engine that processes incoming webhooks, validates data schemas, and coordinates background synchronization between third-party software tools.',
-    tech: ['Node.js', 'Redis', 'Webhook Routing', 'Schema Validation'],
-    video: '/assets/videos/automated-workflows.mp4',
-    slug: '/work/event-driven-workflow-bridge',
-  },
-];
 
 interface RotatedCardProps {
   project: ProjectSpecimen;
   index: number;
+  totalCards: number;
   progress: MotionValue<number>;
   prefersReduced: boolean;
 }
 
-function RotatedCard({ project, index, progress, prefersReduced }: RotatedCardProps) {
+function RotatedCard({ project, index, totalCards, progress, prefersReduced }: RotatedCardProps) {
   let yRange: number[];
   let yValues: string[];
   let rotRange: number[];
@@ -110,46 +52,48 @@ function RotatedCard({ project, index, progress, prefersReduced }: RotatedCardPr
   let opacRange: number[];
   let opacValues: number[];
 
-  if (index === 0) {
-    // Card 0: Active 0 -> 0.18, dissolves cleanly out 0.18 -> 0.26
-    yRange = [0, 0.18, 0.26];
+  if (totalCards <= 1) {
+    yRange = [0, 0.7, 0.85];
     yValues = ['0%', '0%', '-55%'];
-    rotRange = [0, 0.18, 0.26];
+    rotRange = [0, 0.7, 0.85];
     rotValues = [0, 0, -6];
-    scaleRange = [0, 0.18, 0.26];
+    scaleRange = [0, 0.7, 0.85];
     scaleValues = [1, 1, 0.94];
-    opacRange = [0, 0.18, 0.23, 0.26];
+    opacRange = [0, 0.7, 0.8, 0.85];
     opacValues = [1, 1, 0.35, 0];
-  } else if (index === 1) {
-    // Card 1: Enters 0.18 -> 0.26, Active 0.26 -> 0.44, Dissolves out 0.44 -> 0.52
-    yRange = [0.18, 0.26, 0.44, 0.52];
-    yValues = ['60%', '0%', '0%', '-55%'];
-    rotRange = [0.18, 0.26, 0.44, 0.52];
-    rotValues = [-6, 0, 0, -6];
-    scaleRange = [0.18, 0.26, 0.44, 0.52];
-    scaleValues = [0.94, 1, 1, 0.94];
-    opacRange = [0.18, 0.21, 0.26, 0.44, 0.49, 0.52];
-    opacValues = [0, 0.4, 1, 1, 0.35, 0];
-  } else if (index === 2) {
-    // Card 2: Enters 0.44 -> 0.52, Active 0.52 -> 0.70, Dissolves out 0.70 -> 0.78
-    yRange = [0.44, 0.52, 0.70, 0.78];
-    yValues = ['60%', '0%', '0%', '-55%'];
-    rotRange = [0.44, 0.52, 0.70, 0.78];
-    rotValues = [-6, 0, 0, -6];
-    scaleRange = [0.44, 0.52, 0.70, 0.78];
-    scaleValues = [0.94, 1, 1, 0.94];
-    opacRange = [0.44, 0.47, 0.52, 0.70, 0.75, 0.78];
-    opacValues = [0, 0.4, 1, 1, 0.35, 0];
   } else {
-    // Card 3: Enters 0.70 -> 0.78, Active 0.78 -> 0.88, Dissolves out 0.88 -> 0.94
-    yRange = [0.70, 0.78, 0.88, 0.94];
-    yValues = ['60%', '0%', '0%', '-55%'];
-    rotRange = [0.70, 0.78, 0.88, 0.94];
-    rotValues = [-6, 0, 0, -6];
-    scaleRange = [0.70, 0.78, 0.88, 0.94];
-    scaleValues = [0.94, 1, 1, 0.94];
-    opacRange = [0.70, 0.73, 0.78, 0.88, 0.91, 0.94];
-    opacValues = [0, 0.4, 1, 1, 0.35, 0];
+    const cardStep = 0.82 / totalCards;
+    const enterStart = Math.max(0, (index - 0.3) * cardStep);
+    const activeStart = index * cardStep;
+    const activeEnd = (index + 0.7) * cardStep;
+    const exitEnd = (index + 1) * cardStep;
+
+    if (index === 0) {
+      yRange = [0, activeEnd, exitEnd];
+      yValues = ['0%', '0%', '-55%'];
+      rotRange = [0, activeEnd, exitEnd];
+      rotValues = [0, 0, -6];
+      scaleRange = [0, activeEnd, exitEnd];
+      scaleValues = [1, 1, 0.94];
+      opacRange = [0, activeEnd, activeEnd + (exitEnd - activeEnd) * 0.6, exitEnd];
+      opacValues = [1, 1, 0.35, 0];
+    } else {
+      yRange = [enterStart, activeStart, activeEnd, exitEnd];
+      yValues = ['60%', '0%', '0%', '-55%'];
+      rotRange = [enterStart, activeStart, activeEnd, exitEnd];
+      rotValues = [-6, 0, 0, -6];
+      scaleRange = [enterStart, activeStart, activeEnd, exitEnd];
+      scaleValues = [0.94, 1, 1, 0.94];
+      opacRange = [
+        enterStart,
+        enterStart + (activeStart - enterStart) * 0.4,
+        activeStart,
+        activeEnd,
+        activeEnd + (exitEnd - activeEnd) * 0.6,
+        exitEnd,
+      ];
+      opacValues = [0, 0.4, 1, 1, 0.35, 0];
+    }
   }
 
   const y = useTransform(progress, yRange, yValues);
@@ -171,18 +115,29 @@ function RotatedCard({ project, index, progress, prefersReduced }: RotatedCardPr
         pointerEvents,
         transformOrigin: 'center center',
       }}
+      data-cursor="project"
+      data-cursor-text="EXPLORE ↗"
       className="absolute inset-0 w-full h-full rounded-[24px] sm:rounded-[32px] overflow-hidden border border-neutral-300/80 bg-neutral-950 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.20),0_0_0_1px_rgba(0,0,0,0.04)] will-change-transform flex flex-col justify-between p-6 sm:p-8 lg:p-10"
     >
       {/* Background Media with Cinematic Clarity */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-        <video
-          src={project.video}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover scale-105 opacity-85"
-        />
+        {project.video ? (
+          <video
+            src={project.video}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover scale-105 opacity-85"
+          />
+        ) : project.image ? (
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            className="object-cover scale-105 opacity-85"
+          />
+        ) : null}
         {/* Directional Cinema Edge Protection — Leaves Center 100% Bright & Visible */}
         <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-neutral-950/80 via-neutral-950/25 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-52 bg-gradient-to-t from-neutral-950/95 via-neutral-950/65 to-transparent" />
@@ -230,7 +185,7 @@ function RotatedCard({ project, index, progress, prefersReduced }: RotatedCardPr
             href={project.slug}
             className="group/btn inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-white text-neutral-950 font-semibold text-xs sm:text-sm hover:bg-brand-500 hover:text-white transition-all duration-300 shadow-md"
           >
-            <span>Explore Architecture</span>
+            <span>Explore</span>
             <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
           </Link>
         </div>
@@ -239,9 +194,30 @@ function RotatedCard({ project, index, progress, prefersReduced }: RotatedCardPr
   );
 }
 
-export function WorkProof() {
+interface WorkProofProps {
+  projects?: WorkSpecimen[];
+}
+
+export function WorkProof({ projects }: WorkProofProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
+
+  if (!projects || projects.length === 0) {
+    return null;
+  }
+
+  const specimens: ProjectSpecimen[] = projects.slice(0, 4).map((p, idx) => ({
+    id: p.id,
+    number: String(idx + 1).padStart(2, '0'),
+    badge: p.badge || 'KAIROTRIX BUILD',
+    title: p.title,
+    domain: p.disciplineName,
+    description: p.summary || p.headline,
+    tech: p.techStack || [],
+    video: p.video,
+    image: p.image,
+    slug: `/work#selected-work`,
+  }));
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -257,7 +233,13 @@ export function WorkProof() {
   });
 
   // Active step indicator
-  const activeIndex = useTransform(smoothProgress, [0, 0.26, 0.52, 0.78, 0.95], [0, 1, 2, 3, 4]);
+  const totalCards = specimens.length;
+  const inputSteps = Array.from({ length: totalCards }, (_, i) => (i / totalCards) * 0.85);
+  inputSteps.push(0.95);
+  const outputSteps = Array.from({ length: totalCards }, (_, i) => i);
+  outputSteps.push(totalCards);
+
+  const activeIndex = useTransform(smoothProgress, inputSteps, outputSteps);
 
   // Conclusion Archive Screen: Enters strictly AFTER Card 04 has dissolved (0.94 -> 0.98)
   const conclusionOpacity = useTransform(smoothProgress, [0.94, 0.98, 1.0], [0, 1, 1]);
@@ -280,38 +262,46 @@ export function WorkProof() {
       {/* ── Sticky Viewport (Full-Screen Frozen Gallery Stage) ───────────── */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden px-4 sm:px-8 lg:px-12 pb-4 sm:pb-6">
         {/* ── FROZEN TOP SECTION HEADER (Opaque bg-[#FAFAFC] z-50 Shield with Navbar Clearance) ── */}
-        <div className="relative z-50 w-full bg-[#FAFAFC] pt-20 sm:pt-24 pb-4 border-b border-neutral-200/80">
-          <motion.div
-            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : -12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto max-w-6xl flex flex-col lg:flex-row lg:items-end justify-between gap-4"
-          >
+        <div className="relative z-50 w-full bg-[#FAFAFC] pt-20 sm:pt-24 pb-4">
+          <div className="mx-auto max-w-6xl flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-2">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-                <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                  04 // WORK & PROOF
-                </span>
+                <motion.span
+                  initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
+                  whileInView={{ opacity: 1, letterSpacing: '0.25em' }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease: EASE_PRECISE }}
+                  className="font-tech text-xs font-semibold text-brand-600 uppercase"
+                >
+                  WORK & PROOF
+                </motion.span>
                 <div className="h-px w-10 sm:w-16 bg-neutral-200 hidden sm:block" />
                 <span className="font-mono text-xs text-neutral-400">Technical Demonstrations & Builds</span>
               </div>
 
-              <h2
-                id="work-proof-heading"
-                className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]"
-              >
-                PROVEN IN{' '}
-                <span className="gradient-signature-text">EXECUTION.</span>
-              </h2>
+              <MaskedReveal delay={0.06}>
+                <h2
+                  id="work-proof-heading"
+                  className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]"
+                >
+                  PROVEN IN{' '}
+                  <span className="gradient-signature-text">EXECUTION.</span>
+                </h2>
+              </MaskedReveal>
               <p className="mt-1 text-xs sm:text-sm text-neutral-500 font-mono">
                 Real software systems, interactive demonstrations, and verified builds.
               </p>
             </div>
 
             {/* Action & Specimen Reel Indicator */}
-            <div className="flex items-center gap-3 self-start lg:self-auto flex-shrink-0">
+            <motion.div
+              initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.94 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.12, ease: EASE_PRECISE }}
+              className="flex items-center gap-3 self-start lg:self-auto flex-shrink-0"
+            >
               <Link
                 href="/work"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-950 hover:bg-brand-600 text-white font-tech font-semibold text-xs uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md group"
@@ -325,13 +315,14 @@ export function WorkProof() {
                   SPECIMEN REEL
                 </span>
                 <div className="flex items-center gap-1.5">
-                  {SPECIMENS.map((_, i) => (
+                  {specimens.map((_, i) => (
                     <IndicatorDot key={i} index={i} activeIndex={activeIndex} />
                   ))}
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
+          <DrawLine className="h-px w-full bg-neutral-200/80 mt-2" />
         </div>
 
         {/* ── CENTER 3D PERSPECTIVE STAGE (Airy with 100px+ Vertical Clearance) ── */}
@@ -340,11 +331,12 @@ export function WorkProof() {
           style={{ perspective: 1200 }}
         >
           {/* Rotated 3D Cards with Spring Physics */}
-          {SPECIMENS.map((project, idx) => (
+          {specimens.map((project, idx) => (
             <RotatedCard
               key={project.id}
               project={project}
               index={idx}
+              totalCards={specimens.length}
               progress={smoothProgress}
               prefersReduced={prefersReduced}
             />
@@ -404,7 +396,8 @@ export function WorkProof() {
         </div>
 
         {/* ── FROZEN BOTTOM TELEMETRY BAR (Opaque bg-[#FAFAFC] z-50 Shield) ── */}
-        <div className="relative z-50 w-full bg-[#FAFAFC] pt-3 border-t border-neutral-200/60 pb-2">
+        <div className="relative z-50 w-full bg-[#FAFAFC] pt-2 pb-2">
+          <DrawLine className="h-px w-full bg-neutral-200/60 mb-2.5" />
           <div className="mx-auto max-w-6xl flex items-center justify-between text-[11px] font-mono text-neutral-400">
             <span>SCROLL TO ADVANCE SPECIMENS</span>
             <Link

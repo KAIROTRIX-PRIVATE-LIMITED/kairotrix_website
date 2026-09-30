@@ -2,20 +2,28 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { RotateCcw } from 'lucide-react';
-import { WORK_SPECIMENS, WorkSpecimen, WORK_DISCIPLINES } from '@/data/workData';
+import { WorkSpecimen, WORK_DISCIPLINES } from '@/data/workData';
 import { WorkCard } from './WorkCard';
+import {
+  MaskedReveal,
+  DrawLine,
+  revealMeta,
+  revealBody,
+  revealTag,
+  EASE_CINEMATIC,
+} from '@/lib/animations';
 
 interface WorkGridProps {
   initialSpecimens?: WorkSpecimen[];
 }
 
-export function WorkGrid({ initialSpecimens }: WorkGridProps = {}) {
+export function WorkGrid({ initialSpecimens = [] }: WorkGridProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const allSpecimens =
-    initialSpecimens && initialSpecimens.length > 0 ? initialSpecimens : WORK_SPECIMENS;
+  const allSpecimens = initialSpecimens;
 
   // Read initial filter from URL query
   const initialDiscipline = searchParams.get('area') || 'all';
@@ -59,32 +67,52 @@ export function WorkGrid({ initialSpecimens }: WorkGridProps = {}) {
       >
         <div className="max-w-7xl mx-auto">
           {/* Section Eyebrow / Number */}
-          <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={revealMeta}
+            className="flex items-center justify-center gap-3 mb-3 sm:mb-4"
+          >
             <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
             <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
               WORK // PROJECTS &amp; EXPERIMENTS
             </span>
-            <div className="h-px w-10 sm:w-16 bg-neutral-200" />
-          </div>
+            <DrawLine className="h-px w-10 sm:w-16 bg-neutral-300" delay={0.2} />
+          </motion.div>
 
           {/* Monumental Transition Title (font-display Plus Jakarta Sans) */}
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
-            SELECTED <span className="gradient-signature-text">WORK.</span>
+            <MaskedReveal delay={0.1}>
+              <span>SELECTED </span>
+              <span className="gradient-signature-text">WORK.</span>
+            </MaskedReveal>
           </h2>
 
           {/* Plain-English Subtitle */}
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-xl mx-auto mb-8 leading-relaxed font-normal">
+          <motion.p
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={revealBody}
+            className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-xl mx-auto mb-8 leading-relaxed font-normal"
+          >
             Projects, experiments, and technical demonstrations across our core technology areas.
-          </p>
+          </motion.p>
 
           {/* Clean Non-Colliding Category Filter Chips */}
           <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl mx-auto">
-            {WORK_DISCIPLINES.map((discipline) => {
+            {WORK_DISCIPLINES.map((discipline, dIdx) => {
               const isActive = activeDiscipline === discipline.id;
               return (
-                <button
+                <motion.button
                   key={discipline.id}
                   type="button"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-40px' }}
+                  variants={revealTag}
+                  transition={{ delay: dIdx * 0.04 }}
                   onClick={() => handleDisciplineChange(discipline.id)}
                   className={`relative px-3.5 py-1.5 rounded-full font-display text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer ${
                     isActive
@@ -102,7 +130,7 @@ export function WorkGrid({ initialSpecimens }: WorkGridProps = {}) {
                       {allSpecimens.length}
                     </span>
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>

@@ -18,52 +18,15 @@ export interface TeamConfigData {
   members: TeamMemberData[];
 }
 
-export const INITIAL_TEAM_MEMBERS: TeamMemberData[] = [
-  {
-    id: 'team_grace',
-    name: 'Grace Thompson',
-    role: 'Head of AI Systems',
-    badge: 'AI Systems',
-    image: '/assets/images/about/team-grace.jpg',
-    twitter: 'https://x.com',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    order: 0,
-    isActive: true,
-  },
-  {
-    id: 'team_ethan',
-    name: 'Ethan Cole',
-    role: 'Founder & Chief Architect',
-    badge: 'Founder',
-    image: '/assets/images/about/team-ethan.jpg',
-    twitter: 'https://x.com',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    order: 1,
-    isActive: true,
-  },
-  {
-    id: 'team_sophia',
-    name: 'Sophia Bennett',
-    role: 'Head of Product & Design',
-    badge: 'Product & UX',
-    image: '/assets/images/about/team-sophia.jpg',
-    twitter: 'https://x.com',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    order: 2,
-    isActive: true,
-  },
-];
+export const INITIAL_TEAM_MEMBERS: TeamMemberData[] = [];
 
 /**
  * Retrieves public team configuration & active members using direct raw SQL.
- * Resilient fallback to default initial state if DB is unreachable.
+ * Resilient fallback to empty state if DB is unreachable or unseeded.
  */
 export async function getTeamConfig(): Promise<TeamConfigData> {
-  let isTeamSectionVisible = true;
-  let members: TeamMemberData[] = INITIAL_TEAM_MEMBERS;
+  let isTeamSectionVisible = false;
+  let members: TeamMemberData[] = [];
 
   // 1. Fetch section visibility config
   try {
@@ -101,13 +64,16 @@ export async function getTeamConfig(): Promise<TeamConfigData> {
         order: Number(m.order) || 0,
         isActive: Boolean(m.isActive ?? (m as any).isactive),
       }));
+    } else {
+      // If no members are configured in the database, keep section hidden
+      isTeamSectionVisible = false;
     }
   } catch (error) {
     console.warn('getTeamConfig members query error:', error);
   }
 
   return {
-    isTeamSectionVisible,
+    isTeamSectionVisible: isTeamSectionVisible && members.length > 0,
     members,
   };
 }
@@ -119,8 +85,8 @@ export async function getAdminTeamData(): Promise<{
   isTeamSectionVisible: boolean;
   members: TeamMemberData[];
 }> {
-  let isTeamSectionVisible = true;
-  let members: TeamMemberData[] = INITIAL_TEAM_MEMBERS;
+  let isTeamSectionVisible = false;
+  let members: TeamMemberData[] = [];
 
   try {
     const configRows = await prisma.$queryRaw<Array<{ isTeamSectionVisible: boolean }>>`

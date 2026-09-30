@@ -20,7 +20,7 @@ export interface AssistantResponse {
 }
 
 export const KIRO_INITIAL_GREETING: AssistantResponse = {
-  text: "Hello! I'm **KIRO**, your guide to KAIROTRIX. I can help you explore our engineering capabilities, diagnose technical challenges, or connect you directly with our lead engineers.\n\nWhat are you looking to build or solve?",
+  text: "Hello! I'm **KIRO**, your guide to KAIROTRIX. I can help you explore our engineering services and solutions, diagnose technical challenges, or connect you directly with our lead engineers.\n\nWhat are you looking to build or solve?",
   suggestedFollowUps: [
     "What does KAIROTRIX do?",
     "Find a solution for my problem",
@@ -45,7 +45,7 @@ export const QUICK_STARTER_PROMPTS: QuickPrompt[] = [
   {
     id: 'ai-agents',
     label: 'Explore AI & Autonomous Agents',
-    query: 'Tell me about your AI & Intelligent Systems capabilities',
+    query: 'Tell me about your AI & Intelligent Systems services',
     badge: 'AI Systems',
   },
   {
@@ -94,8 +94,8 @@ export const KNOWLEDGE_BASE: KnowledgeEntry[] = [
     response: {
       text: "Our **AI & Intelligent Systems** practice engineers deterministic, production-grade intelligence tailored to enterprise operations:\n\n• **Autonomous AI Agents**: Multi-agent runtimes with tool execution and human-in-the-loop oversight\n• **Enterprise Knowledge (RAG)**: Zero-hallucination vector search over internal documentation\n• **Custom AI Applications**: Dedicated generative tools and predictive pipelines\n• **MLOps & Evaluation**: Continuous benchmarking and sub-second inference",
       actions: [
-        { label: 'Explore AI Discipline', href: '/solutions/ai-intelligent-systems', variant: 'primary' },
-        { label: 'View Autonomous Agent Demo', href: '/work', variant: 'secondary' },
+        { label: 'Explore AI & Intelligent Systems', href: '/solutions/ai-intelligent-systems', variant: 'primary' },
+        { label: 'View Work & Projects', href: '/work', variant: 'secondary' },
       ],
       suggestedFollowUps: [
         'Can AI automate our internal workflows?',
@@ -253,11 +253,11 @@ export const KNOWLEDGE_BASE: KnowledgeEntry[] = [
     response: {
       text: "We build with proven, modern production standards:\n\n• **Frontend & UI**: Next.js 15, React 19, TypeScript, Tailwind CSS v4, Framer Motion\n• **Backend & Distributed**: Node.js, Python (FastAPI/PyTorch), Go, REST & GraphQL\n• **AI & Orchestration**: LangChain, LlamaIndex, vLLM, HuggingFace, OpenAI, Anthropic\n• **Data & Databases**: PostgreSQL (pgvector), Supabase, Redis, ClickHouse, Pinecone\n• **Infra & DevOps**: Docker, AWS, Cloudflare, Vercel, Zero-Downtime CI/CD",
       actions: [
-        { label: 'View Capabilities', href: '/work#capabilities', variant: 'secondary' },
-        { label: 'Discuss Architecture', href: '/contact?interest=tech-stack', variant: 'primary' },
+        { label: 'Explore Solutions', href: '/solutions', variant: 'secondary' },
+        { label: 'Discuss Architecture', href: '/contact', variant: 'primary' },
       ],
       suggestedFollowUps: [
-        'Can you build mobile apps?',
+        'What software do you build?',
         'How do we start a project?',
         'Talk to an engineer',
       ],
@@ -295,9 +295,9 @@ export function findAssistantResponse(query: string): AssistantResponse {
     return bestMatch.response;
   }
 
-  // Diagnostic fallback: guide user toward the 6 disciplines or direct contact
+  // Diagnostic fallback: guide user toward solutions or direct contact
   return {
-    text: `I want to make sure you get the exact technical guidance for that.\n\nKAIROTRIX solves business bottlenecks across **6 core disciplines**:\n1. **AI & Intelligent Systems** (Autonomous agents, LLM apps, RAG)\n2. **Software & Product Engineering** (Web apps, SaaS MVPs, platforms)\n3. **Automation & Operations** (Workflow orchestration, document OCR)\n4. **Digital Transformation** (Modernizing legacy systems)\n5. **Data & Business Intelligence** (Executive telemetry, dashboards)\n6. **Technology Integration** (APIs, CRM/ERP sync)\n\nWhich of these best matches what you are trying to solve, or would you like to speak directly with an engineer?`,
+    text: `I want to make sure you get the exact technical guidance for that.\n\nKAIROTRIX solves business bottlenecks across our core technology solution areas:\n• **AI & Intelligent Systems** (Autonomous agents, LLM apps, RAG)\n• **Software & Product Engineering** (Web apps, SaaS MVPs, platforms)\n• **Automation & Operations** (Workflow orchestration, document automation)\n• **Digital Transformation** (Modernizing legacy systems & digital craft)\n• **Data & Business Intelligence** (Executive telemetry, dashboards)\n• **Technology Integration** (APIs, CRM/ERP sync)\n\nWhich of these best matches what you are trying to solve, or would you like to speak directly with an engineer?`,
     actions: [
       { label: 'Browse Solutions Hub', href: '/solutions', variant: 'secondary' },
       { label: 'Direct Engineering Inquiry', href: '/contact', variant: 'primary' },

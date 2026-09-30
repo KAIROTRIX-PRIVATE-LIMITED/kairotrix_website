@@ -47,9 +47,9 @@ export default function BlogWriterCreatePage() {
 
   // Author Mapping State (Dynamically loaded from database TeamMembers)
   const [teamMembers, setTeamMembers] = useState<TeamMemberRecord[]>([]);
-  const [authorName, setAuthorName] = useState('Grace Thompson');
-  const [authorRole, setAuthorRole] = useState('Head of AI & Intelligent Systems');
-  const [authorAvatar, setAuthorAvatar] = useState('/assets/images/about/team-grace.jpg');
+  const [authorName, setAuthorName] = useState('KAIROTRIX Engineering');
+  const [authorRole, setAuthorRole] = useState('Engineering Team');
+  const [authorAvatar, setAuthorAvatar] = useState('/assets/brand/kairotrix-symbol.svg');
   const [loadingTeam, setLoadingTeam] = useState(true);
 
   // Workflow State
@@ -71,7 +71,7 @@ export default function BlogWriterCreatePage() {
           if (members.length > 0) {
             setAuthorName(members[0].name);
             setAuthorRole(members[0].role);
-            setAuthorAvatar(members[0].image || '/assets/images/about/team-ethan.jpg');
+            setAuthorAvatar(members[0].image || '/assets/brand/kairotrix-symbol.svg');
           }
         }
       } catch (err) {

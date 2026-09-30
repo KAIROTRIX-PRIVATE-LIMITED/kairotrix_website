@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { MaskedReveal, DrawLine, revealMeta, revealBody, cardFromRight, EASE_CINEMATIC } from '@/lib/animations';
 
 export function AboutCTA() {
   return (
@@ -17,10 +18,10 @@ export function AboutCTA() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 28, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, ease: EASE_CINEMATIC }}
           className="relative rounded-[2.25rem] bg-gradient-to-br from-neutral-950 via-[#1A0E38] to-[#120824] p-8 sm:p-12 lg:p-14 overflow-hidden shadow-[0_20px_50px_rgba(15,15,23,0.3)] border border-brand-500/20"
         >
           {/* Ambient Purple Glow inside Banner */}
@@ -51,29 +52,52 @@ export function AboutCTA() {
             {/* Left Column: Heading, Narrative, and Actions */}
             <div className="max-w-xl">
               {/* Eyebrow */}
-              <div className="flex items-center gap-3 mb-5">
+              <motion.div
+                variants={revealMeta}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="flex items-center gap-3 mb-5"
+              >
                 <span className="flex h-2 w-2 rounded-full bg-brand-400 animate-pulse" />
                 <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-300 uppercase">
                   WORK WITH US
                 </span>
-                <div className="h-px w-10 sm:w-16 bg-neutral-800" />
-              </div>
+                <DrawLine className="w-10 sm:w-16 bg-neutral-800" delay={0.2} />
+              </motion.div>
 
               {/* Main Display Headline */}
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-white uppercase leading-[1.12] mb-4">
-                HAVE SOMETHING WORTH{' '}
-                <span className="gradient-signature-text">
-                  BUILDING?
-                </span>
-              </h2>
+              <div className="mb-4">
+                <MaskedReveal delay={0.06}>
+                  <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-white uppercase leading-[1.12]">
+                    HAVE SOMETHING WORTH{' '}
+                    <span className="gradient-signature-text">
+                      BUILDING?
+                    </span>
+                  </h2>
+                </MaskedReveal>
+              </div>
 
               {/* Narrative */}
-              <p className="text-sm sm:text-base text-neutral-300 font-sans leading-relaxed mb-8 max-w-lg">
+              <motion.p
+                variants={revealBody}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ delay: 0.14 }}
+                className="text-sm sm:text-base text-neutral-300 font-sans leading-relaxed mb-8 max-w-lg"
+              >
                 Tell us what you&apos;re trying to improve, create, or solve. We&apos;ll help you understand the need, explore the right direction, and turn it into technology that works for your business.
-              </p>
+              </motion.p>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: 0.22, ease: EASE_CINEMATIC }}
+                className="flex flex-wrap items-center gap-3"
+              >
                 <Link
                   href="/contact?source=about"
                   className="inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-medium text-sm transition-all duration-200 shadow-md hover:shadow-brand cursor-pointer group"
@@ -89,11 +113,18 @@ export function AboutCTA() {
                   <span>Explore Our Solutions</span>
                   <ArrowUpRight className="w-4 h-4 ml-1.5 text-neutral-400" />
                 </Link>
-              </div>
+              </motion.div>
             </div>
 
             {/* Right Column: Floating White Card */}
-            <div className="w-full sm:w-auto shrink-0 flex justify-center lg:justify-end">
+            <motion.div
+              variants={cardFromRight}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.18, ease: EASE_CINEMATIC }}
+              className="w-full sm:w-auto shrink-0 flex justify-center lg:justify-end"
+            >
               <div className="w-full sm:w-[320px] rounded-2xl bg-white p-6 shadow-2xl border border-white/90 flex flex-col">
                 {/* Availability Pill */}
                 <div className="self-start inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-[11px] font-mono uppercase tracking-wider text-emerald-700 font-semibold mb-5">
@@ -103,14 +134,8 @@ export function AboutCTA() {
 
                 {/* Avatar Stack */}
                 <div className="flex items-center mb-4">
-                  <div className="w-9 h-9 rounded-full overflow-hidden relative border-2 border-white shrink-0 shadow-2xs">
-                    <Image
-                      src="/assets/images/about/team-ethan.jpg"
-                      alt="KAIROTRIX Founder"
-                      fill
-                      sizes="36px"
-                      className="object-cover"
-                    />
+                  <div className="w-9 h-9 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-tech font-bold border-2 border-white shrink-0 shadow-2xs">
+                    K
                   </div>
                   <div className="w-5 h-5 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center text-[10px] font-bold -ml-1.5 border-2 border-white shrink-0 z-10">
                     +
@@ -136,7 +161,7 @@ export function AboutCTA() {
                   <span>Book a call</span>
                 </Link>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>

@@ -132,14 +132,14 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-brand-600 animate-pulse" />
             <span className="text-xs font-mono uppercase tracking-widest text-brand-700 font-semibold">
-              KAIROTRIX Core Command
+              KAIROTRIX Admin
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight mt-1 font-display">
-            System Dashboard
+            Dashboard
           </h1>
           <p className="text-xs sm:text-sm text-neutral-600 mt-1">
-            Real-time management for client builds, experiments, and technical publications.
+            Overview of your projects, articles, contact messages, and system status.
           </p>
         </div>
 
@@ -150,7 +150,7 @@ export default function AdminDashboardPage() {
             className="px-3.5 py-2 rounded-xl bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-700 text-xs font-mono flex items-center gap-2 transition-colors cursor-pointer shadow-xs"
           >
             <RefreshCw className={cn('w-3.5 h-3.5 text-neutral-500', refreshing && 'animate-spin')} />
-            <span>Sync</span>
+            <span>Refresh</span>
           </button>
 
           <Link
@@ -176,7 +176,7 @@ export default function AdminDashboardPage() {
         {/* Projects Metric */}
         <div className="p-5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between text-neutral-500 mb-3">
-            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Work Specimens</span>
+            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Projects</span>
             <div className="w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center border border-brand-100">
               <FolderGit2 className="w-4 h-4 text-brand-600" />
             </div>
@@ -197,7 +197,7 @@ export default function AdminDashboardPage() {
         {/* Insights Metric */}
         <div className="p-5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between text-neutral-500 mb-3">
-            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Articles & Blog</span>
+            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Articles</span>
             <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
               <BookOpen className="w-4 h-4 text-indigo-600" />
             </div>
@@ -218,21 +218,21 @@ export default function AdminDashboardPage() {
         {/* Client Inquiries */}
         <div className="p-5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between text-neutral-500 mb-3">
-            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Contact Inquiries</span>
+            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Contact Messages</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100">
               <MessageSquare className="w-4 h-4 text-emerald-600" />
             </div>
           </div>
           <div className="text-3xl font-bold text-neutral-950 font-mono">{inquiries.length}</div>
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-neutral-100 text-[11px] font-mono text-neutral-500">
-            <span>Direct Leads via /contact</span>
+            <span>From website contact form</span>
           </div>
         </div>
 
         {/* Database Health */}
         <div className="p-5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between text-neutral-500 mb-3">
-            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Database Engine</span>
+            <span className="text-xs font-mono uppercase tracking-wider font-semibold">Database</span>
             <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center border border-purple-100">
               <ShieldCheck className="w-4 h-4 text-purple-600" />
             </div>
@@ -242,7 +242,7 @@ export default function AdminDashboardPage() {
             <span>PostgreSQL</span>
           </div>
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-neutral-100 text-[11px] font-mono text-neutral-500">
-            <span>Prisma ORM Client v7</span>
+            <span>Connected & Healthy</span>
           </div>
         </div>
       </div>

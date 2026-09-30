@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import {
-  INSIGHT_SPECIMENS,
   InsightSpecimen,
   InsightBadge,
 } from '@/data/insightsData';
@@ -16,7 +15,7 @@ export async function getPublishedInsights(): Promise<InsightSpecimen[]> {
       orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     });
 
-    if (dbInsights && dbInsights.length > 0) {
+    if (dbInsights) {
       return dbInsights.map((i) => {
         const equation = i.architectureEquation
           ? (i.architectureEquation as unknown as {
@@ -27,23 +26,21 @@ export async function getPublishedInsights(): Promise<InsightSpecimen[]> {
             })
           : undefined;
 
-        const staticMatch = INSIGHT_SPECIMENS.find((s) => s.slug === i.slug);
-
         return {
           id: i.id,
           slug: i.slug,
           title: i.title,
           subtitle: i.subtitle,
           excerpt: i.excerpt,
-          content: i.content || staticMatch?.content || undefined,
+          content: i.content || undefined,
           category: i.category as InsightSpecimen['category'],
           badge: i.badge as InsightBadge,
           disciplineId: i.disciplineId,
           disciplineName: i.disciplineName,
-          techCategoryId: staticMatch?.techCategoryId || 'software-web',
-          techCategoryLabel: staticMatch?.techCategoryLabel || 'Software & Web Engineering',
-          serviceId: staticMatch?.serviceId || i.disciplineId,
-          serviceName: staticMatch?.serviceName || i.disciplineName,
+          techCategoryId: i.disciplineId || 'software-engineering',
+          techCategoryLabel: i.disciplineName || 'Software Engineering',
+          serviceId: i.disciplineId,
+          serviceName: i.disciplineName,
           date: i.date,
           readTime: i.readTime,
           author: i.author,
@@ -63,11 +60,10 @@ export async function getPublishedInsights(): Promise<InsightSpecimen[]> {
       });
     }
   } catch (error) {
-    console.warn('PostgreSQL query skipped or failed, falling back to static insightsData:', error);
+    console.warn('PostgreSQL query error in getPublishedInsights:', error);
   }
 
-  // Fallback to static verified knowledge specimens
-  return INSIGHT_SPECIMENS;
+  return [];
 }
 
 /**
@@ -98,23 +94,21 @@ export async function getInsightBySlug(
           })
         : undefined;
 
-      const staticMatch = INSIGHT_SPECIMENS.find((s) => s.slug === insight.slug);
-
       return {
         id: insight.id,
         slug: insight.slug,
         title: insight.title,
         subtitle: insight.subtitle,
         excerpt: insight.excerpt,
-        content: insight.content || staticMatch?.content || undefined,
+        content: insight.content || undefined,
         category: insight.category as InsightSpecimen['category'],
         badge: insight.badge as InsightBadge,
         disciplineId: insight.disciplineId,
         disciplineName: insight.disciplineName,
-        techCategoryId: staticMatch?.techCategoryId || 'software-web',
-        techCategoryLabel: staticMatch?.techCategoryLabel || 'Software & Web Engineering',
-        serviceId: staticMatch?.serviceId || insight.disciplineId,
-        serviceName: staticMatch?.serviceName || insight.disciplineName,
+        techCategoryId: insight.disciplineId || 'software-engineering',
+        techCategoryLabel: insight.disciplineName || 'Software Engineering',
+        serviceId: insight.disciplineId,
+        serviceName: insight.disciplineName,
         date: insight.date,
         readTime: insight.readTime,
         author: insight.author,
@@ -133,10 +127,10 @@ export async function getInsightBySlug(
       };
     }
   } catch (error) {
-    console.warn('PostgreSQL slug query failed, falling back to static insightsData:', error);
+    console.warn('PostgreSQL slug query error in getInsightBySlug:', error);
   }
 
-  return INSIGHT_SPECIMENS.find((i) => i.slug === slug) || null;
+  return null;
 }
 
 /**

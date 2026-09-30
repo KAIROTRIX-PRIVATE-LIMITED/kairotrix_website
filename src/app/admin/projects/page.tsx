@@ -236,10 +236,10 @@ export default function AdminProjectsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-neutral-950 tracking-tight font-display">
-            Work & Projects Manager
+            Projects
           </h1>
           <p className="text-xs sm:text-sm text-neutral-600 mt-1">
-            Add, update, or instantly pause projects displayed on the public <code className="text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded font-mono font-semibold">/work</code> portal.
+            Add, edit, or pause projects shown on the public <code className="text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded font-mono font-semibold">/work</code> page.
           </p>
         </div>
 
@@ -416,175 +416,181 @@ export default function AdminProjectsPage() {
 
       {/* Create / Edit Project Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-neutral-200 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-neutral-950/60 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-white border border-neutral-200 shadow-2xl text-neutral-900 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Pinned Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 bg-neutral-50/70 shrink-0">
               <div>
                 <h2 className="text-lg font-bold text-neutral-950 font-display">
-                  {modalMode === 'create' ? 'Add Work Card Specimen' : 'Edit Work Card Specimen'}
+                  {modalMode === 'create' ? 'Add New Project' : 'Edit Project'}
                 </h2>
-                <span className="text-xs text-neutral-500 font-mono">
-                  Syncs directly to PostgreSQL database
+                <span className="text-xs text-neutral-500 font-sans">
+                  Saves directly to your website database
                 </span>
               </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {formError && (
-              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{formError}</span>
-              </div>
-            )}
+            {/* Form with Scrollable Content Body */}
+            <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden min-h-0 text-xs font-sans">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                {formError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{formError}</span>
+                  </div>
+                )}
 
-            <form onSubmit={handleFormSubmit} className="space-y-4 text-xs font-sans">
-              {/* Row 1: Title */}
-              <div>
-                <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
-                  Project Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g. Autonomous Operations Agent System"
-                  className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors"
-                />
-              </div>
-
-              {/* Row 2: Discipline, Client, Year */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <div className="sm:col-span-2">
-                  <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
-                    Discipline / Category *
-                  </label>
-                  <select
-                    value={formData.disciplineId}
-                    onChange={(e) => {
-                      const d = WORK_DISCIPLINES.find((item) => item.id === e.target.value);
-                      setFormData({
-                        ...formData,
-                        disciplineId: e.target.value,
-                        disciplineName: d ? d.label : e.target.value,
-                      });
-                    }}
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors cursor-pointer"
-                  >
-                    {WORK_DISCIPLINES.filter((d) => d.id !== 'all').map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
+                {/* Row 1: Title */}
                 <div>
                   <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
-                    Client / Domain
+                    Project Title *
                   </label>
                   <input
                     type="text"
-                    value={formData.client}
-                    onChange={(e) => setFormData({ ...formData, client: e.target.value })}
-                    placeholder="e.g. Fintech Partner"
+                    required
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="e.g. Autonomous Operations Agent System"
                     className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors"
                   />
                 </div>
 
+                {/* Row 2: Discipline, Client, Year */}
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div className="sm:col-span-2">
+                    <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
+                      Discipline / Category *
+                    </label>
+                    <select
+                      value={formData.disciplineId}
+                      onChange={(e) => {
+                        const d = WORK_DISCIPLINES.find((item) => item.id === e.target.value);
+                        setFormData({
+                          ...formData,
+                          disciplineId: e.target.value,
+                          disciplineName: d ? d.label : e.target.value,
+                        });
+                      }}
+                      className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors cursor-pointer"
+                    >
+                      {WORK_DISCIPLINES.filter((d) => d.id !== 'all').map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
+                      Client / Domain
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.client}
+                      onChange={(e) => setFormData({ ...formData, client: e.target.value })}
+                      placeholder="e.g. Fintech Partner"
+                      className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
+                      Year
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.year}
+                      onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                      placeholder="2026"
+                      className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 3: Headline / Subtitle */}
                 <div>
                   <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
-                    Year
+                    Headline / 1-Line Description *
                   </label>
                   <input
                     type="text"
-                    value={formData.year}
-                    onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                    placeholder="2026"
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors font-mono"
+                    required
+                    value={formData.headline}
+                    onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
+                    placeholder="e.g. Deterministic multi-agent execution with zero-hallucination guardrails and real-time tool calling."
+                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* Row 4: Tech Stack and Status */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-2">
+                    <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
+                      Tech Stack (Comma-separated)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.techStack}
+                      onChange={(e) => setFormData({ ...formData, techStack: e.target.value })}
+                      placeholder="Python, FastAPI, Agentic LLMs, PgVector, Docker"
+                      className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors font-mono text-[11px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
+                      Card Status
+                    </label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors cursor-pointer font-mono"
+                    >
+                      <option value="ACTIVE">ACTIVE (Live on /work)</option>
+                      <option value="PAUSED">PAUSED (Hidden from site)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Row 5: Media Uploaders */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  <MediaUploader
+                    label="Card Display Image *"
+                    value={formData.image}
+                    onChange={(url) => setFormData({ ...formData, image: url })}
+                    folder="kairotrix/projects"
+                    accept="image"
+                    placeholder="Upload or paste image URL..."
+                    helperText="WebP, PNG, or JPG (1920x1080 recommended)"
+                  />
+
+                  <MediaUploader
+                    label="Demo Video (Optional)"
+                    value={formData.video}
+                    onChange={(url) => setFormData({ ...formData, video: url })}
+                    folder="kairotrix/projects"
+                    accept="video"
+                    placeholder="Upload or paste video URL..."
+                    helperText="MP4 or WebM (Autoplays full-bleed in background)"
                   />
                 </div>
               </div>
 
-              {/* Row 3: Headline / Subtitle */}
-              <div>
-                <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
-                  Headline / 1-Line Description *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.headline}
-                  onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
-                  placeholder="e.g. Deterministic multi-agent execution with zero-hallucination guardrails and real-time tool calling."
-                  className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors"
-                />
-              </div>
-
-              {/* Row 4: Tech Stack and Status */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="sm:col-span-2">
-                  <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
-                    Tech Stack (Comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.techStack}
-                    onChange={(e) => setFormData({ ...formData, techStack: e.target.value })}
-                    placeholder="Python, FastAPI, Agentic LLMs, PgVector, Docker"
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors font-mono text-[11px]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-700 font-mono text-[11px] uppercase tracking-wider mb-1.5 font-semibold">
-                    Card Status
-                  </label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors cursor-pointer font-mono"
-                  >
-                    <option value="ACTIVE">ACTIVE (Live on /work)</option>
-                    <option value="PAUSED">PAUSED (Hidden from site)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Row 5: Media Uploaders */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                <MediaUploader
-                  label="Card Display Image *"
-                  value={formData.image}
-                  onChange={(url) => setFormData({ ...formData, image: url })}
-                  folder="kairotrix/projects"
-                  accept="image"
-                  placeholder="Upload or paste image URL..."
-                  helperText="WebP, PNG, or JPG (1920x1080 recommended)"
-                />
-
-                <MediaUploader
-                  label="Demo Video (Optional)"
-                  value={formData.video}
-                  onChange={(url) => setFormData({ ...formData, video: url })}
-                  folder="kairotrix/projects"
-                  accept="video"
-                  placeholder="Upload or paste video URL..."
-                  helperText="MP4 or WebM (Autoplays full-bleed in background)"
-                />
-              </div>
-
-              {/* Row 6: Modal Actions */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+              {/* Pinned Sticky Footer Actions */}
+              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-neutral-100 bg-neutral-50/80 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 font-mono text-xs transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-mono text-xs transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

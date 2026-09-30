@@ -6,6 +6,15 @@ import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 import { ArrowUpRight, Check, Compass, Cpu, Layers } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useScrambleText } from '@/hooks/useScrambleText';
+import {
+  EASE_CINEMATIC,
+  EASE_PRECISE,
+  cardFromLeft,
+  cardFromCenter,
+  cardFromRight,
+  DrawLine,
+  MaskedReveal,
+} from '@/lib/animations';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 02 // IDENTITY & PHILOSOPHY — Pure Text-Animated Architecture
@@ -368,47 +377,52 @@ export function WhatIsKairotrix() {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ── SECTION HEADER & EYEBROW ──────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-10 pb-6 border-b border-neutral-200/80"
-        >
-          <div className="flex items-center gap-3">
-            <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-            <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-              02 // Identity & Philosophy
-            </span>
-            <div className="h-px w-10 sm:w-16 bg-neutral-200" />
-            <span className="font-mono text-xs text-neutral-400">
-              HOW WE THINK
-            </span>
-          </div>
-
-          <div className="font-mono text-xs text-neutral-500 flex items-center gap-4">
-            <span>[KAIROTRIX // CORE APPROACH]</span>
-            <span className="hidden md:inline text-neutral-300">•</span>
-            <span className="hidden md:inline">PROBLEM_FIRST</span>
-          </div>
-        </motion.div>
-
-        {/* Section Title in WHAT WE BUILD style */}
-        <motion.div
-          initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-10 lg:mb-14"
-        >
-          <h2
-            id="identity-philosophy-heading"
-            className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]"
+        <div className="mb-8 sm:mb-10">
+          <motion.div
+            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, ease: EASE_PRECISE }}
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2"
           >
-            BUILT TO{' '}
-            <span className="gradient-signature-text">EVOLVE.</span>
-          </h2>
-        </motion.div>
+            <div className="flex items-center gap-3">
+              <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+              <motion.span
+                initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
+                whileInView={{ opacity: 1, letterSpacing: '0.25em' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, ease: EASE_PRECISE }}
+                className="font-tech text-xs font-semibold text-brand-600 uppercase"
+              >
+                Identity & Philosophy
+              </motion.span>
+              <div className="h-px w-10 sm:w-16 bg-neutral-200" />
+              <span className="font-mono text-xs text-neutral-400">
+                HOW WE THINK
+              </span>
+            </div>
+
+            <div className="font-mono text-xs text-neutral-500 flex items-center gap-4">
+              <span>[KAIROTRIX // CORE APPROACH]</span>
+              <span className="hidden md:inline text-neutral-300">•</span>
+              <span className="hidden md:inline">PROBLEM_FIRST</span>
+            </div>
+          </motion.div>
+          <DrawLine className="mt-4 h-px w-full bg-neutral-200/80" />
+        </div>
+
+        {/* Section Title with Masked Reveal */}
+        <div className="mb-10 lg:mb-14 overflow-hidden">
+          <MaskedReveal delay={0.08}>
+            <h2
+              id="identity-philosophy-heading"
+              className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]"
+            >
+              BUILT TO{' '}
+              <span className="gradient-signature-text">EVOLVE.</span>
+            </h2>
+          </MaskedReveal>
+        </div>
 
         {/* ── PART 1: EDITORIAL SCROLL-SCRUBBED KINETIC MANIFESTO ─────────── */}
         <div ref={manifestoRef} className="max-w-5xl mb-24 lg:mb-32">
@@ -434,28 +448,31 @@ export function WhatIsKairotrix() {
             })}
           </div>
 
-          {/* Contextual Narrative Bridge */}
-          <motion.div
-            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-start pt-8 border-t border-neutral-200/60"
-          >
-            <div className="md:col-span-4">
-              <span className="font-tech text-xs tracking-[0.2em] font-semibold text-neutral-400 uppercase">
-                THE PROBLEM-FIRST APPROACH
-              </span>
-              <p className="mt-2 text-sm font-mono text-neutral-500">
-                Moving past marketing promises into systems that actually work.
-              </p>
-            </div>
-            <div className="md:col-span-8">
-              <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
-                Most technology vendors begin with what they want to sell: a recurring software license, an off-the-shelf template, or an impressive presentation. At KAIROTRIX, we start by understanding how your business actually runs. We find the manual bottlenecks holding your team back, then design and build tailored systems that save real time and create lasting leverage.
-              </p>
-            </div>
-          </motion.div>
+          {/* Contextual Narrative Bridge with Animated DrawLine */}
+          <div className="mt-10 pt-8">
+            <DrawLine className="h-px w-full bg-neutral-200/60 mb-8" />
+            <motion.div
+              initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.65, delay: 0.15, ease: EASE_CINEMATIC }}
+              className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start"
+            >
+              <div className="md:col-span-4">
+                <span className="font-tech text-xs tracking-[0.2em] font-semibold text-neutral-400 uppercase">
+                  THE PROBLEM-FIRST APPROACH
+                </span>
+                <p className="mt-2 text-sm font-mono text-neutral-500">
+                  Moving past marketing promises into systems that actually work.
+                </p>
+              </div>
+              <div className="md:col-span-8">
+                <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
+                  Most technology vendors begin with what they want to sell: a recurring software license, an off-the-shelf template, or an impressive presentation. At KAIROTRIX, we start by understanding how your business actually runs. We find the manual bottlenecks holding your team back, then design and build tailored systems that save real time and create lasting leverage.
+                </p>
+              </div>
+            </motion.div>
+          </div>
         </div>
 
         {/* ── PART 2: RESTRAINED TRANSFORMATION CONTINUUM (6-STAGE RIBBON) ─── */}
@@ -550,42 +567,63 @@ export function WhatIsKairotrix() {
         {/* ── PART 3: SWISS-GRID INTERACTIVE TYPOGRAPHIC PRINCIPLES ─────────── */}
         <div>
           {/* Section Eyebrow for Principles */}
-          <motion.div
-            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-neutral-200/80"
-          >
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />
-                <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                  CORE PRINCIPLES
-                </span>
+          <div className="mb-10">
+            <motion.div
+              initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, ease: EASE_PRECISE }}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2"
+            >
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="flex h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />
+                  <motion.span
+                    initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
+                    whileInView={{ opacity: 1, letterSpacing: '0.25em' }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: EASE_PRECISE }}
+                    className="font-tech text-xs font-semibold text-brand-600 uppercase"
+                  >
+                    CORE PRINCIPLES
+                  </motion.span>
+                </div>
+                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950">
+                  How We Build Technology
+                </h3>
               </div>
-              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950">
-                How We Build Technology
-              </h3>
-            </div>
-            <span className="font-mono text-xs text-neutral-400">
-              Hover to explore our engineering standards
-            </span>
-          </motion.div>
+              <span className="font-mono text-xs text-neutral-400">
+                Hover to explore our engineering standards
+              </span>
+            </motion.div>
+            <DrawLine className="mt-4 h-px w-full bg-neutral-200/80" />
+          </div>
 
-          {/* 3-Column Swiss Architectural Grid with Focus Dimming */}
+          {/* 3-Column Swiss Architectural Grid with Directional Entrance & Focus Dimming */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {PRINCIPLES.map((principle, idx) => (
-              <PrincipleCard
-                key={principle.id}
-                item={principle}
-                index={idx}
-                isHovered={hoveredPrincipleIndex === idx}
-                isAnyHovered={hoveredPrincipleIndex !== null}
-                onHoverStart={() => setHoveredPrincipleIndex(idx)}
-                onHoverEnd={() => setHoveredPrincipleIndex(null)}
-              />
-            ))}
+            {PRINCIPLES.map((principle, idx) => {
+              const directionalVariants = [cardFromLeft, cardFromCenter, cardFromRight];
+              return (
+                <motion.div
+                  key={principle.id}
+                  initial={prefersReduced ? 'visible' : 'hidden'}
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-40px' }}
+                  variants={directionalVariants[idx % 3]}
+                  transition={{ duration: 0.75, delay: prefersReduced ? 0 : idx * 0.12, ease: EASE_CINEMATIC }}
+                  className="h-full flex flex-col"
+                >
+                  <PrincipleCard
+                    item={principle}
+                    index={idx}
+                    isHovered={hoveredPrincipleIndex === idx}
+                    isAnyHovered={hoveredPrincipleIndex !== null}
+                    onHoverStart={() => setHoveredPrincipleIndex(idx)}
+                    onHoverEnd={() => setHoveredPrincipleIndex(null)}
+                  />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

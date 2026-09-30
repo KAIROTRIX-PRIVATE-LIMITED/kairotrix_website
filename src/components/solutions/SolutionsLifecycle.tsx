@@ -11,6 +11,17 @@ import {
   GitBranch,
 } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import {
+  MaskedReveal,
+  DrawLine,
+  revealMeta,
+  revealBody,
+  revealTag,
+  cardFromLeft,
+  cardFromCenter,
+  cardFromRight,
+  EASE_CINEMATIC,
+} from '@/lib/animations';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Phase 3.4 — Solutions Engineering Lifecycle
@@ -120,33 +131,51 @@ export function SolutionsLifecycle() {
 
         {/* ── Section Header ── */}
         <div className="max-w-3xl mb-12 sm:mb-16">
-          <div className="flex items-center gap-3 mb-3 sm:mb-4">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={revealMeta}
+            className="flex items-center gap-3 mb-3 sm:mb-4"
+          >
             <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
             <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-              04 // HOW WE BUILD
+              HOW WE BUILD
             </span>
-            <div className="h-px w-10 sm:w-16 bg-neutral-200" />
-          </div>
+            <DrawLine className="h-px w-10 sm:w-16 bg-neutral-300" delay={0.2} />
+          </motion.div>
 
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
-            FROM PROBLEM TO WORKING{' '}
-            <span className="gradient-signature-text">
-              SYSTEM.
-            </span>
+            <MaskedReveal delay={0.1}>
+              <span>FROM PROBLEM TO WORKING </span>
+              <span className="gradient-signature-text">SYSTEM.</span>
+            </MaskedReveal>
           </h2>
 
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 font-normal leading-relaxed">
+          <motion.p
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={revealBody}
+            className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 font-normal leading-relaxed"
+          >
             Our projects follow a clear path: understand the problem, design the right approach, build and test the system, then launch and improve it over time.
-          </p>
+          </motion.p>
 
           {/* Phase Badge */}
-          <div className="mt-5 inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200/90 shadow-2xs text-xs font-mono">
-            <span className="font-bold text-purple-700">4 PHASES</span>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={revealTag}
+            className="mt-5 inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200/90 shadow-2xs text-xs font-mono"
+          >
+            <span className="font-bold text-purple-700">LIFECYCLE</span>
             <span className="text-neutral-300">•</span>
             <span className="text-neutral-500">
               Phase {PHASES[activeStage].number} — {PHASES[activeStage].stepName}
             </span>
-          </div>
+          </motion.div>
         </div>
 
         {/* ── TOP PIPELINE PROGRESS TRACKER (Desktop) ── */}
@@ -220,14 +249,17 @@ export function SolutionsLifecycle() {
           {PHASES.map((phase, idx) => {
             const Icon = phase.icon;
             const isActive = idx === activeStage;
+            const cardVariant =
+              idx === 0 ? cardFromLeft : idx === 3 ? cardFromRight : cardFromCenter;
 
             return (
               <motion.div
                 key={phase.number}
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.4, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                variants={shouldReduceMotion ? undefined : cardVariant}
+                transition={{ delay: idx * 0.08 }}
                 onClick={() => setActiveStage(idx)}
                 className={`rounded-2xl bg-white border transition-all duration-200 p-6 flex flex-col justify-between cursor-pointer relative overflow-hidden ${
                   isActive
@@ -313,7 +345,13 @@ export function SolutionsLifecycle() {
         </div>
 
         {/* ── Bottom Ownership Bar ── */}
-        <div className="mt-10 sm:mt-12 p-4 sm:p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-40px' }}
+          variants={shouldReduceMotion ? undefined : cardFromCenter}
+          className="mt-10 sm:mt-12 p-4 sm:p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4 text-xs"
+        >
           <div className="flex items-center gap-3 text-neutral-700">
             <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 border border-purple-100">
               <GitBranch className="w-4 h-4 text-purple-600" />
@@ -329,7 +367,7 @@ export function SolutionsLifecycle() {
           <div className="flex items-center gap-2 shrink-0 font-mono text-[11px] text-purple-700 font-semibold bg-purple-50 px-3 py-1.5 rounded-lg border border-purple-100">
             <span>CODE OWNERSHIP & HANDOVER</span>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

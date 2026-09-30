@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import {
-  INSIGHT_SPECIMENS,
   TECH_CATEGORIES,
   type InsightSpecimen,
 } from '@/data/insightsData';
@@ -93,8 +92,8 @@ function BentoRow({ pair, rowIndex }: BentoRowProps) {
   );
 }
 
-export function InsightsGrid({ initialInsights }: InsightsGridProps = {}) {
-  const allInsights = initialInsights && initialInsights.length > 0 ? initialInsights : INSIGHT_SPECIMENS;
+export function InsightsGrid({ initialInsights = [] }: InsightsGridProps = {}) {
+  const allInsights = initialInsights;
   const searchParams = useSearchParams();
 
   const [activeCategory, setActiveCategory] = useState<string>('all');

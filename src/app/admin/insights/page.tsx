@@ -132,13 +132,13 @@ export default function AdminInsightsPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200/90 text-brand-700 font-tech text-xs font-semibold tracking-wider uppercase mb-3 shadow-xs">
             <BookOpen className="w-3.5 h-3.5 text-brand-600" />
-            <span>KAIROTRIX EDITORIAL CMS</span>
+            <span>KAIROTRIX ADMIN</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-neutral-950 tracking-tight">
-            Articles, Technical Blog & Whitepapers
+            Articles &amp; Blog
           </h1>
           <p className="text-sm text-neutral-600 mt-1 max-w-2xl">
-            Manage technical articles, team author submissions, and admin approvals using the MS Word-style Blog Writer.
+            Manage articles published on the website and write new ones.
           </p>
         </div>
 
@@ -147,7 +147,7 @@ export default function AdminInsightsPage() {
           className="self-start sm:self-auto px-5 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-500 hover:to-brand-600 text-white font-tech text-xs font-bold uppercase tracking-wider transition-all shadow-xs flex items-center gap-2 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>Open Blog Writer</span>
+          <span>Write Article</span>
         </Link>
       </div>
 

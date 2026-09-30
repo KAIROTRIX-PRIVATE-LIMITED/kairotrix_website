@@ -33,14 +33,6 @@ interface TeamMember {
   isActive: boolean;
 }
 
-const PRESET_IMAGES = [
-  { label: 'Ethan Cole (Founder)', url: '/assets/images/about/team-ethan.jpg' },
-  { label: 'Grace Thompson (AI PM)', url: '/assets/images/about/team-grace.jpg' },
-  { label: 'Sophia Bennett (Design)', url: '/assets/images/about/team-sophia.jpg' },
-  { label: 'Ava Morgan (Developer)', url: '/assets/images/about/team-ava.jpg' },
-  { label: 'Maya Clarke (QA)', url: '/assets/images/about/team-maya.jpg' },
-];
-
 export default function AdminTeamPage() {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [isSectionVisible, setIsSectionVisible] = useState<boolean>(true);
@@ -68,7 +60,7 @@ export default function AdminTeamPage() {
     name: '',
     role: '',
     badge: '',
-    image: '/assets/images/about/team-ethan.jpg',
+    image: '',
     twitter: '',
     linkedin: '',
     github: '',
@@ -105,20 +97,27 @@ export default function AdminTeamPage() {
       const res = await fetch('/api/admin/team/visibility', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isVisible: targetState }),
+        body: JSON.stringify({ isVisible: targetState, isTeamSectionVisible: targetState }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        setIsSectionVisible(data.isTeamSectionVisible);
+        const finalVisible =
+          typeof data.isTeamSectionVisible === 'boolean'
+            ? data.isTeamSectionVisible
+            : typeof data.isVisible === 'boolean'
+            ? data.isVisible
+            : targetState;
+        setIsSectionVisible(finalVisible);
         setToastMessage(
-          data.isTeamSectionVisible
+          finalVisible
             ? 'Team section is now VISIBLE on /about'
             : 'Team section is now HIDDEN on /about'
         );
       } else {
+        const data = await res.json().catch(() => ({}));
         setIsSectionVisible(!targetState);
-        setToastMessage('Failed to update visibility');
+        setToastMessage(data.error || 'Failed to update visibility');
       }
     } catch (err) {
       console.error('Failed to toggle team visibility:', err);
@@ -159,7 +158,7 @@ export default function AdminTeamPage() {
       name: '',
       role: '',
       badge: '',
-      image: '/assets/images/about/team-ethan.jpg',
+      image: '',
       twitter: '',
       linkedin: '',
       github: '',
@@ -258,13 +257,13 @@ export default function AdminTeamPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200/90 text-brand-700 font-tech text-xs font-semibold tracking-wider uppercase mb-3 shadow-xs">
             <Users className="w-3.5 h-3.5 text-brand-600" />
-            <span>KAIROTRIX TEAM MANAGEMENT</span>
+            <span>KAIROTRIX ADMIN</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-neutral-950 tracking-tight">
-            Team &amp; Leadership Profiles
+            Team Members
           </h1>
           <p className="text-sm text-neutral-600 mt-1 max-w-2xl">
-            Control the &ldquo;People behind the work&rdquo; section on the public About page. Update member photos, titles, and social profile links.
+            Manage team members and choose whether to show or hide the team section on the About page.
           </p>
         </div>
 
@@ -381,13 +380,19 @@ export default function AdminTeamPage() {
             >
               {/* Card Media Header */}
               <div className="relative w-full aspect-[4/5] bg-neutral-100 overflow-hidden">
-                <Image
-                  src={member.image || '/assets/images/about/team-ethan.jpg'}
-                  alt={member.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-top"
-                />
+                {member.image ? (
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover object-top"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-neutral-100 text-neutral-400 font-display font-bold text-3xl">
+                    {member.name.charAt(0)}
+                  </div>
+                )}
 
                 {/* Badge Overlay */}
                 {member.badge && (
@@ -530,200 +535,186 @@ export default function AdminTeamPage() {
 
       {/* Add / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/50 backdrop-blur-sm overflow-y-auto">
-          <div className="relative w-full max-w-lg rounded-3xl bg-white border border-neutral-200 p-6 sm:p-8 shadow-2xl my-8 text-neutral-900">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-5 right-5 p-1 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <h2 className="text-xl font-display font-bold text-neutral-950 mb-1">
-              {modalMode === 'create' ? 'Add Team Member' : 'Edit Team Member'}
-            </h2>
-            <p className="text-xs text-neutral-500 mb-6 font-mono">
-              Configure profile picture, name, role, and profile URLs.
-            </p>
-
-            {formError && (
-              <div className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
-                <span>{formError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              {/* Name */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-neutral-950/60 backdrop-blur-sm">
+          <div className="relative w-full max-w-xl max-h-[90vh] flex flex-col rounded-3xl bg-white border border-neutral-200 shadow-2xl text-neutral-900 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Pinned Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 bg-neutral-50/70 shrink-0">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Ethan Cole"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-sm focus:bg-white focus:outline-none focus:border-brand-500"
-                />
+                <h2 className="text-lg font-display font-bold text-neutral-950">
+                  {modalMode === 'create' ? 'Add Team Member' : 'Edit Team Member'}
+                </h2>
+                <p className="text-xs text-neutral-500 font-mono">
+                  Configure profile picture, name, role, and profile URLs.
+                </p>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-              {/* Role */}
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  Role / Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  placeholder="e.g. Founder & Chief Architect"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-sm focus:bg-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
+            {/* Form with Scrollable Content Body */}
+            <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden min-h-0">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                {formError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                    <span>{formError}</span>
+                  </div>
+                )}
 
-              {/* Badge */}
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  Badge Tag (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={formData.badge}
-                  onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                  placeholder="e.g. Founder, AI Systems, Product & UX"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-sm focus:bg-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
+                {/* 2-Column: Full Name & Role */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="e.g. Ethan Cole"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-sm focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                    />
+                  </div>
 
-              {/* Picture / Image Upload + Presets */}
-              <div className="space-y-2">
-                <MediaUploader
-                  label="Profile Picture (Upload or URL)"
-                  value={formData.image}
-                  onChange={(url) => setFormData({ ...formData, image: url })}
-                  accept="image"
-                  folder="kairotrix/team"
-                  placeholder="https://... or /assets/images/about/team-ethan.jpg"
-                  helperText="Upload custom portrait or pick a studio preset below."
-                />
+                  <div>
+                    <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
+                      Role / Title *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.role}
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      placeholder="e.g. Founder & Chief Architect"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-sm focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                    />
+                  </div>
+                </div>
 
-                {/* Quick Presets */}
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 block mb-1 font-semibold">
-                    Quick Studio Presets:
+                {/* 2-Column: Badge Tag & Order/Active */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
+                      Badge Tag (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.badge}
+                      onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                      placeholder="e.g. Founder, AI Systems, Product & UX"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-sm focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 items-end">
+                    <div>
+                      <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
+                        Sort Order
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.order}
+                        onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-sm focus:bg-white focus:outline-none focus:border-brand-500 font-mono transition-colors"
+                      />
+                    </div>
+
+                    <div className="pb-2">
+                      <label className="inline-flex items-center gap-2 text-xs font-mono text-neutral-700 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={formData.isActive}
+                          onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                          className="w-4 h-4 rounded border-neutral-300 text-brand-600 focus:ring-brand-500"
+                        />
+                        <span className="font-semibold">Active on site</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Picture / Image Upload */}
+                <div className="space-y-1.5 pt-1">
+                  <MediaUploader
+                    label="Profile Picture (Upload or URL) *"
+                    value={formData.image}
+                    onChange={(url) => setFormData({ ...formData, image: url })}
+                    accept="image"
+                    folder="kairotrix/team"
+                    placeholder="https://... or /assets/images/..."
+                    helperText="Upload member portrait or provide a direct image URL."
+                  />
+                </div>
+
+                {/* Social Profile Links */}
+                <div className="space-y-3 pt-3 border-t border-neutral-100">
+                  <span className="text-xs font-mono uppercase tracking-wider text-brand-700 font-bold block">
+                    Profile Links
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {PRESET_IMAGES.map((preset) => (
-                      <button
-                        type="button"
-                        key={preset.url}
-                        onClick={() => setFormData({ ...formData, image: preset.url })}
-                        className={cn(
-                          'px-2.5 py-1 rounded-md text-[10px] font-mono border transition-all cursor-pointer shadow-xs',
-                          formData.image === preset.url
-                            ? 'bg-brand-50 border-brand-300 text-brand-700 font-bold'
-                            : 'bg-neutral-50 border-neutral-200 text-neutral-600 hover:text-neutral-950'
-                        )}
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-mono text-neutral-600 mb-1 font-medium">
+                        Twitter / X URL
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.twitter}
+                        onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
+                        placeholder="https://x.com/..."
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-xs focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-mono text-neutral-600 mb-1 font-medium">
+                        LinkedIn URL
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.linkedin}
+                        onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+                        placeholder="https://linkedin.com/in/..."
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-xs focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-mono text-neutral-600 mb-1 font-medium">
+                        GitHub URL
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.github}
+                        onChange={(e) => setFormData({ ...formData, github: e.target.value })}
+                        placeholder="https://github.com/..."
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-xs focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Social Profile Links */}
-              <div className="space-y-3 pt-2 border-t border-neutral-100">
-                <span className="text-xs font-mono uppercase tracking-wider text-brand-700 font-bold block">
-                  Profile Links
-                </span>
-
-                {/* Twitter / X */}
-                <div>
-                  <label className="block text-[11px] font-mono text-neutral-600 mb-1 font-medium">
-                    Twitter / X URL
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.twitter}
-                    onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
-                    placeholder="https://x.com/username"
-                    className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-xs focus:bg-white focus:outline-none focus:border-brand-500"
-                  />
-                </div>
-
-                {/* LinkedIn */}
-                <div>
-                  <label className="block text-[11px] font-mono text-neutral-600 mb-1 font-medium">
-                    LinkedIn URL
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.linkedin}
-                    onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                    placeholder="https://linkedin.com/in/username"
-                    className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-xs focus:bg-white focus:outline-none focus:border-brand-500"
-                  />
-                </div>
-
-                {/* GitHub */}
-                <div>
-                  <label className="block text-[11px] font-mono text-neutral-600 mb-1 font-medium">
-                    GitHub URL
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.github}
-                    onChange={(e) => setFormData({ ...formData, github: e.target.value })}
-                    placeholder="https://github.com/username"
-                    className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 placeholder:text-neutral-400 text-xs focus:bg-white focus:outline-none focus:border-brand-500"
-                  />
-                </div>
-              </div>
-
-              {/* Order & Active */}
-              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-neutral-100 items-center">
-                <div>
-                  <label className="block text-[11px] font-mono text-neutral-600 mb-1 font-medium">
-                    Sort Order
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.order}
-                    onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs focus:bg-white focus:outline-none focus:border-brand-500"
-                  />
-                </div>
-
-                <div className="pt-4">
-                  <label className="inline-flex items-center gap-2 text-xs font-mono text-neutral-700 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.isActive}
-                      onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                      className="rounded border-neutral-300 text-brand-600 focus:ring-brand-500"
-                    />
-                    <span className="font-semibold">Active on site</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+              {/* Pinned Sticky Footer Actions */}
+              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-neutral-100 bg-neutral-50/80 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 font-tech text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-tech text-xs uppercase tracking-wider transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formSaving}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-500 hover:to-brand-600 text-white font-tech text-xs font-bold uppercase tracking-wider transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-500 hover:to-brand-600 text-white font-tech text-xs font-bold uppercase tracking-wider transition-all shadow-xs flex items-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {formSaving ? (
                     <>

@@ -17,6 +17,14 @@ import {
   AlertCircle,
   User,
   Send,
+  FileText,
+  Plus,
+  Edit,
+  X,
+  Tag,
+  BookOpen,
+  Layers,
+  ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -49,14 +57,27 @@ interface AgentConfig {
   temperature: number;
 }
 
+interface CompanyDocumentItem {
+  id: string;
+  title: string;
+  category: string;
+  content: string;
+  tags: string[];
+  isActive: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function AdminAiAssistantPage() {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<ConversationItem | null>(null);
+  const [documents, setDocuments] = useState<CompanyDocumentItem[]>([]);
   const [config, setConfig] = useState<AgentConfig>({
     id: 'default',
     isEnabled: true,
     mode: 'HYBRID',
-    model: 'gpt-4o-mini',
+    model: 'openai/gpt-oss-20b',
     systemPrompt: '',
     temperature: 0.3,
   });
@@ -66,14 +87,21 @@ export default function AdminAiAssistantPage() {
   const [savingConfig, setSavingConfig] = useState(false);
   const [configSavedToast, setConfigSavedToast] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState(false);
-  const [activeTab, setActiveTab] = useState<'conversations' | 'settings'>('conversations');
+  const [activeTab, setActiveTab] = useState<'conversations' | 'knowledge' | 'settings'>('conversations');
+
+  // Document modal state
+  const [isDocModalOpen, setIsDocModalOpen] = useState(false);
+  const [editingDoc, setEditingDoc] = useState<Partial<CompanyDocumentItem> | null>(null);
+  const [savingDoc, setSavingDoc] = useState(false);
+  const [docFilterCategory, setDocFilterCategory] = useState<string>('ALL');
 
   const fetchData = async () => {
     try {
       setRefreshing(true);
-      const [convRes, confRes] = await Promise.all([
+      const [convRes, confRes, docRes] = await Promise.all([
         fetch('/api/admin/assistant/conversations'),
         fetch('/api/admin/assistant/config'),
+        fetch('/api/admin/assistant/documents'),
       ]);
 
       if (convRes.ok) {
@@ -90,6 +118,11 @@ export default function AdminAiAssistantPage() {
         if (confData.config) {
           setConfig(confData.config);
         }
+      }
+
+      if (docRes.ok) {
+        const docData = await docRes.json();
+        setDocuments(docData.documents || []);
       }
     } catch (e) {
       console.error('Error fetching AI Assistant admin telemetry:', e);
@@ -138,54 +171,120 @@ export default function AdminAiAssistantPage() {
         setTimeout(() => setConfigSavedToast(false), 3000);
       }
     } catch (e) {
-      console.error(e);
+      console.error('Error saving config:', e);
     } finally {
       setSavingConfig(false);
     }
   };
 
-  const handleDeleteConversation = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this conversation log?')) return;
+  // Open Document Modal (Create or Edit)
+  const handleOpenDocModal = (doc?: CompanyDocumentItem) => {
+    if (doc) {
+      setEditingDoc({ ...doc });
+    } else {
+      setEditingDoc({
+        title: '',
+        category: 'Services',
+        content: '',
+        tags: [],
+        isActive: true,
+      });
+    }
+    setIsDocModalOpen(true);
+  };
+
+  // Save Document
+  const handleSaveDocument = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingDoc || !editingDoc.title?.trim() || !editingDoc.content?.trim()) return;
+
     try {
-      const res = await fetch(`/api/admin/assistant/conversations/${id}`, {
+      setSavingDoc(true);
+      const isUpdating = Boolean(editingDoc.id);
+      const method = isUpdating ? 'PUT' : 'POST';
+
+      const res = await fetch('/api/admin/assistant/documents', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingDoc),
+      });
+
+      if (res.ok) {
+        setIsDocModalOpen(false);
+        setEditingDoc(null);
+        await fetchData();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Failed to save document. Please check the fields and try again.');
+      }
+    } catch (err) {
+      console.error('Error saving document:', err);
+      alert('Network or server error while saving document.');
+    } finally {
+      setSavingDoc(false);
+    }
+  };
+
+  // Toggle Document Active / Paused
+  const handleToggleDocStatus = async (doc: CompanyDocumentItem) => {
+    try {
+      const res = await fetch('/api/admin/assistant/documents', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: doc.id, isActive: !doc.isActive }),
+      });
+      if (res.ok) {
+        setDocuments((prev) =>
+          prev.map((d) => (d.id === doc.id ? { ...d, isActive: !d.isActive } : d))
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Delete Document
+  const handleDeleteDocument = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this company knowledge document?')) return;
+    try {
+      const res = await fetch(`/api/admin/assistant/documents?id=${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
-        setConversations((prev) => prev.filter((c) => c.id !== id));
-        if (selectedConversation?.id === id) {
-          setSelectedConversation(null);
-        }
+        setDocuments((prev) => prev.filter((d) => d.id !== id));
       }
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const qualifiedLeadsCount = conversations.filter(
-    (c) => c.status === 'QUALIFIED_LEAD' || Boolean(c.leadEmail)
+    (c) => c.status === 'QUALIFIED_LEAD' || c.leadEmail
   ).length;
+
+  const categories = ['ALL', 'Overview', 'Services', 'Technical', 'Pricing', 'Process', 'FAQ'];
+
+  const filteredDocs =
+    docFilterCategory === 'ALL'
+      ? documents
+      : documents.filter((d) => d.category.toLowerCase() === docFilterCategory.toLowerCase());
 
   return (
     <div className="space-y-6">
-      {/* Header & Master Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Top Header & Master Toggle */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
         <div>
-          <div className="flex items-center gap-2">
-            <Bot className="w-4 h-4 text-brand-600" />
-            <span className="text-xs font-mono uppercase tracking-widest text-brand-600 font-semibold">
-              AI Representative Control Center
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold text-neutral-900 tracking-tight mt-1">
-            KIRO Agent Command
+          <h1 className="text-xl sm:text-2xl font-bold font-mono text-neutral-900 tracking-tight flex items-center gap-2.5">
+            <Bot className="w-6 h-6 text-brand-600" />
+            <span>AI Command Center (KIRO)</span>
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-            Monitor visitor conversations, track qualified leads, and tune KIRO&apos;s system prompt.
+          <p className="text-xs text-neutral-500 font-mono mt-1">
+            Manage real-time visitor interactions, RAG company documents, and Groq LLM prompt parameters.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Master 1-Click Status Toggle */}
+        <div className="flex items-center gap-2.5">
+          {/* Master 1-Click Toggle */}
           <button
             onClick={handleToggleAgentStatus}
             disabled={togglingStatus}
@@ -195,17 +294,17 @@ export default function AdminAiAssistantPage() {
                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-300 hover:bg-emerald-100 shadow-emerald-500/10'
                 : 'bg-amber-50 text-amber-700 border border-amber-300 hover:bg-amber-100 shadow-amber-500/10'
             )}
-            title={config.isEnabled ? 'Click to Pause KIRO Site-Wide' : 'Click to Activate KIRO Site-Wide'}
+            title={config.isEnabled ? 'Click to pause chat assistant site-wide' : 'Click to turn on chat assistant site-wide'}
           >
             {config.isEnabled ? (
               <>
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>KIRO ACTIVE (LIVE)</span>
+                <span>Assistant Active (Online)</span>
               </>
             ) : (
               <>
                 <PauseCircle className="w-3.5 h-3.5" />
-                <span>KIRO PAUSED (OFFLINE)</span>
+                <span>Assistant Paused (Offline)</span>
               </>
             )}
           </button>
@@ -222,7 +321,7 @@ export default function AdminAiAssistantPage() {
       </div>
 
       {/* Telemetry Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl bg-white border border-neutral-200/80 shadow-xs">
           <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-1">
             Total Conversations
@@ -247,19 +346,31 @@ export default function AdminAiAssistantPage() {
 
         <div className="p-4 rounded-2xl bg-white border border-neutral-200/80 shadow-xs">
           <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-1">
-            Active Mode
+            RAG Knowledge Base
           </span>
-          <div className="text-2xl font-bold text-brand-700 font-mono">
-            {config.mode || 'HYBRID'}
+          <div className="text-2xl font-bold text-brand-600 font-mono">
+            {documents.filter((d) => d.isActive).length} <span className="text-xs text-neutral-400 font-normal">/ {documents.length} docs</span>
           </div>
           <span className="text-[11px] text-neutral-400 font-mono mt-1 block">
-            LLM Grounded + Deterministic Fallback
+            Active company documents
+          </span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-neutral-200/80 shadow-xs">
+          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-1">
+            Active Model
+          </span>
+          <div className="text-sm font-bold text-neutral-800 font-mono truncate mt-1">
+            {config.model || 'openai/gpt-oss-20b'}
+          </div>
+          <span className="text-[11px] text-neutral-400 font-mono mt-1 block">
+            Groq High-Speed LPU
           </span>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 text-xs font-mono">
+      <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 text-xs font-mono flex-wrap">
         <button
           onClick={() => setActiveTab('conversations')}
           className={cn(
@@ -271,6 +382,19 @@ export default function AdminAiAssistantPage() {
         >
           <MessageSquare className="w-3.5 h-3.5" />
           <span>Visitor Conversation Logs ({conversations.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('knowledge')}
+          className={cn(
+            'px-3.5 py-2 rounded-xl transition-colors cursor-pointer flex items-center gap-2',
+            activeTab === 'knowledge'
+              ? 'bg-brand-50 text-brand-700 border border-brand-200 font-bold shadow-xs'
+              : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/60'
+          )}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          <span>Company Knowledge & RAG Docs ({documents.length})</span>
         </button>
 
         <button
@@ -306,7 +430,7 @@ export default function AdminAiAssistantPage() {
                   key={conv.id}
                   onClick={() => setSelectedConversation(conv)}
                   className={cn(
-                    'p-3.5 rounded-xl border text-left transition-all cursor-pointer',
+                    'p-3.5 rounded-xl border text-left cursor-pointer transition-all',
                     isSelected
                       ? 'bg-brand-50/70 border-brand-300 text-neutral-900 shadow-xs ring-1 ring-brand-400/30'
                       : 'bg-neutral-50/70 border-neutral-200 text-neutral-700 hover:bg-neutral-100/70 hover:border-neutral-300'
@@ -368,44 +492,37 @@ export default function AdminAiAssistantPage() {
                       {selectedConversation.sessionId}
                     </span>
                   </div>
-                  <button
-                    onClick={() => handleDeleteConversation(selectedConversation.id)}
-                    className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-200 cursor-pointer"
-                    title="Delete Conversation"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {selectedConversation.leadEmail && (
+                    <div className="text-right">
+                      <span className="text-xs font-mono text-neutral-400 block">Qualified Lead Email</span>
+                      <a
+                        href={`mailto:${selectedConversation.leadEmail}`}
+                        className="text-xs font-bold text-emerald-700 font-mono hover:underline"
+                      >
+                        {selectedConversation.leadEmail}
+                      </a>
+                    </div>
+                  )}
                 </div>
 
-                {/* Message Bubble Thread */}
-                <div className="space-y-3.5 pr-2 overflow-y-auto max-h-[480px]">
+                {/* Chat message bubbles */}
+                <div className="space-y-3 pr-2">
                   {selectedConversation.messages.map((msg) => {
                     const isUser = msg.sender === 'user';
                     return (
                       <div
                         key={msg.id}
-                        className={cn(
-                          'flex items-start gap-2.5 max-w-[85%]',
-                          isUser ? 'ml-auto flex-row-reverse' : 'mr-auto'
-                        )}
+                        className={cn('flex flex-col', isUser ? 'items-end' : 'items-start')}
                       >
+                        <span className="text-[10px] font-mono text-neutral-400 mb-1 px-1">
+                          {isUser ? 'Visitor' : 'KIRO (AI)'}
+                        </span>
                         <div
                           className={cn(
-                            'w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-mono shadow-xs',
+                            'p-3.5 rounded-2xl max-w-[85%] text-xs leading-relaxed',
                             isUser
-                              ? 'bg-neutral-900 text-white'
-                              : 'bg-brand-50 text-brand-700 border border-brand-200'
-                          )}
-                        >
-                          {isUser ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
-                        </div>
-
-                        <div
-                          className={cn(
-                            'p-3 rounded-2xl text-xs leading-relaxed shadow-xs',
-                            isUser
-                              ? 'bg-gradient-to-r from-brand-600 to-brand-700 text-white rounded-tr-none'
-                              : 'bg-neutral-50 border border-neutral-200 text-neutral-800 rounded-tl-none'
+                              ? 'bg-neutral-900 text-white rounded-tr-xs shadow-xs'
+                              : 'bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-tl-xs'
                           )}
                         >
                           <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -436,7 +553,123 @@ export default function AdminAiAssistantPage() {
         </div>
       )}
 
-      {/* Tab 2: Prompt Tuning & Model Settings */}
+      {/* Tab 2: Company Knowledge & RAG Docs */}
+      {activeTab === 'knowledge' && (
+        <div className="space-y-4">
+          {/* Action Ribbon */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border border-neutral-200/80 rounded-2xl p-4 shadow-xs">
+            {/* Category Filter Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setDocFilterCategory(cat)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-xl text-xs font-mono transition-colors cursor-pointer shrink-0',
+                    docFilterCategory === cat
+                      ? 'bg-brand-600 text-white font-bold'
+                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => handleOpenDocModal()}
+              className="px-4 py-2 rounded-xl bg-neutral-950 hover:bg-brand-600 text-white text-xs font-mono font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs shrink-0"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Knowledge Document</span>
+            </button>
+          </div>
+
+          {/* Document Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredDocs.map((doc) => (
+              <div
+                key={doc.id}
+                className={cn(
+                  'p-5 bg-white border rounded-2xl shadow-xs transition-all relative flex flex-col justify-between',
+                  doc.isActive ? 'border-neutral-200/80' : 'border-neutral-200 opacity-60 bg-neutral-50/50'
+                )}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 font-mono text-[10px] uppercase font-bold border border-brand-200">
+                      {doc.category}
+                    </span>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleToggleDocStatus(doc)}
+                        className={cn(
+                          'px-2 py-0.5 rounded text-[10px] font-mono font-semibold transition-colors cursor-pointer',
+                          doc.isActive
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-neutral-100 text-neutral-500 border border-neutral-200'
+                        )}
+                      >
+                        {doc.isActive ? 'Active (In RAG)' : 'Paused'}
+                      </button>
+
+                      <button
+                        onClick={() => handleOpenDocModal(doc)}
+                        className="p-1 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
+                        title="Edit document"
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteDocument(doc.id)}
+                        className="p-1 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                        title="Delete document"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <h3 className="font-bold text-sm text-neutral-900 font-mono mb-2">
+                    {doc.title}
+                  </h3>
+
+                  <p className="text-xs text-neutral-600 font-mono line-clamp-4 leading-relaxed whitespace-pre-wrap bg-neutral-50 p-3 rounded-xl border border-neutral-100 mb-3">
+                    {doc.content}
+                  </p>
+                </div>
+
+                {/* Footer Tags */}
+                <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-neutral-100">
+                  <Tag className="w-3 h-3 text-neutral-400 shrink-0" />
+                  {doc.tags && doc.tags.length > 0 ? (
+                    doc.tags.map((tag, tagIdx) => (
+                      <span
+                        key={tagIdx}
+                        className="px-1.5 py-0.5 bg-neutral-100 text-neutral-600 rounded text-[10px] font-mono"
+                      >
+                        {tag}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-[10px] font-mono text-neutral-400">No tags</span>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {filteredDocs.length === 0 && (
+              <div className="col-span-full py-16 text-center text-xs text-neutral-400 font-mono bg-white rounded-2xl border border-neutral-200">
+                No documents found in this category. Click &quot;Add Knowledge Document&quot; to upload or write company docs.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 3: Prompt Tuning & Model Settings */}
       {activeTab === 'settings' && (
         <form
           onSubmit={handleSaveConfig}
@@ -459,45 +692,15 @@ export default function AdminAiAssistantPage() {
               className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors"
             >
               <option value="HYBRID">
-                HYBRID (LLM if API Key exists, else Deterministic Matcher)
+                HYBRID (Groq Cloud LLM with RAG Knowledge + Deterministic Fallback)
               </option>
               <option value="LLM_ONLY">
-                LLM_ONLY (Requires OPENAI_API_KEY in .env)
+                LLM_ONLY (Requires GROQ_API_KEY in .env)
               </option>
               <option value="DETERMINISTIC">
-                DETERMINISTIC (Zero API cost, uses internal knowledge base)
+                DETERMINISTIC (Zero API cost, uses internal knowledge base only)
               </option>
             </select>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-mono uppercase text-neutral-600 font-medium mb-1.5">
-                Target Model
-              </label>
-              <input
-                type="text"
-                value={config.model}
-                onChange={(e) => setConfig({ ...config, model: e.target.value })}
-                placeholder="gpt-4o-mini"
-                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none transition-colors"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-mono uppercase text-neutral-600 font-medium mb-1.5">
-                Temperature ({config.temperature})
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={config.temperature}
-                onChange={(e) => setConfig({ ...config, temperature: parseFloat(e.target.value) })}
-                className="w-full accent-brand-600 mt-2"
-              />
-            </div>
           </div>
 
           <div>
@@ -512,7 +715,7 @@ export default function AdminAiAssistantPage() {
               className="w-full px-3.5 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-brand-500 focus:outline-none font-mono leading-relaxed transition-colors"
             />
             <span className="text-[11px] text-neutral-500 font-mono mt-1 block">
-              KIRO automatically ingests active database projects and official service areas on top of this prompt.
+              KIRO automatically ingests active RAG company documents and live portfolio projects on top of this prompt.
             </span>
           </div>
 
@@ -527,6 +730,125 @@ export default function AdminAiAssistantPage() {
             </button>
           </div>
         </form>
+      )}
+
+      {/* DOCUMENT CREATOR / EDITOR MODAL */}
+      {isDocModalOpen && editingDoc && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/50 backdrop-blur-xs">
+          <div className="bg-white border border-neutral-200 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+              <h3 className="font-bold text-base font-mono text-neutral-900 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-brand-600" />
+                <span>{editingDoc.id ? 'Edit Company Knowledge Document' : 'Add Company Knowledge Document'}</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsDocModalOpen(false)}
+                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveDocument} className="space-y-4">
+              <div>
+                <label className="block text-xs font-mono uppercase text-neutral-700 font-semibold mb-1">
+                  Document Title <span className="text-brand-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editingDoc.title || ''}
+                  onChange={(e) => setEditingDoc({ ...editingDoc, title: e.target.value })}
+                  placeholder="e.g. Enterprise Security, SLA & IP Ownership Policy"
+                  className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase text-neutral-700 font-semibold mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={editingDoc.category || 'Services'}
+                    onChange={(e) => setEditingDoc({ ...editingDoc, category: e.target.value })}
+                    className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none"
+                  >
+                    <option value="Overview">Overview</option>
+                    <option value="Services">Services</option>
+                    <option value="Technical">Technical</option>
+                    <option value="Pricing">Pricing</option>
+                    <option value="Process">Process</option>
+                    <option value="FAQ">FAQ</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase text-neutral-700 font-semibold mb-1">
+                    Tags (Comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={Array.isArray(editingDoc.tags) ? editingDoc.tags.join(', ') : ''}
+                    onChange={(e) =>
+                      setEditingDoc({
+                        ...editingDoc,
+                        tags: e.target.value.split(',').map((t) => t.trim()),
+                      })
+                    }
+                    placeholder="pricing, security, rag, timeline"
+                    className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:bg-white focus:border-brand-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono uppercase text-neutral-700 font-semibold mb-1">
+                  Document Content (Markdown or Plain Text) <span className="text-brand-600">*</span>
+                </label>
+                <textarea
+                  required
+                  rows={9}
+                  value={editingDoc.content || ''}
+                  onChange={(e) => setEditingDoc({ ...editingDoc, content: e.target.value })}
+                  placeholder="Paste or write the factual company knowledge, policies, technical specifics, or guidelines that KIRO should cite when answering visitor questions..."
+                  className="w-full px-3.5 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 font-mono leading-relaxed focus:bg-white focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="doc-active"
+                  checked={editingDoc.isActive ?? true}
+                  onChange={(e) => setEditingDoc({ ...editingDoc, isActive: e.target.checked })}
+                  className="rounded text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer"
+                />
+                <label htmlFor="doc-active" className="text-xs font-mono text-neutral-700 cursor-pointer">
+                  Active (Include in RAG context for visitor questions)
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200">
+                <button
+                  type="button"
+                  onClick={() => setIsDocModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-neutral-200 text-xs font-mono text-neutral-600 hover:bg-neutral-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingDoc}
+                  className="px-5 py-2 rounded-xl bg-neutral-950 hover:bg-brand-600 text-white text-xs font-mono font-bold transition-colors disabled:opacity-50"
+                >
+                  {savingDoc ? 'Saving...' : 'Save Knowledge Document'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -141,3 +141,18 @@ model AboutConfig {
   isTeamSectionVisible Boolean  @default(true)
   updatedAt            DateTime @updatedAt
 }
+
+// === COMPANY KNOWLEDGE / RAG DOCUMENTS ===
+
+model CompanyDocument {
+  id        String   @id @default(cuid())
+  title     String
+  category  String   @default("General") // "Overview" | "Services" | "Technical" | "Pricing" | "FAQ"
+  content   String   @db.Text
+  tags      String[]
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

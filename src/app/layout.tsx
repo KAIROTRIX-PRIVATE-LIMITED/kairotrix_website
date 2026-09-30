@@ -4,6 +4,8 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AIAssistant } from "@/components/ai/AIAssistant";
+import { CursorProvider } from "@/context/CursorContext";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -86,13 +88,17 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#FAFAFC] text-neutral-900 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
-        <ThemeProvider>
-          <Navbar />
-          <main className="flex-1 w-full">{children}</main>
-          <Footer />
-          <AIAssistant />
-        </ThemeProvider>
+        <CursorProvider>
+          <ThemeProvider>
+            <CustomCursor />
+            <Navbar />
+            <main className="flex-1 w-full">{children}</main>
+            <Footer />
+            <AIAssistant />
+          </ThemeProvider>
+        </CursorProvider>
       </body>
     </html>
   );
 }
+

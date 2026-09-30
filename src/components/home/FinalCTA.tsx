@@ -17,6 +17,7 @@ import {
   Layers,
 } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { EASE_CINEMATIC, EASE_PRECISE, MaskedReveal, DrawLine } from '@/lib/animations';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KAIROTRIX Section 07 — "Final CTA: Work With Us"
@@ -192,37 +193,43 @@ export function FinalCTA() {
       />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-80px' }}
-          className="flex flex-col items-center text-center"
-        >
+        <div className="flex flex-col items-center text-center">
           {/* Eyebrow Badge */}
-          <motion.div variants={itemVariants} className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-6">
             <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-            <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-              07 // WORK WITH US
-            </span>
+            <motion.span
+              initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
+              whileInView={{ opacity: 1, letterSpacing: '0.25em' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: EASE_PRECISE }}
+              className="font-tech text-xs font-semibold text-brand-600 uppercase"
+            >
+              WORK WITH US
+            </motion.span>
             <div className="h-px w-10 sm:w-16 bg-neutral-200" />
-          </motion.div>
+          </div>
 
-          {/* Main Headline */}
-          <motion.h2
-            id="final-cta-heading"
-            variants={itemVariants}
-            className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-neutral-950 leading-[1.05]"
-          >
-            LET&apos;S{' '}
-            <span className="gradient-signature-text">
-              BUILD.
-            </span>
-          </motion.h2>
+          {/* Main Headline with Masked Reveal */}
+          <div className="overflow-hidden">
+            <MaskedReveal delay={0.06}>
+              <h2
+                id="final-cta-heading"
+                className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-neutral-950 leading-[1.05]"
+              >
+                LET&apos;S{' '}
+                <span className="gradient-signature-text">
+                  BUILD.
+                </span>
+              </h2>
+            </MaskedReveal>
+          </div>
 
           {/* Plain English, Confident & Catchy Narrative */}
           <motion.p
-            variants={itemVariants}
+            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.65, delay: 0.12, ease: EASE_CINEMATIC }}
             className="mt-6 sm:mt-8 max-w-xl text-base sm:text-lg md:text-xl text-neutral-600 leading-relaxed font-normal"
           >
             Bring us the problem slowing your business down. We&apos;ll engineer the software that fixes it—clean, fast, and built to last.
@@ -230,7 +237,10 @@ export function FinalCTA() {
 
           {/* ── Enhanced Interactive CTA Buttons ── */}
           <motion.div
-            variants={itemVariants}
+            initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.94 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55, delay: 0.16, ease: EASE_PRECISE }}
             className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 w-full max-w-md sm:max-w-none"
           >
             {/* Primary Action Button (High-End Tactile Gradient with Inner Glow) */}
@@ -283,7 +293,10 @@ export function FinalCTA() {
 
           {/* ── Direct Trust & Interactive Copy Ribbon ── */}
           <motion.div
-            variants={itemVariants}
+            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.22, ease: EASE_CINEMATIC }}
             className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-mono text-neutral-500 bg-white/70 backdrop-blur-xs px-6 py-2.5 rounded-full border border-neutral-200/70 shadow-xs"
           >
             {/* Interactive One-Click Email Copy */}
@@ -331,23 +344,29 @@ export function FinalCTA() {
             </div>
           </motion.div>
 
-          {/* Hairline Divider */}
-          <motion.div
-            variants={itemVariants}
-            className="mt-16 sm:mt-20 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-neutral-200 to-transparent"
-            aria-hidden="true"
-          />
+          {/* Hairline Animated Divider */}
+          <DrawLine className="mt-16 sm:mt-20 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-neutral-300/80 to-transparent" origin="center" />
 
-          {/* ── 4 Grounded Business & Engineering Assurances with Deliverable Footprints ── */}
-          <motion.div
-            variants={itemVariants}
-            className="mt-12 sm:mt-16 w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left"
-          >
+          {/* ── 4 Grounded Business & Engineering Assurances with Directional Entrance ── */}
+          <div className="mt-12 sm:mt-16 w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
             {ASSURANCES.map((item, idx) => {
               const Icon = item.icon;
+              // Directional spatial entrance based on position
+              const getDirectionalInitial = () => {
+                if (prefersReduced) return { opacity: 1 };
+                if (idx === 0) return { opacity: 0, x: -16, scale: 0.97 };
+                if (idx === 1) return { opacity: 0, y: 18, scale: 0.97 };
+                if (idx === 2) return { opacity: 0, y: 18, scale: 0.97 };
+                return { opacity: 0, x: 16, scale: 0.97 };
+              };
+
               return (
-                <div
+                <motion.div
                   key={idx}
+                  initial={getDirectionalInitial()}
+                  whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.65, delay: prefersReduced ? 0 : idx * 0.08, ease: EASE_CINEMATIC }}
                   className="group relative flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200/80 hover:border-brand-500/40 transition-all duration-300 shadow-sm hover:shadow-[0_8px_28px_rgba(147,51,234,0.08)] hover:-translate-y-1"
                 >
                   <div>
@@ -374,11 +393,11 @@ export function FinalCTA() {
                     <span className="w-1 h-1 rounded-full bg-brand-500" />
                     <span className="truncate">{item.badge}</span>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );

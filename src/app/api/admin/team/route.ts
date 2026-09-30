@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       name,
       role,
       badge,
-      image = '/assets/images/about/team-ethan.jpg',
+      image = '',
       twitter,
       linkedin,
       github,

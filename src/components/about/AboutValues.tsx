@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { INITIAL_TEAM_MEMBERS, TeamMemberData } from '@/lib/services/teamService';
+import { MaskedReveal, DrawLine, revealMeta, cardFromLeft, cardFromCenter, cardFromRight, EASE_CINEMATIC } from '@/lib/animations';
 
 interface AboutValuesProps {
   members?: TeamMemberData[];
@@ -95,44 +96,46 @@ function SocialPills({
 export function AboutValues({ members }: AboutValuesProps) {
   const teamList = members && members.length > 0 ? members : INITIAL_TEAM_MEMBERS;
 
+  if (!teamList || teamList.length === 0) {
+    return null;
+  }
+
   return (
     <section className="w-full bg-transparent py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={revealMeta}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.4 }}
           className="flex items-center justify-center gap-3 mb-3 sm:mb-4"
         >
           <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
           <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
             TEAM // LEADERSHIP
           </span>
-          <div className="h-px w-10 sm:w-16 bg-neutral-200" />
+          <DrawLine className="w-10 sm:w-16 bg-neutral-200" delay={0.2} />
         </motion.div>
 
         {/* Section Heading: People behind the work with signature gradient */}
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.45, delay: 0.05 }}
-          className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase text-center mb-12 sm:mb-16"
-        >
-          PEOPLE BEHIND THE{' '}
-          <span className="gradient-signature-text">
-            WORK.
-          </span>
-        </motion.h2>
+        <div className="text-center mb-12 sm:mb-16">
+          <MaskedReveal delay={0.06}>
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase">
+              PEOPLE BEHIND THE{' '}
+              <span className="gradient-signature-text">
+                WORK.
+              </span>
+            </h2>
+          </MaskedReveal>
+        </div>
 
         {/* Outer Container matching cool neutral framing */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: EASE_CINEMATIC }}
           className="rounded-[2.25rem] bg-neutral-100/70 border border-neutral-200/80 p-6 sm:p-8 lg:p-10"
         >
           {/* Dynamic Grid: adapts to 1, 2, 3, or more members */}
@@ -145,49 +148,67 @@ export function AboutValues({ members }: AboutValuesProps) {
                 : 'grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch'
             }
           >
-            {teamList.map((member, idx) => (
-              <motion.div
-                key={member.id || member.name}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.1 + idx * 0.08 }}
-                className="group rounded-2xl overflow-hidden bg-white border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:border-brand-500/40 hover:shadow-[0_12px_36px_rgba(147,51,234,0.08)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
-              >
-                {/* Portrait Container with consistent 4:5 aspect ratio */}
-                <div className="relative w-full aspect-[4/5] overflow-hidden bg-neutral-100">
-                  <Image
-                    src={member.image || '/assets/images/about/team-ethan.jpg'}
-                    alt={member.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {member.badge && (
-                    <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-sm border border-brand-200/50 text-[10px] font-mono uppercase tracking-wider font-semibold text-brand-700 shadow-2xs">
-                      {member.badge}
-                    </div>
-                  )}
-                </div>
+            {teamList.map((member, idx) => {
+              const cardVariant =
+                teamList.length === 3
+                  ? idx === 0
+                    ? cardFromLeft
+                    : idx === 1
+                    ? cardFromCenter
+                    : cardFromRight
+                  : cardFromCenter;
 
-                {/* Card Details Base */}
-                <div className="p-5 sm:p-6 bg-white border-t border-neutral-100 flex flex-col justify-between flex-1">
-                  <div>
-                    <h3 className="font-display font-semibold text-base sm:text-lg text-neutral-950 mb-1 leading-snug group-hover:text-brand-600 transition-colors">
-                      {member.name}
-                    </h3>
-                    <p className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 mb-4">
-                      {member.role}
-                    </p>
+              return (
+                <motion.div
+                  key={member.id || member.name}
+                  variants={cardVariant}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.55, delay: 0.1 + idx * 0.08, ease: EASE_CINEMATIC }}
+                  className="group rounded-2xl overflow-hidden bg-white border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:border-brand-500/40 hover:shadow-[0_12px_36px_rgba(147,51,234,0.08)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
+                >
+                  {/* Portrait Container with consistent 4:5 aspect ratio */}
+                  <div className="relative w-full aspect-[4/5] overflow-hidden bg-neutral-100">
+                    {member.image ? (
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-neutral-100 text-neutral-400 font-display font-bold text-3xl">
+                        {member.name.charAt(0)}
+                      </div>
+                    )}
+                    {member.badge && (
+                      <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-sm border border-brand-200/50 text-[10px] font-mono uppercase tracking-wider font-semibold text-brand-700 shadow-2xs">
+                        {member.badge}
+                      </div>
+                    )}
                   </div>
-                  <SocialPills
-                    twitter={member.twitter}
-                    linkedin={member.linkedin}
-                    github={member.github}
-                  />
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* Card Details Base */}
+                  <div className="p-5 sm:p-6 bg-white border-t border-neutral-100 flex flex-col justify-between flex-1">
+                    <div>
+                      <h3 className="font-display font-semibold text-base sm:text-lg text-neutral-950 mb-1 leading-snug group-hover:text-brand-600 transition-colors">
+                        {member.name}
+                      </h3>
+                      <p className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 mb-4">
+                        {member.role}
+                      </p>
+                    </div>
+                    <SocialPills
+                      twitter={member.twitter}
+                      linkedin={member.linkedin}
+                      github={member.github}
+                    />
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>

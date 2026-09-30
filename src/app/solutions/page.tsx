@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { SolutionsHero } from '@/components/solutions/SolutionsHero';
 import { SolutionsGrid } from '@/components/solutions/SolutionsGrid';
-import { SolutionsDiagnostic } from '@/components/solutions/SolutionsDiagnostic';
 import { SolutionsLifecycle } from '@/components/solutions/SolutionsLifecycle';
 import { SolutionsCTA } from '@/components/solutions/SolutionsCTA';
 
@@ -30,10 +29,12 @@ export default function SolutionsPage() {
   return (
     <>
       <SolutionsHero />
-      <SolutionsGrid />
-      <SolutionsDiagnostic />
-      <SolutionsLifecycle />
-      <SolutionsCTA />
+      {/* ─── OVERLAY CURTAIN: Sections slide UP OVER sticky Hero (Spector effect) ─── */}
+      <div className="relative z-10 w-full bg-[#FAFAFC] shadow-[0_-30px_70px_rgba(0,0,0,0.06)] border-t border-neutral-200/80">
+        <SolutionsGrid />
+        <SolutionsLifecycle />
+        <SolutionsCTA />
+      </div>
     </>
   );
 }

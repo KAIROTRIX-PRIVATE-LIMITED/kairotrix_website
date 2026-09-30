@@ -138,7 +138,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               KAIROTRIX
             </span>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-brand-50 text-brand-700 border border-brand-200 uppercase tracking-widest">
-              Console
+              Admin
             </span>
           </Link>
         </div>
@@ -147,7 +147,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Live DB Telemetry Indicator */}
           <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-100 border border-neutral-200/80 text-[11px] font-mono text-neutral-600">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <span>PostgreSQL Active</span>
+            <span>Database Connected</span>
           </div>
 
           {/* View Public Website Link */}
@@ -156,15 +156,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             target="_blank"
             className="flex items-center gap-1.5 text-xs text-neutral-600 hover:text-neutral-900 px-2.5 py-1 rounded-lg border border-neutral-200 bg-white hover:bg-neutral-50 transition-colors shadow-xs"
           >
-            <span>Live Site</span>
+            <span>View Website</span>
             <ExternalLink className="w-3 h-3" />
           </Link>
 
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 px-2.5 py-1 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 transition-colors shadow-xs"
-            title="Sign out of Admin Console"
+            className="flex items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 px-2.5 py-1 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 transition-colors shadow-xs cursor-pointer"
+            title="Sign out of Admin"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Logout</span>
@@ -174,10 +174,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       <div className="flex-1 flex">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:flex flex-col w-64 border-r border-neutral-200/80 bg-white p-4 space-y-6 shrink-0 shadow-xs">
+        <aside className="hidden md:flex flex-col w-64 border-r border-neutral-200/80 bg-white p-4 space-y-6 shrink-0 shadow-xs sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 px-3 block mb-2 font-semibold">
-              System Management
+              Manage
             </span>
             <nav className="space-y-1">
               {NAV_ITEMS.map((item) => {

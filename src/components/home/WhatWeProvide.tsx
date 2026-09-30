@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { ArrowRight, Sparkles } from 'lucide-react';
 import clsx from 'clsx';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { EASE_CINEMATIC, EASE_PRECISE, MaskedReveal } from '@/lib/animations';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KAIROTRIX Section 03 — "Core Solutions" (Rotating Curved Orbital Dial)
@@ -199,30 +200,38 @@ export function WhatWeProvide() {
 
       {/* ── 1. FROZEN BIG SECTION HEADER (Sticky at top-16 md:top-20) ──────── */}
       <div className="sticky top-16 md:top-20 z-30 w-full bg-[#FAFAFC]/95 backdrop-blur-md border-b border-neutral-200/80 py-4.5 px-4 sm:px-6 lg:px-8 shadow-2xs">
-        <motion.div
-          initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-7xl flex flex-col md:flex-row md:items-end justify-between gap-4"
-        >
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-              <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                03 // What We Build
-              </span>
+              <motion.span
+                initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
+                whileInView={{ opacity: 1, letterSpacing: '0.25em' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: EASE_PRECISE }}
+                className="font-tech text-xs font-semibold text-brand-600 uppercase"
+              >
+                What We Build
+              </motion.span>
               <div className="h-px w-10 sm:w-16 bg-neutral-200" />
             </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]">
-              WHAT WE{' '}
-              <span className="gradient-signature-text">BUILD.</span>
-            </h2>
+            <MaskedReveal delay={0.06}>
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]">
+                WHAT WE{' '}
+                <span className="gradient-signature-text">BUILD.</span>
+              </h2>
+            </MaskedReveal>
           </div>
 
           {/* Live Architecture Scope Pill & Enhanced AI Discovery Chip */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <motion.div
+            initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.94 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.12, ease: EASE_PRECISE }}
+            className="hidden md:flex items-center gap-2.5"
+          >
             <Link
               href="/solutions"
               className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 hover:bg-white border border-neutral-200/80 hover:border-neutral-300 text-neutral-600 hover:text-neutral-900 text-xs font-mono shadow-2xs hover:shadow-xs transition-all duration-200 group cursor-pointer"
@@ -232,28 +241,11 @@ export function WhatWeProvide() {
                 Solutions Hub
               </span>
               <span className="text-neutral-300">|</span>
-              <span className="text-neutral-500 group-hover:text-neutral-700">6 Solutions</span>
+              <span className="text-neutral-500 group-hover:text-neutral-700">Solutions</span>
               <ArrowRight className="w-3 h-3 text-neutral-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-transform" />
             </Link>
-
-            <Link
-              href="/solutions#find-solution"
-              className="group relative inline-flex items-center gap-2 pl-3 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-purple-600 via-brand-600 to-indigo-600 hover:opacity-95 text-white font-mono text-xs font-semibold shadow-[0_2px_12px_rgba(147,51,234,0.3)] hover:shadow-[0_4px_18px_rgba(147,51,234,0.45)] transition-all duration-200 active:scale-[0.98] cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-purple-200 group-hover:rotate-12 transition-transform shrink-0" />
-
-              <span className="tracking-tight text-white font-medium">
-                Find Your Solution
-              </span>
-
-              <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30 tracking-wider">
-                AI
-              </span>
-
-              <ArrowRight className="w-3 h-3 text-purple-200 group-hover:text-white group-hover:translate-x-0.5 transition-all shrink-0" />
-            </Link>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       {/* ── 2. STICKY PRESERVED SCROLL STAGE (Rotating Orbital Dial) ───────── */}
@@ -387,18 +379,8 @@ export function WhatWeProvide() {
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="space-y-3 sm:space-y-3.5"
                 >
-                  {/* Category Header: SOLUTION 01 // 06 • Architecture Badge */}
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200/70 shadow-2xs">
-                      <span className="h-1.5 w-1.5 rounded-full bg-brand-600 animate-pulse" />
-                      <span className="font-mono text-xs font-bold uppercase tracking-widest text-brand-700">
-                        SOLUTION {currentService.number} // 06
-                      </span>
-                    </div>
-                    <span className="font-mono text-[11px] text-neutral-600 font-medium px-2.5 py-0.5 rounded-md bg-neutral-100 border border-neutral-200/80">
-                      {currentService.architectureBadge}
-                    </span>
-                  </div>
+                  {/* Category Header: CORE SOLUTION • Architecture Badge */}
+                  
 
                   {/* Title: Big display typography strictly on ONE line */}
                   <h3 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-[1.7rem] xl:text-[2rem] 2xl:text-[2.25rem] font-bold tracking-tight text-neutral-950 leading-tight whitespace-nowrap">

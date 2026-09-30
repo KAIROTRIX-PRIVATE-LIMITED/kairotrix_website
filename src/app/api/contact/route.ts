@@ -45,14 +45,14 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: true,
-        message: 'Your message has been received. We\u0027ll review what you\u0027ve shared and aim to follow up within one business day.',
+        message: 'Thanks — your message has been received. We\u0027ll review what you\u0027ve shared and aim to follow up within one business day.',
       },
       { status: 200 }
     );
   } catch (error) {
     console.error('Contact form submission error:', error);
     return NextResponse.json(
-      { error: 'An unexpected error occurred while processing your request.' },
+      { error: 'Something went wrong while sending your message. Please try again or email us directly at connect@kairotrix.com.' },
       { status: 500 }
     );
   }

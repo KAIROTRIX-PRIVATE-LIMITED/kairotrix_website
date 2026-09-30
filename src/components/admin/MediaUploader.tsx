@@ -165,20 +165,20 @@ export default function MediaUploader({
         {value && !isUploading ? (
           <div className="p-3 space-y-3">
             {/* Visual Preview */}
-            <div className="relative rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 flex items-center justify-center max-h-48 min-h-24">
+            <div className="relative rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 flex items-center justify-center max-h-36 min-h-20">
               {isVideo ? (
                 <video
                   src={value}
                   controls
                   playsInline
-                  className="max-h-48 w-full object-contain rounded-lg"
+                  className="max-h-36 w-full object-contain rounded-lg"
                 />
               ) : isImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={value}
                   alt="Asset Preview"
-                  className="max-h-44 w-auto object-contain rounded-lg p-1"
+                  className="max-h-32 w-auto object-contain rounded-lg p-1"
                 />
               ) : (
                 <div className="py-6 flex items-center gap-2 text-neutral-500 text-xs font-mono">

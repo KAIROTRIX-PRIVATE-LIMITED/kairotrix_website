@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, useScroll, useTransform, useMotionValue, useSpring, type MotionValue } from 'framer-motion';
 import {
   Search,
@@ -17,8 +18,14 @@ import {
   Activity,
   Workflow,
   Navigation,
+  AlertTriangle,
+  Scale,
+  ShieldCheck,
+  RefreshCw,
+  Zap,
 } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { EASE_CINEMATIC, EASE_PRECISE, MaskedReveal } from '@/lib/animations';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KAIROTRIX Section 05 — "How We Think / Build"
@@ -130,57 +137,552 @@ const STAGES: MethodologyStage[] = [
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Custom Visual Components for each stage
+// Semantic HUD Callout Tags & Angular Geometric Pointer Specs (45° + Flat Horizontal)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function StageVisual({ stageId }: { stageId: string }) {
-  switch (stageId) {
-    case 'understand':
-      return (
-        <div className="">
-          <img src="assets/images/home/how_we_build/s1.png" alt="Understand" className='w-full h-full object-contain' />
-        </div>
+interface StageCallout {
+  id: string;
+  lead: string;
+  detail: string;
+  type: 'alert' | 'audit' | 'success' | 'tech' | 'blueprint' | 'build' | 'sync' | 'monitor';
+  badgeStyle: {
+    top?: string;
+    bottom?: string;
+    left?: string;
+    right?: string;
+  };
+  pinPoint: { x: number; y: number }; // Target anchor on 3D illustration
+  elbowPoint: { x: number; y: number }; // Sharp 45° geometric bend point
+  endPoint: { x: number; y: number }; // Flat horizontal pointer line endpoint
+  icon: typeof AlertTriangle;
+}
 
-      );
+const STAGE_CALLOUTS: Record<number, StageCallout[]> = {
+  0: [
+    {
+      id: 'c1-1',
+      lead: 'Real Problem',
+      detail: 'What is slowing you down',
+      type: 'alert',
+      badgeStyle: { top: '2%', left: '2%' },
+      endPoint: { x: 23, y: 6 },
+      elbowPoint: { x: 48, y: 6 },
+      pinPoint: { x: 58, y: 28 },
+      icon: AlertTriangle,
+    },
+    {
+      id: 'c1-2',
+      lead: 'Workflow Review',
+      detail: 'Understanding the problem',
+      type: 'audit',
+      badgeStyle: { bottom: '2%', left: '2%' },
+      endPoint: { x: 23, y: 94 },
+      elbowPoint: { x: 50, y: 94 },
+      pinPoint: { x: 72, y: 62 },
+      icon: Search,
+    },
+    {
+      id: 'c1-3',
+      lead: 'Clear Goal',
+      detail: 'What needs to improve',
+      type: 'success',
+      badgeStyle: { top: '2%', right: '2%' },
+      endPoint: { x: 85, y: 6 },
+      elbowPoint: { x: 62, y: 6 },
+      pinPoint: { x: 88, y: 35 },
+      icon: CheckCircle2,
+    },
+  ],
+  1: [
+    {
+      id: 'c2-1',
+      lead: 'Explore Solutions',
+      detail: 'Ways the problem could be solved',
+      type: 'alert',
+      badgeStyle: { top: '2%', left: '1%' },
+      endPoint: { x: 23, y: 6 },
+      elbowPoint: { x: 48, y: 6 },
+      pinPoint: { x: 15, y: 44 },
+      icon: AlertTriangle,
+    },
+    {
+      id: 'c2-2',
+      lead: 'Tech Evaluation',
+      detail: 'What works best for the need',
+      type: 'tech',
+      badgeStyle: { bottom: '2%', left: '2%' },
+      endPoint: { x: 23, y: 94 },
+      elbowPoint: { x: 42, y: 94 },
+      pinPoint: { x: 62, y: 65 },
+      icon: Scale,
+    },
+    {
+      id: 'c2-3',
+      lead: 'Best Solution',
+      detail: 'Chosen for the business',
+      type: 'success',
+      badgeStyle: { top: '2%', right: '2%' },
+      endPoint: { x: 77, y: 6 },
+      elbowPoint: { x: 55, y: 6 },
+      pinPoint: { x: 87, y: 52 },
+      icon: CheckCircle2,
+    },
+  ],
+  2: [
+    {
+      id: 'c3-1',
+      lead: 'Requirements',
+      detail: 'What the system needs',
+      type: 'blueprint',
+      badgeStyle: { top: '2%', left: '14%' },
+      endPoint: { x: 23, y: 6 },
+      elbowPoint: { x: 4, y: 6 },
+      pinPoint: { x: 14, y: 35 },
+      icon: Layers,
+    },
+    {
+      id: 'c3-2',
+      lead: 'System Blueprint',
+      detail: 'Structuring every part',
+      type: 'tech',
+      badgeStyle: { bottom: '2%', left: '2%' },
+      endPoint: { x: 23, y: 94 },
+      elbowPoint: { x: 43, y: 94 },
+      pinPoint: { x: 54, y: 63 },
+      icon: ShieldCheck,
+    },
+    {
+      id: 'c3-3',
+      lead: 'Clear Architecture',
+      detail: 'Ready to build',
+      type: 'success',
+      badgeStyle: { top: '2%', right: '20%' },
+      endPoint: { x: 77, y: 6 },
+      elbowPoint: { x: 90, y: 6 },
+      pinPoint: { x: 81, y: 44 },
+      icon: CheckCircle2,
+    },
+  ],
+  3: [
+    {
+      id: 'c4-1',
+      lead: 'Approved Design',
+      detail: 'Plan ready to build',
+      type: 'build',
+      badgeStyle: { top: '2%', left: '2%' },
+      endPoint: { x: 23, y: 6 },
+      elbowPoint: { x: 44, y: 6 },
+      pinPoint: { x: 12, y: 44 },
+      icon: Code2,
+    },
+    {
+      id: 'c4-2',
+      lead: 'Development',
+      detail: 'Building & testing',
+      type: 'tech',
+      badgeStyle: { bottom: '2%', left: '2%' },
+      endPoint: { x: 23, y: 94 },
+      elbowPoint: { x: 42, y: 94 },
+      pinPoint: { x: 65, y: 60 },
+      icon: ShieldCheck,
+    },
+    {
+      id: 'c4-3',
+      lead: 'Working System',
+      detail: 'Tested & ready',
+      type: 'success',
+      badgeStyle: { top: '2%', right: '2%' },
+      endPoint: { x: 77, y: 6 },
+      elbowPoint: { x: 58, y: 6 },
+      pinPoint: { x: 86, y: 46 },
+      icon: CheckCircle2,
+    },
+  ],
+  4: [
+    {
+      id: 'c5-1',
+      lead: 'Separate Systems',
+      detail: 'Manual data transfer',
+      type: 'alert',
+      badgeStyle: { top: '2%', left: '2%' },
+      endPoint: { x: 23, y: 6 },
+      elbowPoint: { x: 45, y: 6 },
+      pinPoint: { x: 17, y: 44 },
+      icon: Network,
+    },
+    {
+      id: 'c5-2',
+      lead: 'System Connections',
+      detail: 'Automating data flow',
+      type: 'sync',
+      badgeStyle: { bottom: '2%', left: '2%' },
+      endPoint: { x: 23, y: 94 },
+      elbowPoint: { x: 45, y: 94 },
+      pinPoint: { x: 48, y: 64 },
+      icon: RefreshCw,
+    },
+    {
+      id: 'c5-3',
+      lead: 'Connected Workflow',
+      detail: 'Systems working together',
+      type: 'success',
+      badgeStyle: { top: '2%', right: '2%' },
+      endPoint: { x: 77, y: 6 },
+      elbowPoint: { x: 56, y: 6 },
+      pinPoint: { x: 84, y: 46 },
+      icon: CheckCircle2,
+    },
+  ],
+  5: [
+    {
+      id: 'c6-1',
+      lead: '24/7 Monitoring',
+      detail: 'Live system health',
+      type: 'monitor',
+      badgeStyle: { top: '2%', left: '2%' },
+      endPoint: { x: 23, y: 6 },
+      elbowPoint: { x: 42, y: 6 },
+      pinPoint: { x: 17, y: 42 },
+      icon: Activity,
+    },
+    {
+      id: 'c6-2',
+      lead: 'Quick Fixes',
+      detail: 'Proactive fixes',
+      type: 'tech',
+      badgeStyle: { bottom: '2%', left: '2%' },
+      endPoint: { x: 23, y: 94 },
+      elbowPoint: { x: 34, y: 94 },
+      pinPoint: { x: 52, y: 68 },
+      icon: Zap,
+    },
+    {
+      id: 'c6-3',
+      lead: 'System Evolution',
+      detail: 'Expanding as you grow',
+      type: 'success',
+      badgeStyle: { top: '2%', right: '2%' },
+      endPoint: { x: 77, y: 6 },
+      elbowPoint: { x: 52, y: 6 },
+      pinPoint: { x: 81, y: 48 },
+      icon: TrendingUp,
+    },
+  ],
+};
 
-    case 'explore':
-      return (
-        <div className="">
-          <img src="assets/images/home/how_we_build/s2.png" alt="explore" className='w-full h-full object-contain' />
-        </div>
-      );
-
-    case 'architect':
-      return (
-        <div className="">
-          <img src="assets/images/home/how_we_build/s3.png" alt="architect" className='w-full h-full object-contain' />
-        </div>
-      );
-
-    case 'build':
-      return (
-        <div className="">
-          <img src="assets/images/home/how_we_build/s4.png" alt="build" className='w-full h-full object-contain' />
-        </div>
-      );
-
-    case 'integrate':
-      return (
-        <div className="">
-          <img src="assets/images/home/how_we_build/s5.png" alt="integrate" className='w-full h-full object-contain' />
-        </div>
-      );
-
-    case 'evolve':
-      return (
-        <div className="">
-          <img src="assets/images/home/how_we_build/s6.png" alt="evolve" className='w-full h-full object-contain' />
-        </div>
-      );
-
+function getTagStyles(type: StageCallout['type']) {
+  switch (type) {
+    case 'alert':
+      return {
+        dotClass: 'bg-amber-500',
+        lineColor: '#F59E0B',
+        badgeBorder: 'border-amber-300/90 hover:border-amber-500',
+      };
+    case 'success':
+      return {
+        dotClass: 'bg-emerald-500',
+        lineColor: '#10B981',
+        badgeBorder: 'border-emerald-300/90 hover:border-emerald-500',
+      };
     default:
-      return null;
+      return {
+        dotClass: 'bg-brand-500',
+        lineColor: '#9333EA',
+        badgeBorder: 'border-neutral-200/90 hover:border-brand-500',
+      };
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3D Isometric Visual Stage with Sequential Scroll-Triggered Pops
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface StageVisualProps {
+  stageIndex: number;
+  stageNumber: string;
+  stageName: string;
+  isMobile: boolean;
+  stepScrollProgress?: MotionValue<number>;
+}
+
+function StageVisual({
+  stageIndex,
+  stageNumber,
+  stageName,
+  isMobile,
+  stepScrollProgress,
+}: StageVisualProps) {
+  const prefersReduced = useReducedMotion();
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const callouts = STAGE_CALLOUTS[stageIndex] || [];
+
+  // Motion values driven by scroll progress through this stage row
+  const defaultProgress = useMotionValue(0.5);
+  const progress = stepScrollProgress || defaultProgress;
+
+  // 1. Image in/out elevation and scale driven by scroll progress
+  const imageOpacity = useTransform(progress, [0, 0.16, 0.84, 1], [0.35, 1, 1, 0.35]);
+  const imageScale = useTransform(progress, [0, 0.20, 0.80, 1], [0.92, 1, 1, 0.94]);
+  const imageY = useTransform(progress, [0, 0.35, 0.72, 1], [22, 0, 0, -22]);
+
+  // 2. Sequential Scroll-Driven Pops (Image -> Tag 1 -> Tag 2 -> Tag 3)
+  // Tag 1 (Problem / Top-Left) triggers first
+  const line1Draw = useTransform(progress, [0.16, 0.26], [0, 1]);
+  const tag1ScaleRaw = useTransform(progress, [0.18, 0.24, 0.30], [0, 1.14, 1]);
+  const tag1Scale = useSpring(tag1ScaleRaw, { stiffness: 450, damping: 22 });
+  const tag1Opacity = useTransform(progress, [0.17, 0.22], [0, 1]);
+
+  // Tag 2 (Process / Bottom-Left) triggers second
+  const line2Draw = useTransform(progress, [0.28, 0.38], [0, 1]);
+  const tag2ScaleRaw = useTransform(progress, [0.30, 0.36, 0.42], [0, 1.14, 1]);
+  const tag2Scale = useSpring(tag2ScaleRaw, { stiffness: 450, damping: 22 });
+  const tag2Opacity = useTransform(progress, [0.29, 0.34], [0, 1]);
+
+  // Tag 3 (Outcome / Top-Right) triggers third
+  const line3Draw = useTransform(progress, [0.40, 0.50], [0, 1]);
+  const tag3ScaleRaw = useTransform(progress, [0.42, 0.48, 0.54], [0, 1.14, 1]);
+  const tag3Scale = useSpring(tag3ScaleRaw, { stiffness: 450, damping: 22 });
+  const tag3Opacity = useTransform(progress, [0.41, 0.46], [0, 1]);
+
+  const lineDraws = [line1Draw, line2Draw, line3Draw];
+  const tagScales = [tag1Scale, tag2Scale, tag3Scale];
+  const tagOpacities = [tag1Opacity, tag2Opacity, tag3Opacity];
+
+  return (
+    <div className="relative w-full max-w-[660px] mx-auto select-none pt-14 pb-14 px-2 overflow-visible">
+      {/* Ambient Radial Brand Glow Platform */}
+      <div
+        className="absolute inset-4 rounded-3xl bg-[radial-gradient(ellipse_at_center,rgba(147,51,234,0.14)_0%,rgba(147,51,234,0)_72%)] pointer-events-none blur-xl"
+        aria-hidden="true"
+      />
+
+      {/* Subtle Base Ground Shadow Plate */}
+      <div
+        className="absolute inset-x-8 bottom-12 h-12 bg-gradient-to-t from-neutral-300/40 via-brand-500/5 to-transparent rounded-[100%] blur-md pointer-events-none"
+        aria-hidden="true"
+      />
+
+      {/* ── 3D Isometric Illustration with Scroll-Driven Elevation ── */}
+      <motion.div
+        style={{
+          opacity: prefersReduced ? 1 : imageOpacity,
+          scale: prefersReduced ? 1 : imageScale,
+          y: prefersReduced ? 0 : imageY,
+        }}
+        className="relative z-0 w-full aspect-[1.85/1] flex items-center justify-center"
+      >
+        <Image
+          src={`/assets/images/home/how_we_build/s${stageIndex + 1}.png`}
+          alt={`KAIROTRIX Stage ${stageNumber}: ${stageName}`}
+          width={1774}
+          height={887}
+          priority={stageIndex < 2}
+          className="w-full h-full object-contain drop-shadow-[0_20px_35px_rgba(15,23,42,0.10)] drop-shadow-[0_6px_16px_rgba(147,51,234,0.08)]"
+        />
+      </motion.div>
+
+      {/* ── SVG Angular 45° + Long Horizontal HUD Callout Lines (Desktop) ── */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden sm:block"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <filter id={`hud-glow-${stageIndex}`} x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="0.45" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {callouts.map((callout, cIdx) => {
+          const { lineColor } = getTagStyles(callout.type);
+          const isActive = activeTag === callout.id;
+          const isDimmed = activeTag !== null && !isActive;
+          const lineLength = lineDraws[cIdx];
+          const itemOpacity = tagOpacities[cIdx];
+
+          return (
+            <motion.g
+              key={`hud-pointer-${callout.id}`}
+              style={{
+                opacity: prefersReduced ? (isDimmed ? 0.2 : 1) : itemOpacity,
+              }}
+              className="transition-opacity duration-200"
+            >
+              {/* Sharp Angular 45-degree + Long Flat Horizontal Pointer Line with draw-in animation */}
+              <motion.path
+                d={`M ${callout.pinPoint.x} ${callout.pinPoint.y} L ${callout.elbowPoint.x} ${callout.elbowPoint.y} L ${callout.endPoint.x} ${callout.endPoint.y}`}
+                fill="none"
+                stroke={lineColor}
+                strokeWidth={isActive ? '0.75' : '0.52'}
+                strokeLinejoin="miter"
+                strokeMiterlimit="10"
+                style={{
+                  pathLength: prefersReduced ? 1 : lineLength,
+                }}
+                filter={isActive ? `url(#hud-glow-${stageIndex})` : undefined}
+              />
+
+              {/* Geometric Node Tick & Reticle at the 45-degree bend */}
+              <circle
+                cx={callout.elbowPoint.x}
+                cy={callout.elbowPoint.y}
+                r="1.4"
+                fill="none"
+                stroke={lineColor}
+                strokeWidth="0.25"
+                opacity="0.5"
+              />
+              <circle
+                cx={callout.elbowPoint.x}
+                cy={callout.elbowPoint.y}
+                r="0.7"
+                fill={lineColor}
+              />
+
+              {/* Terminal Horizontal End-cap Tick meeting the text label */}
+              <rect
+                x={callout.endPoint.x - 0.35}
+                y={callout.endPoint.y - 1.0}
+                width="0.7"
+                height="2.0"
+                fill={lineColor}
+                rx="0.2"
+              />
+
+              {/* Minimalist Sci-Fi Target Anchor (Corner Brackets [ ⦿ ]) */}
+              <g transform={`translate(${callout.pinPoint.x}, ${callout.pinPoint.y})`}>
+                {/* 4 Corner Brackets */}
+                <path
+                  d="M -1.8 -0.8 L -1.8 -1.8 L -0.8 -1.8"
+                  fill="none"
+                  stroke={lineColor}
+                  strokeWidth="0.35"
+                />
+                <path
+                  d="M 0.8 -1.8 L 1.8 -1.8 L 1.8 -0.8"
+                  fill="none"
+                  stroke={lineColor}
+                  strokeWidth="0.35"
+                />
+                <path
+                  d="M -1.8 0.8 L -1.8 1.8 L -0.8 1.8"
+                  fill="none"
+                  stroke={lineColor}
+                  strokeWidth="0.35"
+                />
+                <path
+                  d="M 0.8 1.8 L 1.8 1.8 L 1.8 0.8"
+                  fill="none"
+                  stroke={lineColor}
+                  strokeWidth="0.35"
+                />
+                {/* Center target disc */}
+                <circle cx="0" cy="0" r="0.65" fill="white" stroke={lineColor} strokeWidth="0.3" />
+                <circle cx="0" cy="0" r="0.35" fill={lineColor} />
+                {/* Radar ping */}
+                <circle
+                  cx="0"
+                  cy="0"
+                  r="2.0"
+                  fill="none"
+                  stroke={lineColor}
+                  strokeWidth="0.22"
+                  className="animate-ping origin-center"
+                />
+              </g>
+            </motion.g>
+          );
+        })}
+      </svg>
+
+      {/* ── Floating Contextual HUD Tags (Desktop Overlay with Sequential Spring Pop) ── */}
+      {callouts.map((callout, cIdx) => {
+        const { dotClass, badgeBorder } = getTagStyles(callout.type);
+        const IconComponent = callout.icon;
+        const isActive = activeTag === callout.id;
+        const isDimmed = activeTag !== null && !isActive;
+        const tagScale = tagScales[cIdx];
+        const tagOpacity = tagOpacities[cIdx];
+
+        return (
+          <motion.div
+            key={`tag-${callout.id}`}
+            style={{
+              position: 'absolute',
+              ...callout.badgeStyle,
+              scale: prefersReduced ? 1 : tagScale,
+              opacity: prefersReduced ? 1 : tagOpacity,
+            }}
+            className="hidden sm:flex z-20"
+            onMouseEnter={() => setActiveTag(callout.id)}
+            onMouseLeave={() => setActiveTag(null)}
+          >
+            <div
+              className={`flex flex-col gap-0.5 px-2.5 py-1.5 rounded-lg bg-white/95 backdrop-blur-md border shadow-[0_4px_16px_rgba(15,23,42,0.08),0_1px_4px_rgba(147,51,234,0.06)] transition-all duration-300 cursor-pointer min-w-[125px] max-w-[250px] ${badgeBorder} ${
+                isActive
+                  ? 'border-brand-500 scale-[1.04] shadow-[0_8px_24px_rgba(147,51,234,0.22)] bg-white ring-2 ring-brand-500/20'
+                  : isDimmed
+                  ? 'border-neutral-200/50 opacity-35'
+                  : 'hover:border-brand-400/80 hover:scale-[1.02]'
+              }`}
+            >
+              {/* Top Row: Target pulse dot + Icon + Lead Title */}
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full ${dotClass} ${
+                      isActive ? 'opacity-100' : 'opacity-70'
+                    }`}
+                  />
+                  <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${dotClass}`} />
+                </span>
+
+                <IconComponent
+                  className={`w-3 h-3 flex-shrink-0 transition-colors ${
+                    isActive ? 'text-brand-600' : 'text-neutral-500'
+                  }`}
+                />
+
+                <span className="font-tech font-bold text-neutral-900 tracking-tight text-[10px] sm:text-[11px] leading-tight truncate">
+                  {callout.lead}
+                </span>
+              </div>
+
+              {/* Bottom Row: Plain-English Detail */}
+              <span className="text-[9px] sm:text-[10px] text-neutral-500 font-medium pl-3.5 leading-tight truncate">
+                {callout.detail}
+              </span>
+            </div>
+          </motion.div>
+        );
+      })}
+
+      {/* ── Mobile View: Clean Tags Stack (Adaptive & Accessible) ── */}
+      <div className="mt-4 flex flex-col gap-2 sm:hidden">
+        {callouts.map((callout) => {
+          const { dotClass, badgeBorder } = getTagStyles(callout.type);
+          const IconComponent = callout.icon;
+          return (
+            <div
+              key={`mob-${callout.id}`}
+              className={`flex items-center justify-between px-3 py-2 rounded-lg bg-white/95 backdrop-blur-sm border ${badgeBorder} shadow-xs`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2 flex-shrink-0">
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${dotClass}`} />
+                </span>
+                <IconComponent className="w-3.5 h-3.5 text-brand-600 flex-shrink-0" />
+                <span className="font-tech font-bold text-neutral-900 text-xs">{callout.lead}</span>
+              </div>
+              <span className="text-neutral-500 text-xs">{callout.detail}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -291,8 +793,14 @@ function StepRow({
   const lineColor = '#E8E8EF';
   const accentColor = '#9333EA';
 
-  // 1. Pipeline Line Fill Animations driven directly by master synchronized motion values
+  // Pipeline Line Fill Animations driven directly by master synchronized motion values
   const height = useTransform(verticalFill, [0, 1], ['0%', '100%']);
+
+  // Scroll progress for step animations (in/out, parallax)
+  const { scrollYProgress } = useScroll({
+    target: stepRef,
+    offset: ['start end', 'end start'],
+  });
 
   if (isMobile) {
     return (
@@ -318,7 +826,13 @@ function StepRow({
 
         {/* Visual Component */}
         <div className="mb-6">
-          <StageVisual stageId={stage.id} />
+          <StageVisual
+            stageIndex={index}
+            stageNumber={stage.number}
+            stageName={stage.stageName}
+            isMobile={true}
+            stepScrollProgress={scrollYProgress}
+          />
         </div>
 
         {/* Clean Stage Header */}
@@ -502,13 +1016,19 @@ function StepRow({
 
       {/* Visual Column */}
       <div
-        className={`relative z-10 ${
+        className={`relative z-10 py-4 ${
           reversed
-            ? 'col-start-1 row-start-1 pr-6'
-            : 'col-start-2 row-start-1 pl-6'
+            ? 'col-start-1 row-start-1 pr-6 pl-10'
+            : 'col-start-2 row-start-1 pl-6 pr-10'
         }`}
       >
-        <StageVisual stageId={stage.id} />
+        <StageVisual
+          stageIndex={index}
+          stageNumber={stage.number}
+          stageName={stage.stageName}
+          isMobile={false}
+          stepScrollProgress={scrollYProgress}
+        />
       </div>
     </div>
   );
@@ -800,41 +1320,55 @@ export function HowWeThinkBuild() {
 
       <div ref={containerRef} className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ── Section Header ─────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 lg:mb-24"
-        >
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 lg:mb-24">
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-              <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                05 // HOW WE BUILD
-              </span>
+              <motion.span
+                initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
+                whileInView={{ opacity: 1, letterSpacing: '0.25em' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: EASE_PRECISE }}
+                className="font-tech text-xs font-semibold text-brand-600 uppercase"
+              >
+                HOW WE BUILD
+              </motion.span>
               <div className="h-px w-10 sm:w-16 bg-neutral-200 hidden sm:block" />
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/25 text-[10px] font-mono text-brand-600 font-semibold uppercase tracking-wider">
+              <motion.span
+                initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.94 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1, ease: EASE_PRECISE }}
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/25 text-[10px] font-mono text-brand-600 font-semibold uppercase tracking-wider"
+              >
                 <Navigation className="w-2.5 h-2.5 text-brand-500 animate-pulse" />
-                6-Stage Engineering Journey
-              </span>
+                Engineering Lifecycle
+              </motion.span>
             </div>
 
-            <h2
-              id="how-we-think-build-heading"
-              className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12] max-w-3xl"
-            >
-              HOW WE THINK &amp;{' '}
-              <span className="gradient-signature-text">BUILD.</span>
-            </h2>
+            <MaskedReveal delay={0.06}>
+              <h2
+                id="how-we-think-build-heading"
+                className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12] max-w-3xl"
+              >
+                HOW WE THINK &amp;{' '}
+                <span className="gradient-signature-text">BUILD.</span>
+              </h2>
+            </MaskedReveal>
           </div>
 
-          <div className="max-w-md">
+          <motion.div
+            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.65, delay: 0.12, ease: EASE_CINEMATIC }}
+            className="max-w-md"
+          >
             <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
-              A disciplined 6-stage engineering journey—from understanding the real business problem to building, connecting, and continuously improving your software.
+              A disciplined engineering journey—from understanding the real business problem to building, connecting, and continuously improving your software.
             </p>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* ── Serpentine StepsFlow Pipeline ──────────────────────────── */}
         <div ref={pipelineRef} className="relative">
@@ -853,7 +1387,7 @@ export function HowWeThinkBuild() {
           >
             <span className="w-2.5 h-2.5 rounded-full bg-brand-500 animate-ping" />
             <span className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-neutral-900 text-[9px] font-mono font-bold text-white tracking-widest whitespace-nowrap shadow-sm">
-              ORIGIN // 01
+              PROJECT ORIGIN
             </span>
           </div>
 
@@ -878,7 +1412,7 @@ export function HowWeThinkBuild() {
           >
             <span className="w-2.5 h-2.5 rounded-full bg-brand-500" />
             <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-brand-600 text-[9px] font-mono font-bold text-white tracking-widest whitespace-nowrap shadow-sm">
-              DESTINATION // 06
+              PRODUCTION DEPLOYMENT
             </span>
           </div>
         </div>

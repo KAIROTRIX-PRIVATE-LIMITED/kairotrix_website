@@ -43,7 +43,7 @@ export default async function AboutPage() {
       <AboutHero />
       <AboutPhilosophy />
       <AboutVisionMission />
-      {isTeamSectionVisible && <AboutValues members={members} />}
+      {isTeamSectionVisible && members && members.length > 0 && <AboutValues members={members} />}
       <AboutCTA />
     </main>
   );

@@ -4,12 +4,18 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { MaskedReveal, DrawLine, revealMeta, revealBody, EASE_CINEMATIC } from '@/lib/animations';
 
 export function AboutHero() {
   return (
     <section className="relative w-full bg-transparent pt-32 sm:pt-36 lg:pt-44 pb-16 sm:pb-20 overflow-hidden">
       {/* Concentric Circular Radar Lines in Background with Brand Tint */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1400px] h-[700px] pointer-events-none opacity-60">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 0.6, scale: 1 }}
+        transition={{ duration: 1.2, ease: EASE_CINEMATIC }}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[1400px] h-[700px] pointer-events-none"
+      >
         <svg
           viewBox="0 0 1400 700"
           fill="none"
@@ -23,44 +29,41 @@ export function AboutHero() {
           <circle cx="700" cy="0" r="780" stroke="#E8E8EF" strokeWidth="1" />
           <circle cx="700" cy="0" r="980" stroke="#E8E8EF" strokeWidth="1" />
         </svg>
-      </div>
+      </motion.div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Centered Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          variants={revealMeta}
+          initial="hidden"
+          animate="visible"
           className="flex items-center justify-center gap-3 mb-4"
         >
           <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
           <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
             ABOUT KAIROTRIX // PROBLEM-FIRST TECHNOLOGY
           </span>
-          <div className="h-px w-10 sm:w-16 bg-neutral-200" />
+          <DrawLine className="w-10 sm:w-16 bg-neutral-200" delay={0.2} />
         </motion.div>
 
         {/* Centered Display Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.06 }}
-          className="text-center mb-12 sm:mb-16"
-        >
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06]">
-            WHO WE{' '}
-            <span className="gradient-signature-text">
-              ARE.
-            </span>
-          </h1>
-        </motion.div>
+        <div className="text-center mb-12 sm:mb-16">
+          <MaskedReveal delay={0.06}>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06]">
+              WHO WE{' '}
+              <span className="gradient-signature-text">
+                ARE.
+              </span>
+            </h1>
+          </MaskedReveal>
+        </div>
 
         {/* Agnos-Style Main Split Card */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.12 }}
+          initial={{ opacity: 0, y: 28, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.65, delay: 0.16, ease: EASE_CINEMATIC }}
           className="relative rounded-[2rem] bg-white border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_32px_rgba(147,51,234,0.06)] transition-shadow duration-300 p-6 sm:p-8 lg:p-10"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -68,37 +71,58 @@ export function AboutHero() {
             {/* Left Content Column */}
             <div className="lg:col-span-6 xl:col-span-7 flex flex-col justify-between">
               <div>
-                <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.02em] text-neutral-950 leading-snug mb-5">
+                <motion.h2
+                  variants={revealBody}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{ delay: 0.22 }}
+                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.02em] text-neutral-950 leading-snug mb-5"
+                >
                   Technology that moves ideas into real-world solutions.
-                </h2>
+                </motion.h2>
                 
-                <p className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal mb-8 max-w-xl">
+                <motion.p
+                  variants={revealBody}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{ delay: 0.28 }}
+                  className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal mb-8 max-w-xl"
+                >
                   KAIROTRIX is a technology and innovation company founded on a single conviction: real business problems come first, technology comes second. We identify the friction slowing your business down—then design and build the custom software, AI systems, or automated workflows required to solve it, with client ownership of the custom code we build and a clear handover process.
-                </p>
+                </motion.p>
               </div>
 
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.34, ease: EASE_CINEMATIC }}
+              >
                 <Link
                   href="/contact?source=about"
                   className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-neutral-950 hover:bg-brand-600 text-white font-medium text-sm transition-all duration-200 shadow-md hover:shadow-brand cursor-pointer"
                 >
                   Start a Conversation
                 </Link>
-              </div>
+              </motion.div>
             </div>
 
             {/* Right Media Column */}
             <div className="lg:col-span-6 xl:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-neutral-100 border border-neutral-200/70 shadow-2xs">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.26, ease: EASE_CINEMATIC }}
+                className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-neutral-100 border border-neutral-200/70 shadow-2xs group"
+              >
                 <Image
-                  src="/assets/images/about/team-studio.jpg"
-                  alt=""
+                  src="/assets/images/about/about-hero-workbench.jpg"
+                  alt="KAIROTRIX Engineering Workstation"
                   fill
                   sizes="(max-width: 1024px) 100vw, 450px"
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   priority
                 />
-              </div>
+              </motion.div>
             </div>
 
           </div>

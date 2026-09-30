@@ -48,13 +48,13 @@ export default function AdminLoginPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand-50 border border-brand-200/90 text-brand-700 text-xs font-mono mb-4 font-semibold shadow-xs">
             <ShieldCheck className="w-3.5 h-3.5 text-brand-600" />
-            <span>KAIROTRIX SECURITY PERIMETER</span>
+            <span>KAIROTRIX ADMIN</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 font-display">
-            Admin Console
+            Admin Sign In
           </h1>
           <p className="text-xs sm:text-sm text-neutral-600 mt-2">
-            Authenticate to manage projects, technical articles, and system telemetry.
+            Sign in to manage website content, projects, and contact messages.
           </p>
         </div>
 
@@ -110,11 +110,11 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Verifying Credentials...</span>
+                  <span>Signing In...</span>
                 </>
               ) : (
                 <>
-                  <span>Sign In to Console</span>
+                  <span>Sign In</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

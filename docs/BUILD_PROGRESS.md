@@ -18,13 +18,13 @@
 ## Phase 2: Homepage Immersive Journey (Light Theme Foundation)
 | ID | Section | Component File | Status | Notes |
 |---|---|---|---|---|
-| 2.1 | 01 // Hero Section | `src/components/home/HeroSection.tsx` | **OPTIMIZED (HUMAN-FIRST REFINED)** | Symmetrical equal-weight taglines (`BUILT TO EVOLVE` / `MADE TO SOLVE`), human-first categories (`Custom Software • AI Systems • Business Automation`), accessible H1, punchy display headline (`Technology Built to Solve Real Problems`), grounded who/what/why copy, and action CTA (`Explore What We Build`) |
-| 2.2 | 02 // What is KAIROTRIX | `src/components/home/WhatIsKairotrix.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Plain-English kinetic manifesto (*We do not build software just to look impressive...*), grounded problem-first narrative bridge, 6-stage transformation process with human-first explanations, clean KAIROTRIX STANDARD telemetry, and 3 core reliability principles |
-| 2.3 | 03 // What We Provide | `src/components/home/WhatWeProvide.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Curved rotating orbital dial with `SOLUTION 01 // 06`, concise plain-English descriptions mapping to full official service taxonomy, 4 focused capability pills, verifiable architectural badges replacing vanity telemetry, upgraded mobile pills (`01 AI Systems`, etc.), and unified `03 // WHAT WE BUILD` header |
-| 2.4 | 04 // Work & Capabilities | `src/components/home/WorkProof.tsx` | **OPTIMIZED (READY FOR REVIEW)** | 3D Perspective Scroll Gallery with verified technical specimen taxonomy (`TECHNICAL DEMONSTRATION`, `KAIROTRIX BUILD`, `EXPERIMENT`), plain-English capability descriptions, zero vanity latency claims, unified `04 // WORK & PROOF` header, and verified portfolio conclusion card |
-| 2.5 | 05 // How We Think / Build | `src/components/home/HowWeThinkBuild.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Rev 8 Serpentine StepsFlow with master GPS puck, '05 // HOW WE BUILD' header, '6-Stage Engineering Journey' pill, crystal-clear business language, 100% client code ownership guarantee, proactive health monitoring, Schema.org ItemList JSON-LD structured data, and semantic list markup for SEO/AEO/GEO |
-| 2.6 | 06 // Articles & Blog | `src/components/home/InsightsPreview.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Re-framed as dedicated Articles & Blog showcase per user directive (`06 // ARTICLES & BLOG` eyebrow, `ARTICLES & PERSPECTIVES.` display heading, `/ 05 ARTICLES` counter, `Read Article →`), preserved 100% manual card uploads verbatim, Schema.org `Blog` with `BlogPosting` JSON-LD structured data, and semantic `<article>` containers for SEO/AEO/GEO |
-| 2.7 | 07 // Work With Us (Final CTA) | `src/components/home/FinalCTA.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Standardized eyebrow (`07 // WORK WITH US`), tokenized gradient headline (`LET'S BUILD.`), catchy plain-English invitation (*Bring us the problem slowing your business down. We'll engineer the software that fixes it—clean, fast, and built to last.*), tactile gradient Primary CTA with circular slide arrow, frosted AI assistant instrument with live ping dot, one-click email copy ribbon with SLA badges, and 4 assurance cards with concrete deliverable footprints |
+| 2.1 | Hero Section | `src/components/home/HeroSection.tsx` | **OPTIMIZED (HUMAN-FIRST REFINED)** | Symmetrical equal-weight taglines (`BUILT TO EVOLVE` / `MADE TO SOLVE`), human-first categories (`Custom Software • AI Systems • Business Automation`), accessible H1, punchy display headline (`Technology Built to Solve Real Problems`), grounded who/what/why copy, and action CTA (`Explore What We Build`) |
+| 2.2 | What is KAIROTRIX | `src/components/home/WhatIsKairotrix.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Plain-English kinetic manifesto (*We do not build software just to look impressive...*), grounded problem-first narrative bridge, clean `Identity & Philosophy` eyebrow without section numbering, transformation process with human-first explanations, clean KAIROTRIX STANDARD telemetry, and 3 core reliability principles |
+| 2.3 | What We Provide | `src/components/home/WhatWeProvide.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Clean unnumbered `WHAT WE BUILD` eyebrow, curved rotating orbital dial with `CORE SOLUTION`, concise plain-English descriptions mapping to full official service taxonomy, `Solutions` pill, 4 focused capability pills, verifiable architectural badges replacing vanity telemetry, upgraded mobile pills, and clean unnumbered category headers |
+| 2.4 | Work & Capabilities | `src/components/home/WorkProof.tsx` | **OPTIMIZED (READY FOR REVIEW)** | 3D Perspective Scroll Gallery with verified technical specimen taxonomy (`TECHNICAL DEMONSTRATION`, `KAIROTRIX BUILD`, `EXPERIMENT`), plain-English capability descriptions, zero vanity latency claims, unified `WORK & PROOF` clean eyebrow without section numbering, and verified portfolio conclusion card |
+| 2.5 | How We Think / Build | `src/components/home/HowWeThinkBuild.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Rev 8 Serpentine StepsFlow with master GPS puck, clean `HOW WE BUILD` eyebrow, `Engineering Lifecycle` pill, `PROJECT ORIGIN` and `PRODUCTION DEPLOYMENT` endpoints, crystal-clear business language, 100% client code ownership guarantee, proactive health monitoring, Schema.org ItemList JSON-LD structured data, and semantic list markup for SEO/AEO/GEO |
+| 2.6 | Articles & Blog | `src/components/home/InsightsPreview.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Re-framed as dedicated Articles & Blog showcase per user directive (`ARTICLES & BLOG` clean eyebrow, `ARTICLES & PERSPECTIVES.` display heading, `/ 05 ARTICLES` counter, `Read Article →`), preserved 100% manual card uploads verbatim, Schema.org `Blog` with `BlogPosting` JSON-LD structured data, and semantic `<article>` containers for SEO/AEO/GEO |
+| 2.7 | Work With Us (Final CTA) | `src/components/home/FinalCTA.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Standardized unnumbered eyebrow (`WORK WITH US`), tokenized gradient headline (`LET'S BUILD.`), catchy plain-English invitation (*Bring us the problem slowing your business down. We'll engineer the software that fixes it—clean, fast, and built to last.*), tactile gradient Primary CTA with circular slide arrow, frosted AI assistant instrument with live ping dot, one-click email copy ribbon with SLA badges, and 4 assurance cards with concrete deliverable footprints |
 
 ---
 
@@ -32,12 +32,12 @@
 | ID | Page / Area | Route / Component | Status | Notes |
 |---|---|---|---|---|
 | 3.0 | Master Solutions Hub | `src/app/solutions/page.tsx` | **COMPLETED** | Aligned metadata (`Solutions & Technology Systems`), plain-English scope, zero public discipline jargon. All 5 sections (3.1–3.5) implemented |
-| 3.1 | Solutions Hero | `src/components/solutions/SolutionsHero.tsx` | **APPROVED (ANIMATION RESTORED & TYPOGRAPHY FIXED)** | Standardized with global hero system: `01 // CORE SOLUTIONS` eyebrow with Japanese badge `[KTRX®—SOLUTIONS]` and `6 DISCIPLINES` pill; unconstrained, proportional headline breaking into clean 2-line flow (`FROM BUSINESS PROBLEMS` / `TO WORKING SYSTEMS.`); 3-tiered intent CTAs; continuous 6-discipline bottom ticker ribbon; and fully restored tilted multi-column sliding 3D card river animation. |
-| 3.2 | Solutions Grid Directory | `src/components/solutions/SolutionsGrid.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Aligned with user-locked hierarchy: standardized `02 // EXPLORE SOLUTIONS` eyebrow with glowing pulse dot, `SIX CORE SOLUTIONS.` heading, locked plain-English 6-area preview lead, `SOLUTION 01 // 06` card eyebrows, plain-English card descriptions representing official service tree (01: AI Apps/Agents/ML/Knowledge, 02: Software/SaaS/MVP, 03: Workflows/Docs/Approvals, 04: Websites/Digitization/UX, 05: Analytics/Dashboards, 06: APIs/ERP/Sync), exact core service counts (4, 4, 1, 3, 2, 2), `DESIGNED FOR RELIABILITY` flanking ribbon, 6 official solution names on left ribbon, slide-in 3D image chambers on hover, interactive circular arrow triggers, and clean `id="solutions-directory"` scroll anchor |
-| 3.3 | Solutions Problem Finder | `src/components/solutions/SolutionsDiagnostic.tsx` | **IMPLEMENTED (READY FOR REVIEW)** | Renamed to `KAIROS // SOLUTION FINDER` with `03 // PROBLEM MATCHING` eyebrow, `FIND THE RIGHT SOLUTION FOR YOUR PROBLEM.` headline, plain-English subtitle, 6 problem-first starter chips (no tech terms), `SUGGESTED SOLUTION AREA` result framing (not prescriptive diagnosis), `01 // WHAT WE HEARD` + `02 // HOW WE COULD APPROACH IT` result columns, `HOW IT WORKS` 4-node pipeline, `APPROACH` + `EXAMPLE OUTPUT` business-readable footer, disclaimer text (*This is an initial direction...*), and `Explore {solutionName} →` CTA — all 6 results map exactly to official solution area names |
-| 3.4 | Solutions Engineering Lifecycle | `src/components/solutions/SolutionsLifecycle.tsx` | **IMPLEMENTED (READY FOR REVIEW)** | `04 // HOW WE BUILD` eyebrow, `FROM PROBLEM TO WORKING SYSTEM.` heading, plain-English subtitle, 4-phase project delivery framework (Understand & Scope → Design & Plan → Build & Test → Launch & Support), no fixed timelines, plain-English deliverables with safe qualifiers (`where appropriate`, `where applicable`), `CODE OWNERSHIP & HANDOVER` bottom bar with safe IP language, auto-cycling interactive pipeline tracker |
-| 3.5 | Solutions Final CTA | `src/components/solutions/SolutionsCTA.tsx` | **IMPLEMENTED (READY FOR REVIEW)** | `05 // WORK WITH US` eyebrow, `HAVE A PROBLEM TO SOLVE?` headline completing the page narrative arc, plain-English conversion copy, `Start a Conversation` + `See Our Work` CTA pair, obsidian banner with radar accents, floating 15-minute call card with verified founder avatar, `ACCEPTING NEW PROJECTS` availability pill, `Book a call` (not "free") |
-| 3.T | Common Solution Detail Template | `/solutions/[slug]` (`src/app/solutions/[slug]/page.tsx`) | **COMPLETED** | Universal L2 Template: flanked carousel hero, continuous telemetry marquee, business-first editorial rationale, Interactive Capability Explorer, 4-column engineering cards, project showcase, and CTA |
+| 3.1 | Solutions Hero | `src/components/solutions/SolutionsHero.tsx` | **APPROVED (ANIMATION RESTORED & NUMBERING CLEANED)** | Clean `CORE SOLUTIONS` eyebrow with Japanese badge `[KTRX®—SOLUTIONS]` and `SOLUTIONS` badge (removed fixed "6 DISCIPLINES" badge and "01 //" prefix from ticker items); unconstrained, proportional headline breaking into clean 2-line flow (`FROM BUSINESS PROBLEMS` / `TO WORKING SYSTEMS.`); 3-tiered intent CTAs; continuous bottom ticker ribbon; and fully restored tilted multi-column sliding 3D card river animation. |
+| 3.2 | Solutions Grid Directory | `src/components/solutions/SolutionsGrid.tsx` | **OPTIMIZED (NUMBERING PURGED)** | Clean `EXPLORE SOLUTIONS` eyebrow (removed "02 //"), `CORE SOLUTIONS.` heading (removed "SIX"), `CORE SOLUTION` card eyebrows (removed "SOLUTION 01 // 06"), unnumbered directory ribbon, replaced fixed service count badges (`4 CORE SERVICES`, etc.) with sleek `EXPLORE ARCHITECTURE` interactive trigger, slide-in 3D image chambers on hover, interactive circular arrow triggers, and clean `id="solutions-directory"` scroll anchor |
+| 3.3 | Business Technology Problem Finder | `src/components/solutions/SolutionsProblemFinder.tsx` | **ARCHITECTURE SPECIFIED (IN QUEUE)** | Documented in `docs/BUSINESS_TECHNOLOGY_PROBLEM_FINDER.md`: Separate diagnostic system from KIRO; single focused analytical workspace; dynamic questioning pipeline; 3-layer result (Diagnosis → Solution Direction with visual flow → KAIROTRIX L2 match); and seamless diagnosis handover to booking |
+| 3.4 | Solutions Engineering Lifecycle | `src/components/solutions/SolutionsLifecycle.tsx` | **IMPLEMENTED (CLEAN EYEBROW)** | Clean `HOW WE BUILD` eyebrow (removed "04 //"), `FROM PROBLEM TO WORKING SYSTEM.` heading, plain-English subtitle, replaced `4 PHASES` badge with `LIFECYCLE`, 4-phase project delivery framework (Understand & Scope → Design & Plan → Build & Test → Launch & Support), no fixed timelines, plain-English deliverables with safe qualifiers, `CODE OWNERSHIP & HANDOVER` bottom bar with safe IP language, auto-cycling interactive pipeline tracker |
+| 3.5 | Solutions Final CTA | `src/components/solutions/SolutionsCTA.tsx` | **IMPLEMENTED (CLEAN EYEBROW)** | Clean `WORK WITH US` eyebrow (removed "05 //"), `HAVE A PROBLEM TO SOLVE?` headline completing the page narrative arc, plain-English conversion copy, `Start a Conversation` + `See Our Work` CTA pair, obsidian banner with radar accents, floating 15-minute call card with verified founder avatar, `ACCEPTING NEW PROJECTS` availability pill |
+| 3.T | Common Solution Detail Template | `/solutions/[slug]` (`src/app/solutions/[slug]/page.tsx`) | **CONTENT-LOCKED (LAYER 1 & LAYER 2 COMPLETE)** | Universal L2 Template & Plain-English Service Architecture: Both Layer 1 (Hero, System Focus, Engineering Standards, How We Build, CTA) and Layer 2 (All 24 locked services) fully verified, grounded, and content-locked. Zero outcome overpromises, zero speculative claims, no extra sections added, strict 6-section hierarchy preserved. |
 | 3.L3 | Standalone L3 Micro-Pages | N/A | **LOCKED: PERMANENTLY EXCLUDED IN V1** | Firm architectural decision: No L3 pages. L1 Discovery + L2 Discipline is the complete architecture |
 
 ---
@@ -50,8 +50,8 @@
 | 4.2 | Work Hero (3D Core Architecture) | `src/components/work/WorkHero.tsx` | **OPTIMIZED (READY FOR REVIEW)** | `KAIROTRIX // WORK` + `ENGINEERING & EXPERIMENTS` eyebrow (duplicate studio term eliminated), decorative geo line removed, cinematic H1 preserved, truthful subtitle (*Software, AI, automation, data, and connected systems—shown through projects, experiments, and working technical demonstrations.*), and smooth scroll anchor to `#selected-work` |
 | 4.3 | Selected Work & Filter Bar | `src/components/work/WorkGrid.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Standardized eyebrow (`WORK // PROJECTS & EXPERIMENTS`), display title (`SELECTED WORK.`), plain-English subtitle (*Projects, experiments, and technical demonstrations across our core technology areas.*), `All Work` chip, and updated empty state (*No work found in this area*) |
 | 4.4 | Full-Bleed Sticky Stacking Cards | `src/components/work/WorkCard.tsx` | **READY FOR REVIEW** | 100% edge-to-edge stacked card layout preserved; content rewrite held for provenance classification |
-| 4.5 | Engineering Capabilities | `src/components/work/WorkCapabilities.tsx` | **RETIRED FROM V1 WORK HUB** | Retired from public /work page to eliminate text bloat and keep focus on real builds |
-| 4.6 | Obsidian Destination CTA | `src/components/work/WorkCTA.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Aligned with `/solutions` CTA: `05 // WORK WITH US` eyebrow, `HAVE A PROBLEM TO SOLVE?` headline, harmonized narrative (*Tell us what's slowing your business down...*), `Start a Conversation` + `Explore Our Solutions` actions, availability pill, and founder call card |
+| 4.5 | Engineering Capabilities | src/components/work/WorkCapabilities.tsx | **DELETED** | Deleted unused retired component to maintain clean production bundle |
+| 4.6 | Obsidian Destination CTA | `src/components/work/WorkCTA.tsx` | **OPTIMIZED (READY FOR REVIEW)** | Aligned with `/solutions` CTA: clean `WORK WITH US` eyebrow, `HAVE A PROBLEM TO SOLVE?` headline, harmonized narrative (*Tell us what's slowing your business down...*), `Start a Conversation` + `Explore Our Solutions` actions, availability pill, and founder call card |
 | 4.T | Universal Work Detail Template | `/work/[slug]` | **IN QUEUE** | Deep architectural spec and live demo detail template |
 
 ---
@@ -72,13 +72,13 @@
 | ID | Component / Area | Location | Status | Notes |
 |---|---|---|---|---|
 | 6.1 | Master About Page | `src/app/about/page.tsx` | **REFINED (CONTENT PASS)** | Title broadened to `Technology & Innovation Company` (removing AI-first framing), OG description uses substance over repeated phrases, `enterprise AI systems` keyword removed |
-| 6.2 | About Hero | `src/components/about/AboutHero.tsx` | **REFINED (CONTENT PASS)** | CTA softened from `Start a Project` → `Start a Conversation` (visitor still learning), IP ownership claim reworded to defensible `client ownership of the custom code we build and a clear handover process`, decorative image alt emptied, source tracking `/contact?source=about` |
-| 6.3 | Philosophy & Core Principles Banner | `src/components/about/AboutPhilosophy.tsx` | **REFINED (CONTENT PASS)** | Floating copyright `© 2026 KAIROTRIX Private Limited` removed from card (footer already carries this), decorative image alt emptied |
-| 6.4 | Vision & Mission Dedicated Section | `src/components/about/AboutVisionMission.tsx` | **REFINED (CONTENT PASS)** | Vision tags: `Accessible Intelligence`, `Technology You Own`, `Built to Evolve`; Mission tags: `Problem-First`, `Built for Reliability`, `Client Ownership`; Badges: `WHERE WE'RE GOING` / `HOW WE GET THERE`; Floating card: `OUR COMMITMENT` / `Technology you can own, understand, and evolve.`; decorative image alt emptied |
-| 6.S | Impact in Numbers (Stats) | `src/components/about/AboutStats.tsx` | **REMOVED** | Removed per user directive and Rule 4 (no mock metrics); space dedicated to the compact Vision & Mission master card |
-| 6.5 | People Behind the Work | `src/components/about/AboutValues.tsx` | **APPROVED (DYNAMIC ADMIN SYNC)** | Symmetrical 3-member triptych grid, cool neutral container `bg-neutral-100/70`, purple role badges, and brand hover effects; dynamically toggled via admin database |
-| 6.6 | 6-Stage Execution Approach | `src/components/about/AboutApproach.tsx` | **RETIRED FROM ABOUT PAGE** | Kept in codebase; retired from public `/about` to strictly preserve the clean Agnos layout sequence |
-| 6.7 | Strategic Evolution Roadmap | `src/components/about/AboutFuture.tsx` | **RETIRED FROM ABOUT PAGE** | Kept in codebase; retired from public `/about` to strictly preserve the clean Agnos layout sequence |
+| 6.2 | About Hero | `src/components/about/AboutHero.tsx` | **WIRED & APPROVED** | CTA softened to `Start a Conversation`; authentic engineering workstation visual wired (`about-hero-workbench.jpg`) displaying real IDE code, mechanical keyboard, and architecture notebook under subtle brand-purple ambient lighting |
+| 6.3 | Philosophy & Core Principles Banner | `src/components/about/AboutPhilosophy.tsx` | **WIRED & APPROVED** | Floating copyright removed; authentic architect craft visual wired (`about-philosophy-craft.jpg`) showing handwritten system architecture notes, DB/API schematics, and mechanical desk craft |
+| 6.4 | Vision & Mission Dedicated Section | `src/components/about/AboutVisionMission.tsx` | **WIRED & APPROVED** | Vision & Mission tags aligned; authentic systems telemetry visual wired (`about-vision-system.jpg`) showing system architecture topology graph and live deployment logs |
+| 6.S | Impact in Numbers (Stats) | src/components/about/AboutStats.tsx | **DELETED** | Deleted from codebase per Rule 4 (no mock metrics); space dedicated to the compact Vision & Mission master card |
+| 6.5 | People Behind the Work | src/components/about/AboutValues.tsx | **CLEANED (ZERO MOCK MEMBERS)** | AI-generated mock portraits (team-*.jpg) and mock team profiles removed; team section gracefully hidden until real team members are published via Admin |
+| 6.6 | 6-Stage Execution Approach | src/components/about/AboutApproach.tsx | **DELETED** | Deleted unused retired component to maintain clean production bundle |
+| 6.7 | Strategic Evolution Roadmap | src/components/about/AboutFuture.tsx | **DELETED** | Deleted unused retired component to maintain clean production bundle |
 | 6.8 | Obsidian Brand Collaboration CTA | `src/components/about/AboutCTA.tsx` | **REFINED (CONTENT PASS)** | Harmonized obsidian banner with distinct About voice: `WORK WITH US` eyebrow, `HAVE SOMETHING WORTH BUILDING?` headline (broader than `HAVE A PROBLEM TO SOLVE?`), inclusive narrative for 0→1 product builders, `Start a Conversation` + `Explore Our Solutions` dual actions, `ACCEPTING NEW PROJECTS` pill, `Quick 15-minute call.` card, `Book a call` button |
 
 ---
@@ -110,7 +110,7 @@
 | 9.3 | Project Management API | `src/app/api/admin/projects/*` | **COMPLETED** | Complete CRUD + dedicated 1-click status toggle (`ACTIVE` <-> `PAUSED`) |
 | 9.4 | Insights & Blog API | `src/app/api/admin/insights/*` | **COMPLETED** | Complete CRUD + dedicated 1-click status toggle (`PUBLISHED` <-> `PAUSED`) |
 | 9.5 | Contact Inquiries Capture | `src/app/api/contact/route.ts`, `src/app/api/admin/inquiries` | **COMPLETED** | Automatically persists incoming `/contact` form leads to PostgreSQL database |
-| 9.6 | Public Data Access Layer | `src/lib/services/workService.ts`, `src/lib/services/insightsService.ts` | **COMPLETED** | Live PostgreSQL query for active items with fault-tolerant fallback to static datasets |
+| 9.6 | Public Data Access Layer | `src/lib/services/workService.ts`, `src/lib/services/insightsService.ts`, `src/lib/services/teamService.ts` | **COMPLETED & VERIFIED** | 100% dynamic live PostgreSQL queries with zero mock fallbacks; empty tables render clean zero-item states with no phantom mock cards |
 | 9.7 | Isolated Admin Shell Layout | `src/app/admin/layout.tsx` | **COMPLETED (LIGHT THEME)** | Clean white header & sidebar with `bg-neutral-50` canvas, purple active pills (`bg-brand-50 text-brand-700`), and telemetry dot; automatically hides public Header, Footer, and AI Widget |
 | 9.8 | Admin Authentication Portal | `src/app/admin/login/page.tsx` | **COMPLETED (LIGHT THEME)** | Crisp security portal in light theme with subtle purple ambient glow, frosted white card, and high-contrast inputs |
 | 9.9 | Master Admin Dashboard | `src/app/admin/page.tsx` | **COMPLETED (LIGHT THEME)** | Overview telemetry KPIs (Active vs Paused metrics) in white cards with `shadow-xs` and split panels for recent specimens |
@@ -126,11 +126,11 @@
 |---|---|---|---|---|
 | 10.1 | AI Agent Database Schema | `prisma/schema.prisma` | **COMPLETED** | `AiAgentConfig`, `Conversation`, and `ChatMessage` models with lead-qualification tagging |
 | 10.2 | AI Agent Default Seed | `prisma/seed.ts` | **COMPLETED** | Pre-configures KIRO persona, problem-first guardrails, and hybrid operating parameters |
-| 10.3 | Public Chat API Route | `src/app/api/assistant/chat/route.ts` | **COMPLETED** | Hybrid LLM + deterministic knowledge fallback; logs sessions, chats, and captures email leads |
+| 10.3 | Public Chat API Route | `src/app/api/assistant/chat/route.ts` | **COMPLETED & UPGRADED (RAG READY)** | Single high-speed Groq Cloud API call with verified active model (`openai/gpt-oss-20b`), dynamic RAG company document retrieval from PostgreSQL, offline deterministic fallback, and automated lead capture |
 | 10.4 | Admin Agent Config API | `src/app/api/admin/assistant/config/route.ts` | **COMPLETED** | GET/PUT endpoints for tuning system prompt, model selection, and 1-click site-wide toggle |
 | 10.5 | Admin Conversations Log API | `src/app/api/admin/assistant/conversations/*` | **COMPLETED** | Review and manage visitor chat sessions and message transcripts |
-| 10.6 | Floating Widget Live Integration | `src/components/ai/AIAssistant.tsx` | **COMPLETED** | Upgraded with persistent `sessionId`, API dispatch, offline resilience, and active/paused reactivity |
-| 10.7 | Admin AI Command Center | `src/app/admin/ai-assistant/page.tsx` | **COMPLETED** | Live chat log explorer, lead counters, 1-click master status switch (`ACTIVE` 🟢 <-> `PAUSED` ⏸️), and prompt studio |
+| 10.6 | Floating Widget Live Integration | `src/components/ai/AIAssistant.tsx` | **ENHANCED (TYPEWRITER STREAMING)** | Professional light theme chat interface: Natural human typewriter text streaming animation with blinking cursor, click-to-reveal shortcut, smooth auto-scroll, Framer Motion staggered reveals, clean white header with live emerald indicator, and responsive launcher orb |
+| 10.7 | Admin AI Command Center & RAG Studio | `src/app/admin/ai-assistant/page.tsx`, `src/app/api/admin/assistant/documents/route.ts` | **COMPLETED & UPGRADED** | Live conversation log inspector, lead metrics, 1-click master switch, full Company Knowledge & RAG document manager (Create, Edit, Delete, Toggle Active docs), and Master System Prompt Studio |
 
 
 ## Current Active Focus
@@ -184,3 +184,102 @@
   - Standardized all page containers and CTA blocks to `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`, eliminating arbitrary `max-w-6xl`, `max-w-5xl`, `px-6 sm:px-12` and disruptive outer `border-x` cages.
 - **Preservation of Unique Systems**:
   - 100% preserved all interactive systems: Capability Explorer, 3D Core parallax, Bento swap, rotating orbital dial, filter bars, telemetry ticker, and interactive consultation forms.
+
+---
+
+## KIRO AI Assistant & RAG Knowledge Engine Redesign
+
+- **Single Production Groq Pipeline**:
+  - Direct integration with verified Groq production model `openai/gpt-oss-20b` (~0.13s response latency).
+  - Cleaned up deprecated models and removed obsolete multi-tier classifier chains.
+- **RAG Company Knowledge System**:
+  - Added PostgreSQL `CompanyDocument` table via Prisma schema (`id`, `title`, `category`, `content`, `tags`, `isActive`, `order`, timestamps).
+  - Built full CRUD endpoints in `/api/admin/assistant/documents` with dual Prisma delegate and raw SQL resilience.
+  - Implemented auto-seeding of 4 foundational company documents (Core Overview, 6 Disciplines, Delivery Framework, Pricing & Policy).
+  - Dynamic RAG retrieval injecting verified relevant documents directly into the chat prompt context.
+- **Clean Professional Visitor UI**:
+  - Clean light-themed chat window with emerald live status indicator (`Online • Ready to help`).
+  - Added typewriter streaming text animation with click-to-skip.
+  - Plain-English, problem-first copy without intrusive telemetry badges.
+- **Admin AI Command Center**:
+  - Added "Company Knowledge & RAG Docs" tab with document list, add/edit modal, active status toggling, and delete capabilities.
+  - Simplified Agent Configuration view by locking production model (`openai/gpt-oss-20b`) and temperature (0.3) in the backend and removing redundant Target Model & Temperature controls from the Admin UI.
+- **Website Navigation & Routing Knowledge System**:
+  - Added comprehensive "KAIROTRIX — Website Navigation & Routing Knowledge" document with verified URL route map and deep section anchors for all 6 disciplines (01.1 through 06.4).
+  - Enforced routing principles: USER INTENT → RELEVANT CONTENT → BEST DESTINATION; max 1 primary + 1 optional secondary destination; never invent URLs; use "Solutions" instead of "Capability".
+  - Implemented dynamic `resolveAssistantActions` in `/api/assistant/chat` mapping visitor intents to interactive CTA buttons.
+- **Clean Text Presentation & One-Time Typewriter Animation**:
+  - Purged all markdown clutter (stars `**`, table box borders `|---|`, divider lines `---`, hash headers `###`) both at prompt level and via dual-layer client/server sanitization (`cleanChatText` & `cleanDisplayText`), rendering clean plain prose and clean bullet points.
+  - Purged internal taxonomy numbers (`01.1`, `06.1`, `1.1`, etc.) from both system prompts and knowledge documents, instructing KIRO to strictly refer to services and solutions by their clean, professional brand names.
+  - Fixed typewriter animation re-triggering bug by transitioning completed messages to static clean text (`isStreaming: false`) with strict timer cleanup, ensuring the typewriter effect plays strictly once per new message and never repeats on re-renders or typing.
+
+---
+
+## Factual Integrity & Brand Quality Pass (SEO / AEO / GEO Refinement)
+
+- **Removed SEO-Driven Vendor Fabrication**:
+  - Replaced over-asserted specific vendor and framework names (`LangGraph`, `vLLM`, `pgvector`, `Temporal`, `Inngest`, `BullMQ`, `Snowflake`, `BigQuery`, `dbt`, `Salesforce`, `HubSpot`, `NetSuite`, `SAP`, `DocuSign`, `Adyen`, `Authorize.net`, `Plaid`, `Stripe Tax`, etc.) across all 24 services in `solutionsData.ts` and `aiAssistantKnowledge.ts`.
+  - Substituted technology-neutral, engineering-grounded categories (`AI Model Providers`, `Agent Orchestration Frameworks`, `Vector Storage & Search`, `Workflow Orchestration Engines`, `Cloud Data Warehouses`, `Data Transformation Frameworks`, `CRM & ERP Connectors`, `Payment Gateways & Banking APIs`, `Identity & E-Signature Services`).
+- **Broadened Service Scopes Beyond SEO Search Queries**:
+  - Re-expanded services that were previously narrowed down by search keywords:
+    - `product-dev`: Broadened from startup MVP builder to complete end-to-end product engineering for both new ventures and established enterprises.
+    - `ai-agents`: Broadened from simple customer support/lead bots to structured business agent workflows, operational copilots, and multi-system execution networks.
+    - `website-development`: Broadened from marketing sites to enterprise digital flagships, web portals, interactive experiences, and high-performance corporate platforms.
+- **H1 Hero Semantic Clarity**:
+  - Refactored `SolutionHero.tsx` so the semantic `<h1>` tag explicitly identifies the core solution discipline (e.g., `AI & Intelligent Systems`) as an uppercase heading block, with the cinematic headline preserving its visual design and narrative impact.
+- **Concise, Plain-English Meta Descriptions**:
+  - Refined all 6 solution executive summaries in `solutionsData.ts` to concise, human-first descriptions (~130–145 characters), free of keyword stuffing, technical posturing, or buzzwords.
+- **Client Ownership Language Protected**:
+  - Replaced absolute "100% ownership" statements with legally and factually sound language:
+    - `"Client-owned custom project code and IP, subject to third-party technologies and licenses used in the solution."`
+    - Stack headers standardized to `"REPRESENTATIVE ARCHITECTURAL STACK"`.
+- **Structured Data (Schema.org) Integrity**:
+  - Cleaned `serviceJsonLd` on `/solutions/[slug]`: removed claims of being a "verified organization", accurately identifying KAIROTRIX as the provider of the listed services with realistic descriptions and breadcrumbs matching visible content.
+- **Validation**:
+  - Zero TypeScript compilation errors (`npx tsc --noEmit`).
+  - Production build fully verified (`npm run build` completed with all 37 static and dynamic routes pre-rendered successfully).
+
+---
+
+## 24-Service Architectural & Editorial Content Lock (All 6 Disciplines Locked)
+
+Completed the service-by-service review, boundary calibration, and content locking across all 24 KAIROTRIX services in `src/data/solutionsData.ts`:
+
+1. **Discipline 01: AI & Intelligent Systems**
+   - `01.1 AI Application Development`: AI inside software humans interact with.
+   - `01.2 AI Agent Development`: AI systems acting across connected business systems and APIs with human oversight.
+   - `01.3 Generative AI & Machine Learning Development`: Custom ML, model adaptation, specialized AI models, evaluation, and inference endpoints.
+   - `01.4 AI Knowledge Systems & RAG`: Retrieval, semantic search, grounded answers, and source attribution over unstructured organizational documents.
+2. **Discipline 02: Software & Product Engineering**
+   - `02.1 Custom Software Development`: Purpose-built software engineered around unique business logic, workflows, and operations.
+   - `02.2 Web Application Development`: Browser-delivered platforms, customer/partner portals, and responsive multi-device access.
+   - `02.3 Product Development & Engineering`: End-to-end software product lifecycle (MVPs, SaaS platforms, multi-tenant products, feature evolution) for startups and established enterprises.
+   - `02.4 Product Design & Design Systems`: User experience and reusable interface foundations for new or evolving software products.
+3. **Discipline 03: Automation & Digital Operations**
+   - `03.1 Business Process Automation`: Automating recurring cross-tool business workflows and departmental handoffs.
+   - `03.2 Workflow & Task Orchestration`: Stateful background execution engines, sequential dependencies, queues, retries, and failure recovery.
+   - `03.3 Document & Approval Automation`: Automated document generation, form/PDF extraction, review routing, and approval records.
+   - `03.4 Autonomous Digital Operations`: Application-level operational monitoring, scheduled maintenance, cleanup, and alert response.
+4. **Discipline 04: Digital Transformation**
+   - `04.1 Website Development & Web Craft`: Public-facing corporate websites, digital flagships, and web experiences.
+   - `04.2 Process Digitization & Modernization`: Transforming manual, paper, spreadsheet, and fragmented processes into structured digital systems.
+   - `04.3 UI/UX Research & Interface Design`: Diagnosing, researching, auditing, and redesigning existing interfaces to eliminate friction and drop-off.
+   - `04.4 Headless CMS & Web Modernization`: Modernizing content management, decoupled frontends, and structured publishing workflows.
+5. **Discipline 05: Data & Business Intelligence**
+   - `05.1 Business Data Analytics & Warehousing`: Centralizing, modeling, and structuring analytical data storage and automated ingestion pipelines.
+   - `05.2 Executive & KPI Dashboards`: Predefined visual dashboards, scorecards, drill-downs, and operational reporting views.
+   - `05.3 Predictive Modeling & Forecasting`: Statistical models and machine learning forecasting demand, risk indicators, scenarios, and anomaly detection.
+   - `05.4 Natural-Language Data Queries`: Conversational querying of structured business data, warehouses, and metrics in plain language.
+6. **Discipline 06: Technology Integration**
+   - `06.1 API & System Integration`: General connectivity, custom API connectors, webhooks, middleware, and request routing.
+   - `06.2 CRM & ERP Synchronization`: Domain-specific commercial record alignment (customers, deals, orders, inventory, billing).
+   - `06.3 Payment & Financial Systems Integration`: Payment gateways, checkout experiences, subscription billing, invoicing, and transaction events.
+   - `06.4 Cross-System Data Synchronization`: Operational synchronization pipelines keeping live records, states, and data stores aligned across systems.
+
+**Key Invariants Maintained Across All 24 Services**:
+- Standardized 6-element structure (`Title → Summary → Best Suited For → What We Build → What We Handle → What You Receive`).
+- Safe, honest intellectual property language: *"Client-owned custom project code and IP, subject to third-party technologies and licenses."*
+- Unambiguous boundaries preventing overlap between neighboring services and disciplines.
+- Clean business readability and strong SEO/AEO/GEO grounding without keyword stuffing or speculative claims.
+
+

@@ -79,7 +79,7 @@ const SOLUTION_CATEGORIES: SolutionCategory[] = [
         icon: Bot,
       },
       {
-        title: 'Generative AI & Machine Learning',
+        title: 'Generative AI & Machine Learning Development',
         href: '/solutions/ai-intelligent-systems#genai-ml',
         icon: BrainCircuit,
       },
@@ -466,7 +466,7 @@ export function Navbar() {
                   >
                     <div className={cn('flex divide-x', isDark ? 'divide-white/[0.06]' : 'divide-neutral-200/80')}>
                       
-                      {/* === LEFT COLUMN: 6 CORE SOLUTIONS (PRIMARY FOUNDATIONAL PILLARS) === */}
+                      {/* === LEFT COLUMN: CORE SOLUTIONS (PRIMARY FOUNDATIONAL PILLARS) === */}
                       <div className={cn('w-[350px] xl:w-[370px] p-4 flex flex-col justify-between shrink-0', isDark ? 'bg-white/[0.015]' : 'bg-white')}>
                         <div>
                           {/* Commanding Section Header with Live Brand Dot & Badge */}
@@ -483,11 +483,11 @@ export function Navbar() {
                                 ? 'text-brand-300 bg-brand-500/15 border border-brand-500/30 shadow-[0_0_8px_rgba(147,51,234,0.2)]'
                                 : 'text-brand-700 bg-brand-50 border border-brand-200 shadow-2xs'
                             )}>
-                              6 Pillars
+                              Architecture
                             </span>
                           </div>
 
-                          {/* 6 Core Solutions Interactive Pillar List */}
+                          {/* Core Solutions Interactive Pillar List */}
                           <div className="space-y-1 relative">
                             {SOLUTION_CATEGORIES.map((category) => {
                               const CategoryIcon = category.icon;
@@ -571,48 +571,20 @@ export function Navbar() {
                           </div>
                         </div>
 
-                        {/* Featured: Find Your Solution (KAIROS AI Copilot) */}
-                        <div className={cn('pt-3 mt-3 border-t px-1 space-y-2', isDark ? 'border-white/[0.08]' : 'border-neutral-200/80')}>
-                          <Link
-                            href="/solutions#find-solution"
-                            onClick={() => setActiveMenu(null)}
-                            className={cn(
-                              'w-full flex items-center justify-between p-2.5 rounded-xl border transition-all duration-300 group',
-                              isDark
-                                ? 'bg-purple-950/40 hover:bg-purple-900/50 border-purple-500/30 text-white shadow-[0_0_15px_rgba(147,51,234,0.15)]'
-                                : 'bg-purple-50/90 hover:bg-purple-100 border-purple-200/90 text-purple-900 shadow-2xs'
-                            )}
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <div className="p-1.5 rounded-lg bg-purple-600 text-white shadow-xs">
-                                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-1.5">
-                                  <span className="text-xs font-bold leading-none">Find Your Solution</span>
-                                  <span className="text-[9px] font-mono font-bold uppercase px-1 py-0.2 rounded bg-purple-600 text-white">AI</span>
-                                </div>
-                                <p className={cn('text-[11px] mt-0.5 leading-tight', isDark ? 'text-purple-300/80' : 'text-purple-700/80')}>
-                                  Interactive architecture copilot
-                                </p>
-                              </div>
-                            </div>
-                            <ArrowRight className="w-3.5 h-3.5 text-purple-600 transform group-hover:translate-x-1 transition-transform" />
-                          </Link>
-
-                          {/* All Solutions Quick Link with High Tactile Presence */}
+                        {/* All Solutions Quick Link with High Tactile Presence */}
+                        <div className={cn('pt-3 mt-3 border-t px-1', isDark ? 'border-white/[0.08]' : 'border-neutral-200/80')}>
                           <Link
                             href="/solutions"
                             onClick={() => setActiveMenu(null)}
                             className={cn(
-                              'w-full flex items-center justify-between p-2 rounded-xl border text-xs font-semibold transition-all duration-300 group',
+                              'w-full flex items-center justify-between p-2.5 rounded-xl border text-xs font-semibold transition-all duration-300 group',
                               isDark
                                 ? 'bg-[#12121E] hover:bg-white/[0.04] border-white/[0.08] text-neutral-300 hover:text-white'
-                                : 'bg-white hover:bg-neutral-50 border-neutral-200/80 text-neutral-700 hover:text-neutral-900'
+                                : 'bg-neutral-50 hover:bg-neutral-100 border-neutral-200/80 text-neutral-700 hover:text-neutral-900'
                             )}
                           >
-                            <span>Browse All 6 Solution Areas</span>
-                            <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                            <span>Browse All Solutions</span>
+                            <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform text-neutral-500 group-hover:text-brand-600" />
                           </Link>
                         </div>
                       </div>
@@ -725,11 +697,11 @@ export function Navbar() {
                           </div>
                         </div>
 
-                        {/* Footer capabilities bar */}
+                        {/* Footer services bar */}
                         <div className={cn('relative z-10 pt-4 mt-5 border-t flex items-center justify-between text-xs', isDark ? 'border-white/[0.08] text-neutral-400' : 'border-neutral-200/80 text-neutral-500')}>
                           <div className="flex items-center gap-2 overflow-hidden mr-3">
                             <span className={cn('font-medium uppercase tracking-wider text-[11px] shrink-0', isDark ? 'text-brand-400' : 'text-brand-600')}>
-                              Capabilities:
+                              Services:
                             </span>
                             <span className="truncate">
                               {activeSolution.footerTags.join('  •  ')}
@@ -737,17 +709,16 @@ export function Navbar() {
                           </div>
 
                           <Link
-                            href="/solutions#find-solution"
+                            href="/solutions"
                             onClick={() => setActiveMenu(null)}
                             className={cn(
                               'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 border group',
                               isDark
-                                ? 'bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border-purple-500/40 shadow-[0_0_12px_rgba(147,51,234,0.2)]'
+                                ? 'bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border-purple-500/40'
                                 : 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200/90 shadow-2xs'
                             )}
                           >
-                            <Sparkles className="w-3.5 h-3.5 text-purple-600 group-hover:rotate-12 transition-transform" />
-                            <span>Diagnose Architecture with AI</span>
+                            <span>Explore Solutions Hub</span>
                             <ArrowRight className="w-3 h-3 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
                           </Link>
                         </div>
@@ -1007,35 +978,12 @@ export function Navbar() {
                       );
                     })}
 
-                    {/* Featured Mobile Diagnostic Link */}
-                    <Link
-                      href="/solutions#find-solution"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={cn(
-                        'flex items-center justify-between p-3 rounded-xl border text-xs font-semibold transition-all mt-2',
-                        isDark
-                          ? 'bg-purple-950/40 border-purple-500/40 text-purple-200 shadow-[0_0_12px_rgba(147,51,234,0.15)]'
-                          : 'bg-purple-50 border-purple-200 text-purple-900 shadow-2xs'
-                      )}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="p-1.5 rounded-lg bg-purple-600 text-white shadow-xs">
-                          <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                        </div>
-                        <div>
-                          <span className="block font-bold">Find Your Solution</span>
-                          <span className="text-[10px] text-purple-600 font-normal">KAIROS AI Architecture Copilot</span>
-                        </div>
-                      </div>
-                      <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-purple-600 text-white">AI</span>
-                    </Link>
-
                     <Link
                       href="/solutions"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 pt-2 px-2.5"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 pt-2 px-2.5 hover:text-brand-700 transition-colors"
                     >
-                      <span>Browse all 6 solution areas</span>
+                      <span>Browse all solution areas</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>

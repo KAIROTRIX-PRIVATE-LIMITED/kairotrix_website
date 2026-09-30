@@ -1,178 +1,303 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+const HUD_VERBS = ['DEMONSTRATE', 'EXPERIMENT', 'PROTOTYPE', 'DEPLOY', 'SCALE'];
+const FILM_EASE = [0.16, 1, 0.3, 1] as const;
 
 export function WorkHero() {
-  const containerRef = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [verbIdx, setVerbIdx] = useState(0);
 
-  // Parallax scrolling physics matching spector.framer.website (Images 2, 3, 4):
-  const { scrollY } = useScroll();
+  const mouseX = useSpring(0, { damping: 28, stiffness: 260 });
+  const mouseY = useSpring(0, { damping: 28, stiffness: 260 });
 
-  // 1. Background moves up with subtle slow parallax
-  const bgY = useTransform(scrollY, [0, 900], [0, -80]);
+  useEffect(() => {
+    setIsMounted(true);
+    const interval = setInterval(() => {
+      setVerbIdx((prev) => (prev + 1) % HUD_VERBS.length);
+    }, 2400);
+    return () => clearInterval(interval);
+  }, []);
 
-  // 2. Top metadata drifts up gently
-  const topY = useTransform(scrollY, [0, 900], [0, -50]);
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!sectionRef.current) return;
+    const rect = sectionRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left + 16);
+    mouseY.set(e.clientY - rect.top + 16);
+    if (!isHovered) setIsHovered(true);
+  };
 
-  // 3. Bottom headline moves up slowly (feels like it stays, but moves at deliberate slow pace)
-  const textY = useTransform(scrollY, [0, 900], [0, -140]);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
 
-  // 4. Subtle atmospheric fade as the curtain slides over
-  const heroOpacity = useTransform(scrollY, [0, 900], [1, 0.45]);
+  // Spector Curtain Scroll Exit Transforms
+  const contentY = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [0, -60]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.35]);
+  const contentScale = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [1, 1] : [1, 0.92]);
+  const bgY = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? ['0%', '0%'] : ['0%', '15%']);
+  const bgScale = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [1, 1] : [1, 1.08]);
 
   return (
     <section
-      ref={containerRef}
-      className="sticky top-0 z-0 w-full h-screen h-[100dvh] max-h-screen bg-[#FAFAFC] text-neutral-900 flex flex-col justify-between px-6 sm:px-10 lg:px-16 pt-20 sm:pt-24 lg:pt-28 pb-6 sm:pb-8 lg:pb-10 overflow-hidden select-none"
+      ref={sectionRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setIsHovered(false)}
+      className="sticky top-0 w-full h-[100dvh] bg-[#FAFAFC] flex flex-col overflow-hidden z-0 border-b border-neutral-200/90"
     >
-      {/* === BACKGROUND 3D ARCHITECTURAL RENDER (PRECISELY FRAMED WITH SLOW PARALLAX) === */}
-      <motion.div
-        style={{ y: bgY }}
-        initial={{ scale: 1.04, opacity: 0.92 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute inset-0 w-full h-full pointer-events-none"
-      >
-        <Image
-          src="/assets/images/hero/ChatGPT Image Sep 14, 2026, 08_01_34 PM.png"
-          alt="KAIROTRIX 3D Core Architecture"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-right lg:object-center"
-        />
-
-        {/* Ambient violet energy glow behind the processor core conduits */}
-        <div
-          className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[420px] h-[420px] rounded-full bg-brand-500/10 blur-[130px] pointer-events-none"
-          aria-hidden="true"
-        />
-
-        {/* Ultra-subtle bottom edge blend into curtain section */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#FAFAFC] to-transparent pointer-events-none"
-          aria-hidden="true"
-        />
-      </motion.div>
-
-      {/* === TOP METADATA: CLEAN EDITORIAL TYPOGRAPHY (WEBSITE BRAND FONTS) === */}
-      <motion.div
-        style={{ y: topY, opacity: heroOpacity }}
-        className="flex items-start justify-between gap-6 z-10"
-      >
-        {/* Left: Studio Identity & Eyebrow */}
+      {/* ── Spector Floating Interactive Crosshair HUD ── */}
+      {isMounted && !shouldReduceMotion && (
         <motion.div
-          initial={{ opacity: 0, y: -14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col gap-0.5"
+          style={{ x: mouseX, y: mouseY, opacity: isHovered ? 1 : 0 }}
+          className="pointer-events-none absolute top-0 left-0 z-30 hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-950/85 text-white backdrop-blur-md border border-white/20 shadow-lg select-none transition-opacity duration-300"
         >
-          <div className="flex items-center gap-3">
-            <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-            <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-              KAIROTRIX // WORK
-            </span>
-            <div className="h-px w-10 sm:w-16 bg-neutral-200" />
-          </div>
-          <h2 className="font-display text-sm sm:text-base md:text-lg font-bold tracking-tight text-neutral-950 uppercase mt-1">
-            ENGINEERING &amp; EXPERIMENTS
-          </h2>
-        </motion.div>
-
-        {/* Top-Right: Kept completely open so the 3D Core Architecture is 100% visible */}
-        <div className="hidden sm:block" />
-      </motion.div>
-
-      {/* === LEFT-CENTER: COMMANDING DISPLAY STAGE (ELIMINATES EMPTY VOID) === */}
-      <motion.div
-        style={{ y: textY, opacity: heroOpacity }}
-        className="z-10 max-w-2xl lg:max-w-3xl my-auto py-4 sm:py-6"
-      >
-        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] leading-[1.04] text-neutral-950">
-          {/* Line 1: In Brand Purple Accent with Staggered Rise & Kinetic Asterisk */}
-          <div className="overflow-hidden mb-0.5 sm:mb-1">
-            <motion.div
-              initial={{ y: '100%', opacity: 0 }}
-              animate={{ y: '0%', opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center gap-2 sm:gap-3 whitespace-nowrap"
-            >
-              <span className="gradient-signature-text">WE DON&apos;T JUST</span>
-              <motion.span
-                animate={{ rotate: 360 }}
-                transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-                className="inline-block text-brand-500 select-none text-xl sm:text-3xl lg:text-4xl font-light"
-              >
-                ✱
-              </motion.span>
-            </motion.div>
-          </div>
-
-          {/* Line 2: Dominant Solid Dark Text */}
-          <div className="overflow-hidden mb-0.5 sm:mb-1">
-            <motion.div
-              initial={{ y: '100%', opacity: 0 }}
-              animate={{ y: '0%', opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="text-neutral-950 whitespace-nowrap"
-            >
-              CLAIM CAPABILITY.
-            </motion.div>
-          </div>
-
-          {/* Line 3: Dominant Solid Dark Text */}
-          <div className="overflow-hidden">
-            <motion.div
-              initial={{ y: '100%', opacity: 0 }}
-              animate={{ y: '0%', opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.42, ease: [0.16, 1, 0.3, 1] }}
-              className="text-neutral-900 whitespace-nowrap"
-            >
-              WE DEMONSTRATE IT.
-            </motion.div>
-          </div>
-        </h1>
-
-        {/* Narrative Statement: Truthful description of what follows */}
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 sm:mt-6 text-base sm:text-lg text-neutral-600 font-sans leading-relaxed max-w-xl"
-        >
-          Software, AI, automation, data, and connected systems—shown through projects, experiments, and working technical demonstrations.
-        </motion.p>
-
-        {/* Compact Telemetry Ribbon below headline */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 sm:mt-6 flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-[11px] sm:text-xs font-mono"
-        >
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-950 text-white font-medium tracking-wide shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
-            <span>2026 // BUILDS &amp; DEMOS</span>
-          </div>
-          <span className="text-neutral-300">/</span>
-          <span className="tracking-wide text-neutral-600 font-medium uppercase text-[10px] sm:text-[11px]">
-            PROJECTS • EXPERIMENTS • TECHNICAL DEMOS
+          <span className="text-brand-400 text-xs font-bold leading-none">+</span>
+          <span className="font-mono text-[10px] font-bold tracking-widest uppercase">
+            {HUD_VERBS[verbIdx]}
           </span>
-          <span className="text-neutral-300 hidden sm:inline">/</span>
-          <a
-            href="#selected-work"
-            className="hidden sm:inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 font-bold font-display tracking-wider transition-colors group cursor-pointer"
-          >
-            <span>EXPLORE</span>
-            <span className="transition-transform group-hover:translate-y-0.5">↓</span>
-          </a>
+        </motion.div>
+      )}
+
+      {/* ── Layer 1: Background image with Spector optical zoom (1.15 -> 1.0) + parallax exit ── */}
+      <motion.div
+        className="absolute inset-0 z-0 origin-center overflow-hidden"
+        style={isMounted ? { y: bgY, scale: bgScale } : undefined}
+        suppressHydrationWarning
+      >
+        <motion.div
+          className="relative w-full h-full"
+          initial={shouldReduceMotion ? { scale: 1, opacity: 0.6 } : { scale: 1.15, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.6 }}
+          transition={{ duration: 1.6, ease: FILM_EASE }}
+        >
+          <Image
+            src="/assets/images/hero/ChatGPT Image Sep 14, 2026, 08_01_34 PM.png"
+            alt="KAIROTRIX 3D Core Architecture"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-right lg:object-center"
+          />
         </motion.div>
       </motion.div>
 
-      {/* Subtle bottom spacer for balanced flex-col vertical rhythm */}
-      <div className="hidden sm:block h-2" />
+      {/* ── Layer 2: Light gradient overlay ── */}
+      <div
+        className="absolute inset-0 z-[1] bg-gradient-to-r from-[#FAFAFC] via-[#FAFAFC]/90 to-[#FAFAFC]/50 pointer-events-none"
+        aria-hidden="true"
+      />
+
+      {/* ── Layer 3: Subtle grid texture ── */}
+      <div
+        className="absolute inset-0 z-[2] bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"
+        aria-hidden="true"
+      />
+
+      {/* ── Layer 4: Brand accent glows with soft luminous swell ── */}
+      <motion.div
+        className="absolute inset-0 z-[2] pointer-events-none"
+        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.8, delay: 0.2 }}
+        style={isMounted ? { opacity: contentOpacity } : undefined}
+        suppressHydrationWarning
+      >
+        <div
+          className="absolute -top-28 -left-28 w-[540px] h-[540px] bg-purple-600/6 blur-[140px] pointer-events-none"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute top-1/3 -right-28 w-[640px] h-[640px] bg-indigo-600/5 blur-[160px] pointer-events-none"
+          aria-hidden="true"
+        />
+      </motion.div>
+
+      {/* ── Coordinated Content Stage with Spector Recede & Masked Reveal ── */}
+      <motion.div
+        style={isMounted ? { y: contentY, opacity: contentOpacity, scale: contentScale } : undefined}
+        suppressHydrationWarning
+        className="relative z-10 flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 sm:pt-36 lg:pt-40 pb-8 sm:pb-10"
+      >
+        {/* 1. Eyebrow: Precision Technical Horizon Reveal */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <motion.span
+            initial={shouldReduceMotion ? {} : { scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"
+          />
+
+          <motion.span
+            initial={shouldReduceMotion ? {} : { opacity: 0, x: -18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: FILM_EASE }}
+            className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase"
+          >
+            KAIROTRIX // WORK
+          </motion.span>
+
+          <motion.div
+            initial={shouldReduceMotion ? {} : { scaleX: 0, opacity: 0 }}
+            animate={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.28, ease: FILM_EASE }}
+            style={{ originX: 0 }}
+            className="h-px w-10 sm:w-16 bg-neutral-200"
+          />
+
+          <motion.span
+            initial={shouldReduceMotion ? {} : { opacity: 0, filter: 'blur(3px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 0.45, delay: 0.35 }}
+            className="font-mono text-xs tracking-wider uppercase font-semibold text-neutral-900"
+          >
+            [KAIROTRIX // ENGINEERING]
+          </motion.span>
+
+          <motion.div
+            initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.42 }}
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white border border-neutral-200/80 font-mono text-[10px] uppercase tracking-wider text-neutral-600 shadow-2xs"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>ENGINEERING &amp; EXPERIMENTS</span>
+          </motion.div>
+        </div>
+
+        {/* Headline & Body Container */}
+        <div className="max-w-5xl">
+          {/* 2. Monumental Headline: Spector Masked Line-by-Line Rise */}
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06] mb-6">
+            <div className="overflow-hidden">
+              <motion.span
+                initial={shouldReduceMotion ? {} : { opacity: 0, y: '100%' }}
+                animate={{ opacity: 1, y: '0%' }}
+                transition={{ duration: 0.85, delay: 0.22, ease: FILM_EASE }}
+                className="block"
+              >
+                WE DON&apos;T JUST CLAIM CAPABILITY.
+              </motion.span>
+            </div>
+            <div className="overflow-hidden">
+              <motion.span
+                initial={shouldReduceMotion ? {} : { opacity: 0, y: '100%' }}
+                animate={{ opacity: 1, y: '0%' }}
+                transition={{ duration: 0.85, delay: 0.35, ease: FILM_EASE }}
+                className="gradient-signature-text block"
+              >
+                WE DEMONSTRATE IT.
+              </motion.span>
+            </div>
+          </h1>
+
+          {/* 3. Subtitle: Optical Focus Pull */}
+          <motion.p
+            initial={shouldReduceMotion ? {} : { opacity: 0, filter: 'blur(8px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 0.85, delay: 0.5, ease: FILM_EASE }}
+            className="text-base sm:text-lg text-neutral-600 font-sans leading-relaxed font-normal max-w-3xl mb-8"
+          >
+            Software, AI, automation, data, and connected systems—shown through real projects,
+            experiments, and working technical demonstrations.
+          </motion.p>
+
+          {/* 4. Action CTAs */}
+          <div className="flex flex-wrap items-center gap-3.5 sm:gap-4">
+            <motion.a
+              initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.94, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.65, ease: FILM_EASE }}
+              href="#selected-work"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white font-bold text-sm tracking-wide hover:bg-brand-600 transition-all duration-200 shadow-md cursor-pointer group"
+            >
+              <span>Explore Work</span>
+              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
+            </motion.a>
+
+            <motion.div
+              initial={shouldReduceMotion ? {} : { opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55, delay: 0.75, ease: FILM_EASE }}
+            >
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-600 hover:text-brand-600 transition-colors py-2 px-1 group cursor-pointer"
+              >
+                <span>Start a Project</span>
+                <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-brand-600 group-hover:translate-x-0.5 transition-all" />
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* 5. Bottom Stats Strip: Sequential Instrument Telemetry Activation */}
+        <div className="mt-auto relative pt-8">
+          {/* Laser horizontal beam dividing line */}
+          <motion.div
+            initial={shouldReduceMotion ? {} : { scaleX: 0, opacity: 0 }}
+            animate={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.1, ease: FILM_EASE }}
+            style={{ originX: 0 }}
+            className="absolute top-0 left-0 right-0 h-px bg-neutral-200/80"
+          />
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+            <motion.div
+              initial={shouldReduceMotion ? {} : { opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 1.22, ease: FILM_EASE }}
+            >
+              <div className="font-display font-black text-2xl sm:text-3xl text-neutral-950">2026</div>
+              <div className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 mt-1">
+                Builds &amp; Demos
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={shouldReduceMotion ? {} : { opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 1.32, ease: FILM_EASE }}
+            >
+              <div className="font-display font-black text-2xl sm:text-3xl text-neutral-950">Projects</div>
+              <div className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 mt-1">
+                Real Deliverables
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={shouldReduceMotion ? {} : { opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 1.42, ease: FILM_EASE }}
+            >
+              <div className="font-display font-black text-2xl sm:text-3xl text-neutral-950">Experiments</div>
+              <div className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 mt-1">
+                Technical Exploration
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={shouldReduceMotion ? {} : { opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 1.52, ease: FILM_EASE }}
+            >
+              <div className="font-display font-black text-2xl sm:text-3xl text-brand-600">Live Demos</div>
+              <div className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 mt-1">
+                Working Systems
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

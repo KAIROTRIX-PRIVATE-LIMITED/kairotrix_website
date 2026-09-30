@@ -180,71 +180,14 @@ Tone and style:
   });
   console.log('✅ Default AI Agent configuration primed.');
 
-  // 5. Seed Team Members & About Section Config
-  console.log('👥 Seeding Team Members & About Section Config...');
+  // 5. Prime About Section Config (Team section hidden until real members are added via Admin)
+  console.log('⚙️ Initializing About Section Config...');
   await (prisma as any).aboutConfig.upsert({
     where: { id: 'default' },
-    update: { isTeamSectionVisible: true },
-    create: { id: 'default', isTeamSectionVisible: true },
+    update: { isTeamSectionVisible: false },
+    create: { id: 'default', isTeamSectionVisible: false },
   });
-
-  const defaultTeam = [
-    {
-      id: 'team_grace',
-      name: 'Grace Thompson',
-      role: 'Head of AI Systems',
-      badge: 'AI Systems',
-      image: '/assets/images/about/team-grace.jpg',
-      twitter: 'https://x.com',
-      linkedin: 'https://linkedin.com',
-      github: 'https://github.com',
-      order: 0,
-      isActive: true,
-    },
-    {
-      id: 'team_ethan',
-      name: 'Ethan Cole',
-      role: 'Founder & Chief Architect',
-      badge: 'Founder',
-      image: '/assets/images/about/team-ethan.jpg',
-      twitter: 'https://x.com',
-      linkedin: 'https://linkedin.com',
-      github: 'https://github.com',
-      order: 1,
-      isActive: true,
-    },
-    {
-      id: 'team_sophia',
-      name: 'Sophia Bennett',
-      role: 'Head of Product & Design',
-      badge: 'Product & UX',
-      image: '/assets/images/about/team-sophia.jpg',
-      twitter: 'https://x.com',
-      linkedin: 'https://linkedin.com',
-      github: 'https://github.com',
-      order: 2,
-      isActive: true,
-    },
-  ];
-
-  for (const m of defaultTeam) {
-    await (prisma as any).teamMember.upsert({
-      where: { id: m.id },
-      update: {
-        name: m.name,
-        role: m.role,
-        badge: m.badge,
-        image: m.image,
-        twitter: m.twitter,
-        linkedin: m.linkedin,
-        github: m.github,
-        order: m.order,
-        isActive: m.isActive,
-      },
-      create: m,
-    });
-  }
-  console.log('✅ Team members and About section primed.');
+  console.log('✅ About section config primed (team section hidden by default).');
 
   console.log('✨ All seeding completed successfully! Database is primed and operational.');
 }

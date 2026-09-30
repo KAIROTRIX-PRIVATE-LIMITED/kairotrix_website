@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Search, ChevronDown, X } from 'lucide-react';
+import { revealTag } from '@/lib/animations';
 
 export interface TechCategoryFilterItem {
   id: string;
@@ -75,7 +77,10 @@ export function InsightsFilterBar({
 
           {/* Tech Category Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pt-2 pb-1 scrollbar-none no-scrollbar">
-            <button
+            <motion.button
+              initial="hidden"
+              animate="visible"
+              variants={revealTag}
               onClick={() => onSelectCategory('all')}
               className={`text-[11px] font-mono uppercase tracking-wider px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer ${
                 activeCategory === 'all'
@@ -84,11 +89,15 @@ export function InsightsFilterBar({
               }`}
             >
               All Articles ({totalCount})
-            </button>
+            </motion.button>
 
-            {categories.map((cat) => (
-              <button
+            {categories.map((cat, cIdx) => (
+              <motion.button
                 key={cat.id}
+                initial="hidden"
+                animate="visible"
+                variants={revealTag}
+                transition={{ delay: (cIdx + 1) * 0.04 }}
                 onClick={() => onSelectCategory(cat.id)}
                 className={`text-[11px] font-mono uppercase tracking-wider px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer ${
                   activeCategory === cat.id
@@ -97,7 +106,7 @@ export function InsightsFilterBar({
                 }`}
               >
                 {cat.label} ({cat.count})
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>

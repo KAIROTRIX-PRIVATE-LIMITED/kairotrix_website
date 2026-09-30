@@ -4,8 +4,15 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Home, ArrowRight, Layers, FolderGit2, Mail } from 'lucide-react';
+import { Home, ArrowRight, Layers, FolderGit2 } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import {
+  MaskedReveal,
+  DrawLine,
+  revealMeta,
+  revealBody,
+  EASE_CINEMATIC,
+} from '@/lib/animations';
 
 export default function NotFound() {
   const prefersReduced = useReducedMotion();
@@ -22,13 +29,11 @@ export default function NotFound() {
         
         {/* Animated Kiro Mascot Illustration */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 20 }}
+          initial={prefersReduced ? {} : { opacity: 0, scale: 0.92, y: 24 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, ease: EASE_CINEMATIC }}
           className="relative mb-6"
         >
-        
-
           <motion.div
             animate={
               prefersReduced
@@ -56,33 +61,32 @@ export default function NotFound() {
 
         {/* Eyebrow badge */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
+          variants={prefersReduced ? undefined : revealMeta}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.2 }}
           className="flex items-center gap-3 mb-4"
         >
           <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
           <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
             404 // ROUTE EXCEPTION
           </span>
-          <span className="h-px w-10 sm:w-16 bg-neutral-200" aria-hidden="true" />
+          <DrawLine className="hidden sm:block h-px w-12 sm:w-16 bg-neutral-200" origin="left" />
         </motion.div>
 
-        {/* Exact User Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.2 }}
-          className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-neutral-950 mb-3"
-        >
-          Looks like Kiro took a wrong turn!
-        </motion.h1>
+        {/* Exact User Headline with Masked Reveal */}
+        <MaskedReveal delay={0.25} className="mb-3">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950">
+            Looks like Kiro took a wrong turn!
+          </h1>
+        </MaskedReveal>
 
         {/* Exact User Subtext */}
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.25 }}
+          variants={prefersReduced ? undefined : revealBody}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.35 }}
           className="text-base sm:text-sm text-neutral-600 leading-relaxed font-normal max-w-md mb-8"
         >
           The page you are looking for doesn&apos;t exist or has moved.
@@ -90,9 +94,9 @@ export default function NotFound() {
 
         {/* Primary and Quick Link Actions */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.45, ease: EASE_CINEMATIC }}
           className="flex flex-col sm:flex-row items-center gap-3.5 mb-10"
         >
           <Link
@@ -123,9 +127,9 @@ export default function NotFound() {
 
         {/* Support Note */}
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={prefersReduced ? {} : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.55 }}
           className="pt-6 border-t border-neutral-200/80 flex items-center gap-2 text-xs text-neutral-500 font-tech"
         >
           <span>Need help finding something specific?</span>
@@ -141,3 +145,4 @@ export default function NotFound() {
     </main>
   );
 }
+

@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { WORK_SPECIMENS, WorkSpecimen, WorkBadge, WorkType } from '@/data/workData';
+import { WorkSpecimen, WorkBadge, WorkType } from '@/data/workData';
 
 /**
  * Retrieves all active work specimens from PostgreSQL database.
@@ -12,7 +12,7 @@ export async function getActiveWorkSpecimens(): Promise<WorkSpecimen[]> {
       orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     });
 
-    if (dbProjects && dbProjects.length > 0) {
+    if (dbProjects) {
       return dbProjects.map((p) => {
         const equation = p.systemEquation
           ? (p.systemEquation as unknown as {
@@ -48,11 +48,10 @@ export async function getActiveWorkSpecimens(): Promise<WorkSpecimen[]> {
       });
     }
   } catch (error) {
-    console.warn('PostgreSQL query skipped or failed, falling back to static workData:', error);
+    console.warn('PostgreSQL query error in getActiveWorkSpecimens:', error);
   }
 
-  // Fallback to static verified specimens
-  return WORK_SPECIMENS;
+  return [];
 }
 
 /**
@@ -98,8 +97,16 @@ export async function getWorkSpecimenBySlug(slug: string): Promise<WorkSpecimen 
       };
     }
   } catch (error) {
-    console.warn('PostgreSQL slug query failed, falling back to static workData:', error);
+    console.warn('PostgreSQL slug query error in getWorkSpecimenBySlug:', error);
   }
 
-  return WORK_SPECIMENS.find((s) => s.slug === slug) || null;
+  return null;
+}
+
+/**
+ * Retrieves active work specimens filtered by solution disciplineId.
+ */
+export async function getWorkSpecimensByDiscipline(disciplineId: string): Promise<WorkSpecimen[]> {
+  const all = await getActiveWorkSpecimens();
+  return all.filter((s) => s.disciplineId === disciplineId);
 }

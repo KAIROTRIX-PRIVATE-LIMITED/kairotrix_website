@@ -10,14 +10,24 @@ export interface SubService {
   tags: string[];
 }
 
+export interface TechnicalApproach {
+  description: string;
+  technologies: string[];
+}
+
 export interface SubCategory {
   id: string;
   slug?: string;
   anchorId: string; // e.g. 'ai-apps', 'ai-agents' matching Navbar.tsx
-  number: string;
+  number?: string;
   title: string;
   summary: string;
   image: string;
+  bestSuitedFor?: string[];
+  whatWeBuild?: string[];
+  whatWeHandle?: string[];
+  whatYouReceive?: string[];
+  technicalApproach?: TechnicalApproach;
   services: SubService[];
   // Capability Explorer enhancements
   philosophy?: string;
@@ -74,6 +84,7 @@ export interface ProcessStep {
   name: string;
   iconType: 'search' | 'cube' | 'lightbulb' | 'check';
   description: string;
+  image?: string;
 }
 
 export interface ExpertiseCard {
@@ -94,6 +105,23 @@ export interface FeaturedProject {
   href: string;
 }
 
+export interface EngineeringFocusItem {
+  label: string;
+  value: string;
+}
+
+export interface EditorialHighlight {
+  lead: string;
+  detail: string;
+}
+
+export interface EditorialFocusCard {
+  tag?: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+}
+
 export interface SolutionDetail {
   slug: string;
   number: string;
@@ -107,22 +135,19 @@ export interface SolutionDetail {
   categoryTag: string;
   subtitle: string;
   executiveSummary: string;
-  image: string;
+  image: string; // Subservice Hero 3D Artwork
+  gridImage?: string; // Main Solutions Hub Directory Preview Image
+  systemFocusImage?: string; // Dedicated System Focus Section Image
   heroVideo?: string;
   statusBadge: string;
-  telemetry: {
-    sla: string;
-    engine: string;
-    latency: string;
-    concurrency: string;
-  };
+  engineeringFocus: EngineeringFocusItem[];
   marqueeItems: string[];
   editorialSplit: {
     badge: string;
     headline: string;
     lead: string;
-    statNumber: string;
-    statLabel: string;
+    editorialHighlight: EditorialHighlight;
+    focusCards?: EditorialFocusCard[];
     problemSolved: string;
     strategicAdvantage: string;
   };
@@ -159,34 +184,54 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     categoryTag: 'Autonomous Systems & Machine Intelligence',
     subtitle: 'Build AI-powered applications, intelligent agents, machine learning systems, and knowledge tools that help businesses automate work, use information, and make better decisions.',
     executiveSummary:
-      'We engineer deterministic autonomous agents, custom fine-tuned LLMs, and high-precision enterprise RAG pipelines that bridge proprietary company knowledge directly into frontline business workflows.',
-    image: '/assets/images/service/SERVICE01.png',
+      'KAIROTRIX designs and builds AI applications, agents, knowledge systems, and machine-learning solutions around real business workflows, data, and decisions.',
+    image: '/assets/images/solutions/sub_hero/s1.png',
+    gridImage: '/assets/images/solutions/grid/M1.png',
+    systemFocusImage: '/assets/images/solutions/ai/ai-system-focus.png',
     heroVideo: '/assets/videos/ai-service.mp4',
-    statusBadge: 'Production Ready',
-    telemetry: {
-      sla: '99.98% Tool Execution SLA',
-      engine: 'Multi-Agent Swarm Runtime',
-      latency: '< 180ms TTFT (Streaming)',
-      concurrency: '4,000+ Concurrent Agent Loops',
-    },
+    statusBadge: 'Production Architecture',
+    engineeringFocus: [
+      { label: 'Evaluation', value: 'Validation & Scenario Testing' },
+      { label: 'Runtime', value: 'Multi-Agent Workflow Engine' },
+      { label: 'Retrieval', value: 'Contextual Retrieval & Search' },
+      { label: 'Governance', value: 'Human Oversight Controls' },
+    ],
     marqueeItems: [
-      '99.98% TOOL EXECUTION SLA',
-      'SUB-180MS RETRIEVAL LATENCY',
-      'ZERO DATA RETENTION ARCHITECTURE',
-      '4,000+ CONCURRENT AGENT LOOPS',
-      '100% PROPRIETARY IP OWNERSHIP',
-      'DETERMINISTIC GUARDRAILS ENFORCED',
+      'AI APPLICATIONS',
+      'AI AGENTS',
+      'GENERATIVE AI & MACHINE LEARNING',
+      'AI KNOWLEDGE SYSTEMS',
+      'MODEL TRAINING & ADAPTATION',
+      'DOCUMENT INTELLIGENCE',
     ],
     editorialSplit: {
-      badge: 'STRATEGIC FOUNDATION',
-      headline: 'ENGINEERING DETERMINISTIC SYSTEMS WITH PURPOSE',
-      lead: 'We offer an exhaustive suite of autonomous intelligence and neural knowledge pipelines tailored to eliminate manual bottlenecks and accelerate operational velocity.',
-      statNumber: '85%',
-      statLabel: 'Manual Triage Reduction Across Frontline Operations',
+      badge: 'SYSTEM FOCUS',
+      headline: 'AI BUILT AROUND REAL BUSINESS WORK.',
+      lead: 'We design AI systems around the work they need to support — from understanding information and assisting users to completing defined tasks and connecting with existing business systems.',
+      editorialHighlight: {
+        lead: 'Intelligent Systems',
+        detail: 'AI applications, agents, machine learning, and knowledge systems.',
+      },
+      focusCards: [
+        {
+          tag: 'FOCUS 01',
+          title: 'INTELLIGENT ASSISTANCE',
+          subtitle: 'Understand, analyze & support decisions',
+          description:
+            'AI applications and knowledge systems help people work with information, search business knowledge, analyze data, and complete complex tasks.',
+        },
+        {
+          tag: 'FOCUS 02',
+          title: 'CONTROLLED EXECUTION',
+          subtitle: 'Take action across workflows',
+          description:
+            'AI agents can work across approved tools and APIs to carry out defined tasks with permissions, guardrails, and human review where needed.',
+        },
+      ],
       problemSolved:
-        'Eliminates manual document analysis, human routing delays in sales and support, and fragmented tribal knowledge trapped in siloed legacy repositories.',
+        'Manual knowledge work, repetitive decision-making, information that is difficult to access, and opportunities where AI could improve an existing product or workflow.',
       strategicAdvantage:
-        'Your enterprise gains 24/7 autonomous agents that execute verified multi-step business logic with complete auditable guardrails and zero hallucination risk.',
+        'Multi-step business logic with defined rules, validation checks, and human oversight where appropriate.',
     },
     subCategories: [
       {
@@ -195,8 +240,43 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'ai-apps',
         number: '01.1',
         title: 'AI Application Development',
-        summary: 'Full-stack enterprise applications powered by intelligent reasoning layers, semantic search, and streaming UX.',
-        image: '/assets/images/service/SERVICE01.png',
+        summary:
+          'Custom applications and software that use AI to help businesses automate analysis, work with complex information, improve user experiences, and add intelligent functionality to existing workflows.',
+        image: '/assets/images/solutions/ai/ai-sub-app-dev.png',
+        bestSuitedFor: [
+          'Adding AI features to existing software',
+          'Building AI-powered business applications',
+          'Automating analysis and information-heavy workflows',
+          'Creating AI-assisted customer or employee experiences',
+        ],
+        whatWeBuild: [
+          'AI-Powered Business Applications',
+          'Custom AI Applications & Software',
+          'LLM-Powered Application Experiences',
+          'AI Features for Existing Software',
+          'AI-Assisted Search, Analysis & Decision-Support Interfaces',
+        ],
+        whatWeHandle: [
+          'Requirements, workflows & user experience planning',
+          'Application architecture & interface development',
+          'AI model integration & interaction design',
+          'Prompt, context & response-flow design where required',
+          'Data validation, output handling & error states',
+          'Authentication, permissions & security controls where required',
+          'Testing, deployment & production setup',
+        ],
+        whatYouReceive: [
+          'Production-ready AI application or integrated AI feature',
+          'Configured AI integrations and application workflows',
+          'User interfaces and required access controls',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Model providers, reasoning frameworks, and backend architectures are selected based on the specific precision, privacy, cost, and response-speed requirements of the application.",
+          technologies: ["Modern Web Frameworks","Python / REST APIs","Relational Databases","AI Model APIs","Streaming Interfaces"],
+        },
         services: [
           {
             name: 'AI-Powered Applications',
@@ -230,19 +310,55 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'ai-agents',
         number: '01.2',
         title: 'AI Agent Development',
-        summary: 'Autonomous multi-agent architectures that plan, inspect intermediate results, self-correct, and execute external APIs.',
-        image: '/assets/images/service/SERVICE01.png',
+        summary:
+          'AI systems that can carry out defined multi-step tasks, work across approved business tools and APIs, and complete operational workflows within clear boundaries and human oversight.',
+        image: '/assets/images/solutions/ai/ai-sub-agents.png',
+        bestSuitedFor: [
+          'Automating multi-step operational tasks across business tools',
+          'Creating AI agents that take action across connected business systems',
+          'Handling structured inquiries, triage, and workflow routing',
+          'Assisting businesses with data collection, verification, and operational handoffs',
+        ],
+        whatWeBuild: [
+          'Operational & Workflow Execution Agents',
+          'Task-Specific Business & Backoffice Agents',
+          'API & System Coordination Agents',
+          'Triage, Routing & Inquiry Handling Agents',
+          'Human-in-the-Loop Decision & Approval Workflows',
+        ],
+        whatWeHandle: [
+          'Task definitions, operational boundaries & decision-flow planning',
+          'Agent architecture, execution logic & state management',
+          'Business tool connections & approved API integrations',
+          'Input validation, output handling & behavioral guardrails',
+          'Human review checkpoints & escalation triggers where required',
+          'Permission boundaries, error handling & fallback paths',
+          'Scenario testing, evaluation & production deployment',
+        ],
+        whatYouReceive: [
+          'Production-ready AI agent system with configured execution logic',
+          'Configured tool connections, API actions & event triggers',
+          'Operational boundaries, guardrails & fallback rules',
+          'Human escalation workflows where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "State-driven execution graphs and strictly validated data schemas ensure agents operate within defined parameters and fail gracefully to human operators when uncertain.",
+          technologies: ["Agent Orchestration Frameworks","API & Webhook Integrations","State Management & Queues","Relational Databases","Validation Schemas"],
+        },
         enableSeoPage: false,
         tagline: 'Autonomous Systems That Reason, Plan, and Execute Mission-Critical Workflows.',
         editorialSubtitle:
-          'Autonomous multi-agent architectures engineered with LangGraph, deterministic JSON guardrails, transactional state machines, and human-in-the-loop governance.',
+          'Autonomous multi-agent architectures engineered with structured state machines, schema validation guardrails, and human-in-the-loop governance.',
         heroHeadline: {
           prefix: 'DETERMINISTIC',
           accent: 'MULTI-AGENT',
           suffix: 'SYSTEMS.',
         },
         problemStatement: {
-          eyebrow: '01 // OPERATIONAL BOTTLENECK',
+          eyebrow: 'OPERATIONAL BOTTLENECK',
           headline: 'WHY UNCONSTRAINED PROMPTS FAIL IN PRODUCTION',
           painPoints: [
             {
@@ -259,7 +375,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
             },
           ],
           solutionSummary:
-            'We build stateful LangGraph-orchestrated multi-agent swarms with strict JSON schema guardrails, transactional rollback recovery, and deterministic API execution.',
+            'We build stateful multi-agent systems with strict schema validation guardrails, transactional rollback recovery, and controlled API execution.',
           architectureAdvantage:
             'Your enterprise operates 24/7 autonomous worker agents that execute verified multi-step business logic, reducing human triage latency by up to 85%.',
         },
@@ -276,14 +392,14 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
             title: 'Graph-Based Supervisor',
             role: 'Task Decomposition & Planning',
             description: 'Breaks complex business directives into deterministic subtasks and assigns them across specialized worker agents.',
-            technologies: ['LangGraph', 'Temporal', 'Redis'],
+            technologies: ['State Machine Engines', 'Workflow Orchestration', 'Distributed Memory'],
           },
           {
             step: 'LAYER 03',
             title: 'Tool Execution & API Integration',
             role: 'Secure Mutation & Query',
             description: 'Executes authenticated read/write operations against CRM, SQL databases, Stripe, and internal ERPs with transaction safety.',
-            technologies: ['gRPC', 'PostgreSQL', 'Stripe API', 'HubSpot'],
+            technologies: ['High-Performance APIs', 'Relational Databases', 'Payment Connectors', 'CRM Integrations'],
           },
           {
             step: 'LAYER 04',
@@ -319,7 +435,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         faqs: [
           {
             question: 'How do you prevent agents from hallucinating or making unauthorized API calls?',
-            answer: 'We never allow raw LLMs direct execution access. Every agent operates within a LangGraph state machine where tool calls must conform to strict Pydantic/Zod schemas, and any high-risk action requires policy verification or human-in-the-loop signoff.',
+            answer: 'We never allow raw LLMs direct execution access. Every agent operates within a deterministic state machine where tool calls must conform to strict schemas, and any high-risk action requires policy verification or human-in-the-loop signoff.',
           },
           {
             question: 'Can the agents integrate with our legacy or on-premise databases?',
@@ -339,7 +455,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
             name: 'Customer Support Agents',
             scope: 'Multi-turn resolution agents that authenticate customers, query ticket history, execute CRM mutations, and escalate with full context.',
             deliverables: ['CRM bidirectional connectors', 'Sentiment & urgency escalation triggers', 'Conversation audit trail'],
-            tags: ['LangGraph', 'HubSpot / Zendesk API', 'WebSockets', 'Pinecone'],
+            tags: ['Agent Frameworks', 'Customer Support APIs', 'WebSockets', 'Vector Indexes'],
           },
           {
             name: 'Sales & Lead Generation Agents',
@@ -357,7 +473,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
             name: 'Agentic Multi-Agent Systems',
             scope: 'Hierarchical orchestrations where a supervisor agent distributes tasks across specialized planner, coder, and reviewer subagents.',
             deliverables: ['Graph-based state machine', 'Distributed agent memory buffer', 'Human-in-the-loop review interface'],
-            tags: ['LangGraph', 'AutoGen', 'Redis', 'Temporal'],
+            tags: ['Multi-Agent Orchestrators', 'State Machines', 'Distributed Memory', 'Workflow Engines'],
           },
         ],
       },
@@ -366,9 +482,44 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         slug: 'genai-machine-learning',
         anchorId: 'genai-ml',
         number: '01.3',
-        title: 'AI / ML Development & Fine-Tuning',
-        summary: 'Specialized machine learning pipelines, LoRA parameter-efficient fine-tuning, and deterministic classification models.',
-        image: '/assets/images/service/SERVICE01.png',
+        title: 'Generative AI & Machine Learning Development',
+        summary:
+          'Custom machine-learning models, model adaptation, and specialized AI pipelines designed around business data, domain terminology, and specific analytical, classification, or predictive tasks.',
+        image: '/assets/images/solutions/ai/ai-sub-genai-ml.png',
+        bestSuitedFor: [
+          'Adapting AI models to business-specific terminology, formats, or tasks',
+          'Building custom classification, scoring, extraction, or prediction models',
+          'Automating high-volume text, document, or data analysis',
+          'Comparing model quality, cost, and response time against project requirements',
+        ],
+        whatWeBuild: [
+          'Task-Specific Machine Learning Models',
+          'Domain-Adapted Generative AI & Language Pipelines',
+          'Classification, Scoring, Extraction & Prediction Models',
+          'Model Evaluation & Benchmarking Systems',
+          'Production Inference APIs',
+        ],
+        whatWeHandle: [
+          'Business data assessment, cleaning & preparation',
+          'Model selection, adaptation & fine-tuning where appropriate',
+          'Evaluation against representative real-world test data',
+          'Inference API development & production optimization',
+          'Output validation, confidence thresholds & fallback handling',
+          'Deployment setup for the agreed infrastructure environment',
+        ],
+        whatYouReceive: [
+          'Production-ready model integration or inference endpoint',
+          'Adapted model artifacts where applicable and permitted by the underlying model or license',
+          'Documented evaluation results using relevant quality, performance, and cost measurements',
+          'Data preparation and validation workflows developed within the project scope',
+          'Integration guidance for connected applications and systems',
+          'Project-specific technical documentation',
+          'Client-owned custom project code and IP, subject to third-party technologies, models, data rights, and licenses',
+        ],
+        technicalApproach: {
+          description: "Parameter-efficient fine-tuning (LoRA/PEFT) and optimized inference runtimes deliver domain precision without the high infrastructure costs of training from scratch.",
+          technologies: ["Machine Learning Frameworks","Parameter-Efficient Fine-Tuning","Inference Optimization Runtimes","Evaluation & Benchmarking Suites"],
+        },
         services: [
           {
             name: 'Generative AI Engineering',
@@ -386,7 +537,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
             name: 'Model Fine-Tuning (LoRA/QLoRA)',
             scope: 'Adapting open-weights models (Llama 3.3, Mistral NeMo) to private enterprise vocabularies and specific stylistic formats.',
             deliverables: ['Curated instruction dataset splits', 'Quantized weights deployment artifacts', 'Evaluation benchmark reports'],
-            tags: ['Hugging Face', 'Unsloth', 'vLLM', 'RunPod'],
+            tags: ['Open Model Repositories', 'Parameter-Efficient Fine-Tuning', 'Inference Servers', 'GPU Compute Runtimes'],
           },
           {
             name: 'Model Evaluation & Observability',
@@ -401,15 +552,51 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         slug: 'enterprise-rag-knowledge-systems',
         anchorId: 'knowledge-systems',
         number: '01.4',
-        title: 'AI Knowledge Systems & Enterprise RAG',
-        summary: 'Hybrid search engines that index PDFs, databases, Slack channels, and codebases to deliver hallucination-free factual answers.',
-        image: '/assets/images/service/SERVICE01.png',
+        title: 'AI Knowledge Systems & RAG',
+        summary:
+          'Knowledge retrieval and search systems that connect internal documents, databases, and policies so businesses can find relevant information, ask questions, and receive grounded answers with source attribution.',
+        image: '/assets/images/solutions/ai/ai-sub-knowledge-rag.png',
+        bestSuitedFor: [
+          'Connecting fragmented company knowledge across tools and repositories',
+          'Enabling faster search across manuals, policies, procedures, and internal documentation',
+          'Extracting structured information from complex documents and records',
+          'Answering employee or customer questions using approved organizational knowledge',
+        ],
+        whatWeBuild: [
+          'Enterprise Knowledge Search & Retrieval Systems',
+          'Retrieval-Augmented Generation (RAG) Systems',
+          'Document Intelligence & Information Extraction Pipelines',
+          'Grounded Q&A Interfaces with Source Attribution',
+          'Automated Knowledge Ingestion & Synchronization Pipelines',
+        ],
+        whatWeHandle: [
+          'Document parsing, text extraction & metadata structuring',
+          'Chunking, embedding & retrieval architecture',
+          'Keyword and semantic search with re-ranking where appropriate',
+          'Source attribution, retrieval safeguards & confidence handling',
+          'Document access controls & permission boundaries where required',
+          'Knowledge update and synchronization workflows',
+          'Testing against representative queries & deployment setup',
+        ],
+        whatYouReceive: [
+          'Production-ready knowledge retrieval system or integrated search experience',
+          'Configured document ingestion and synchronization pipelines',
+          'Retrieval system with source attribution',
+          'Access-control configuration where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & maintenance guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Hybrid search combining keyword matching with dense semantic embeddings and reranking ensures accurate retrieval while strictly enforcing document access permissions.",
+          technologies: ["Vector & Semantic Search Indexes","Document Ingestion Pipelines","Relational Databases","Retrieval & Reranking Layers"],
+        },
         services: [
           {
             name: 'Enterprise RAG Systems',
             scope: 'Production-grade retrieval augmented generation featuring semantic chunking, re-ranking, and dynamic context compression.',
             deliverables: ['Hybrid dense/sparse vector index', 'Cohere / FlashRank re-ranking layer', 'Source citation streaming UI'],
-            tags: ['Pinecone', 'Qdrant', 'Cohere Rerank', 'pgvector'],
+            tags: ['Vector Databases', 'Semantic Search', 'Re-Ranking Engines', 'Relational & Vector Storage'],
           },
           {
             name: 'Knowledge Base Development',
@@ -434,71 +621,91 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     ],
     expertiseCards: [
       {
-        title: 'AUTONOMOUS MULTI-AGENT SWARMS',
-        stat: '4,000+ Concurrent Loops',
-        category: 'AUTONOMOUS AGENTS',
-        description: 'Hierarchical multi-agent networks automating complex customer qualification, API mutations, and context handoff with zero human latency.',
-        image: '/assets/images/service/SERVICE01.png',
-        href: '#ai-agents',
+        title: 'CONTROLLED EXECUTION',
+        stat: 'BOUNDARY CONTROLS',
+        category: 'ENGINEERING STANDARD',
+        description: 'AI actions operate within defined permissions, tools, and workflow boundaries.',
+        image: '/assets/images/solutions/ai/ai-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'ENTERPRISE NEURAL RAG ENGINES',
-        stat: '< 180ms TTFT Latency',
-        category: 'KNOWLEDGE SYSTEMS',
-        description: 'Sub-second hybrid vector search across millions of private enterprise documents with Cohere cross-encoder re-ranking.',
-        image: '/assets/images/service/SERVICE01.png',
-        href: '#knowledge-systems',
+        title: 'GROUNDED CONTEXT',
+        stat: 'SOURCE RETRIEVAL',
+        category: 'ENGINEERING STANDARD',
+        description: 'Where AI depends on business knowledge, relevant sources are retrieved and connected to provide context for responses.',
+        image: '/assets/images/solutions/ai/ai-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'HUMAN OVERSIGHT',
+        stat: 'HUMAN REVIEW',
+        category: 'ENGINEERING STANDARD',
+        description: 'Human review and escalation can be introduced where decisions or outputs require additional control.',
+        image: '/assets/images/solutions/ai/ai-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'EVALUATION & FAILURE HANDLING',
+        stat: 'RELIABILITY CHECKS',
+        category: 'ENGINEERING STANDARD',
+        description: 'Systems are tested against realistic scenarios with validation, fallbacks, and error handling where appropriate.',
+        image: '/assets/images/solutions/ai/ai-specimen.png',
+        href: '#core-services',
       },
     ],
     processSteps: [
       {
         step: '01',
-        name: 'DISCOVERY & AUDIT',
+        name: 'UNDERSTAND',
         iconType: 'search',
-        description: 'We audit your business logic, taxonomy, data boundaries, and API topology to select optimal foundation models.',
+        description: 'Understand the business problem, workflow, data, users, and where AI is genuinely useful.',
+        image: '/assets/images/solutions/methodology/methodology-01-understand.png',
       },
       {
         step: '02',
-        name: 'ARCHITECTURE & PROTOTYPE',
+        name: 'DESIGN',
         iconType: 'cube',
-        description: 'Engineering the cyclical agent graph, schema-validated tool definitions, and synthetic edge-case harnesses.',
+        description: 'Define system architecture, AI behavior, integrations, permissions, guardrails, and prototypes.',
+        image: '/assets/images/solutions/methodology/methodology-02-design.png',
       },
       {
         step: '03',
-        name: 'PRODUCTION HARDENING',
+        name: 'BUILD & VALIDATE',
         iconType: 'lightbulb',
-        description: 'Deploying high-throughput inference runtimes, streaming WebSocket interfaces, and private VPC security.',
+        description: 'Engineer the working system, connect required tools and data, and test against realistic scenarios.',
+        image: '/assets/images/solutions/methodology/methodology-03-build.png',
       },
       {
         step: '04',
-        name: 'TELEMETRY & EVOLUTION',
+        name: 'DEPLOY & EVOLVE',
         iconType: 'check',
-        description: 'Active monitoring of production traces, feedback loops, cost optimization, and periodic model checkpoint updates.',
+        description: 'Deploy the system, observe how it behaves, resolve edge cases, and evolve it as requirements change.',
+        image: '/assets/images/solutions/methodology/methodology-04-deploy.png',
       },
     ],
     featuredProjects: [
       {
         title: 'AUTONOMOUS MULTIMODAL AGENTIC SWARM',
         category: 'AI & MULTI-AGENT SYSTEMS',
-        metric: '99.98% SLA',
+        metric: 'TECHNICAL DEMONSTRATION // Multi-Step Agent Workflow',
         year: 'ENTERPRISE PRODUCTION, 2026',
-        image: '/assets/images/service/SERVICE01.png',
+        image: '/assets/images/solutions/ai/ai-specimen.png',
         href: '/work/ai-agentic-swarm',
       },
       {
         title: 'ENTERPRISE NEURAL KNOWLEDGE ENGINE',
         category: 'ENTERPRISE RAG & VECTORS',
-        metric: '< 180ms TTFT',
+        metric: 'KAIROTRIX BUILD // Document Knowledge System',
         year: 'GLOBAL KNOWLEDGE BASE, 2026',
-        image: '/assets/images/service/SERVICE01.png',
+        image: '/assets/images/solutions/ai/ai-specimen.png',
         href: '/work/enterprise-rag-engine',
       },
       {
         title: 'FINANCIAL ANOMALY AI SURVEILLANCE',
         category: 'DECISION ML & TIME-SERIES',
-        metric: '10M+ Rows / Sec',
+        metric: 'EXPERIMENT // Time-Series Anomaly Detection',
         year: 'FINANCIAL RISK PLATFORM, 2026',
-        image: '/assets/images/service/SERVICE01.png',
+        image: '/assets/images/solutions/ai/ai-specimen.png',
         href: '/work/financial-anomaly-surveillance',
       },
     ],
@@ -509,15 +716,15 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
           { name: 'Claude 3.5 Sonnet', role: 'Complex reasoning & code generation' },
           { name: 'OpenAI GPT-4o', role: 'Multimodal structured execution' },
           { name: 'Llama 3.3 70B', role: 'Sovereign on-premise inference' },
-          { name: 'vLLM', role: 'High-throughput PagedAttention server' },
+          { name: 'Inference Runtimes', role: 'High-throughput model serving & batch processing' },
         ],
       },
       {
         category: 'Agent & Orchestration Frameworks',
         items: [
-          { name: 'LangGraph', role: 'Stateful multi-agent cyclical graphs' },
+          { name: 'Agent Orchestration Frameworks', role: 'Stateful multi-agent graphs & tool execution' },
           { name: 'Vercel AI SDK', role: 'Streaming UI & reactive client state' },
-          { name: 'Temporal', role: 'Durable long-running workflow orchestration' },
+          { name: 'Workflow Orchestration Engines', role: 'Durable long-running execution & rollback handling' },
           { name: 'FastAPI', role: 'Asynchronous high-concurrency microservices' },
         ],
       },
@@ -526,7 +733,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         items: [
           { name: 'Qdrant', role: 'High-performance Rust vector engine' },
           { name: 'Pinecone', role: 'Managed serverless vector search' },
-          { name: 'pgvector', role: 'PostgreSQL relational + semantic storage' },
+          { name: 'Vector Storage & Search', role: 'Relational & semantic vector search infrastructure' },
           { name: 'Cohere Rerank', role: 'Cross-encoder relevance re-ranking' },
         ],
       },
@@ -540,9 +747,9 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         ],
       },
     ],
-    ctaHeadline: 'Ready to architect your enterprise AI infrastructure?',
+    ctaHeadline: 'Have an AI problem to solve?',
     ctaDescription:
-      'Book a direct technical architecture consultation with our engineering team. We analyze your operational workflows and build a deterministic prototype in weeks.',
+      'Tell us what you want to automate, analyze, search, assist, or connect. We’ll help identify whether the right answer is an AI application, agent, knowledge system, machine-learning model — or something simpler.',
     prevSlug: 'technology-integration',
     nextSlug: 'software-product-engineering',
   },
@@ -560,45 +767,72 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     categoryTag: 'Digital Platforms & Engineering Architecture',
     subtitle: 'Design and build custom business software, web applications, SaaS platforms, and digital products—from the first idea and MVP to ongoing development and improvement.',
     executiveSummary:
-      'We design, engineer, and scale full-stack digital platforms and distributed backend microservices purpose-built for enterprise concurrency, sub-20ms latency, and 100% proprietary code ownership.',
-    image: '/assets/images/service/SERVICE02.png',
+      'KAIROTRIX designs and engineers custom software, web platforms, and digital products built around real operational workflows, reliable architecture, and clear user experiences.',
+    image: '/assets/images/solutions/sub_hero/s2.png',
+    gridImage: '/assets/images/solutions/grid/grid-software-engineering.png',
+    systemFocusImage: '/assets/images/solutions/software/software-system-focus.png',
     heroVideo: '/assets/videos/software-service.mp4',
-    statusBadge: 'Sub-20ms Latency',
-    telemetry: {
-      sla: '99.99% Production Uptime',
-      engine: 'Distributed Next.js & Go/Node Services',
-      latency: 'P99 Latency < 16ms',
-      concurrency: '50,000+ Concurrent WebSockets',
-    },
+    statusBadge: 'Production Grade',
+    engineeringFocus: [
+      { label: 'Architecture', value: 'Modular System Design & Clean APIs' },
+      { label: 'Runtime', value: 'Type-Safe Full-Stack Architecture' },
+      { label: 'Performance', value: 'Optimized Query & API Paths' },
+      { label: 'Deployment', value: 'Resilient Cloud Deployment' },
+    ],
     marqueeItems: [
-      'P99 LATENCY < 16MS',
-      '99.99% PLATFORM AVAILABILITY',
-      '100% PROPRIETARY IP OWNERSHIP',
-      '50,000+ CONCURRENT WEBSOCKETS',
-      'DISTRIBUTED GO & NODE MICROSERVICES',
-      'ZERO THIRD-PARTY LOCK-IN',
+      'CUSTOM SOFTWARE',
+      'WEB APPLICATIONS',
+      'PRODUCT DEVELOPMENT',
+      'PRODUCT ENGINEERING',
+      'PRODUCT UI/UX',
+      'DESIGN SYSTEMS',
     ],
     editorialSplit: {
-      badge: 'BUSINESS & OPERATIONAL IMPACT',
-      headline: 'SOFTWARE ENGINEERED AROUND YOUR BUSINESS, NOT A TEMPLATE',
-      lead: 'We design and build bespoke digital software engines that eliminate manual bottlenecks, integrate fragmented tooling, and give you complete, unencumbered software ownership.',
-      statNumber: '10x',
-      statLabel: 'Operational Concurrency Headroom Delivered on Scaled Clusters',
+      badge: 'SYSTEM FOCUS',
+      headline: 'SOFTWARE ENGINEERED FOR HOW YOUR BUSINESS OPERATES.',
+      lead: 'We build purposeful software around your specific operational rules and product requirements — replacing rigid off-the-shelf tools and fragmented spreadsheets with software that fits your business.',
+      editorialHighlight: {
+        lead: 'Operational Software',
+        detail: 'Custom business software, web platforms, and digital products.',
+      },
+      focusCards: [
+        {
+          tag: 'FOCUS 01',
+          title: 'OPERATIONAL FIT',
+          subtitle: 'Built around unique business logic',
+          description:
+            'Custom software and internal tools engineered around the way your teams actually work, handle data, and manage processes.',
+        },
+        {
+          tag: 'FOCUS 02',
+          title: 'USABLE PRODUCT EXPERIENCES',
+          subtitle: 'Intuitive, responsive interfaces',
+          description:
+            'Web applications, portals, and software products designed for speed, clarity, accessibility, and a consistent experience across devices.',
+        },
+        {
+          tag: 'FOCUS 03',
+          title: 'ADAPTABLE ARCHITECTURE',
+          subtitle: 'Ready for ongoing growth',
+          description:
+            'Clean modular foundations, structured data models, and integration-ready APIs that can evolve as your business needs change.',
+        },
+      ],
       problemSolved:
-        'Eliminates off-the-shelf software compromises, brittle integrations, sluggish page load bottlenecks, and recurring subscription costs that scale against you.',
+        'Off-the-shelf software that no longer fits the workflow, growing workarounds, disconnected processes, or a product idea that requires purpose-built software.',
       strategicAdvantage:
-        'Your business owns clean, modular, fully typed source code engineered to effortlessly support 10x scale while running with verified sub-20ms speed and 99.99% uptime.',
+        'Clean, modular, typed source code engineered for maintainability, clarity, and reliable operation.',
     },
     systemsEquation: {
       inputs: [
         'Custom Software Engine',
-        'Distributed Microservices',
+        'Distributed Services',
         'Database Architecture',
-        'Cloud Infrastructure & DevOps',
+        'Cloud Deployment',
       ],
-      output: 'High-Scale Digital Platform',
+      output: 'Scalable Digital Platform',
       rationale:
-        'KAIROTRIX engineers complete digital platforms where modular business logic, optimized databases, and resilient cloud infrastructure operate as a unified, deterministic system.',
+        'KAIROTRIX engineers digital platforms where modular business logic, structured databases, and resilient cloud infrastructure operate together reliably.',
     },
     subCategories: [
       {
@@ -606,10 +840,46 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'custom-software',
         number: '02.1',
         title: 'Custom Software Development',
-        summary: 'Tailor-made enterprise applications engineered to solve exact operational workflows without compromise.',
+        summary:
+          'Purpose-built business software designed around the workflows, data, rules, and operational requirements that standard software does not fit well.',
         philosophy: 'We design and build software around your business—not around a template.',
         engagementLifecycle: ['Business & Technical Discovery', 'Domain Architecture & Schema', 'Sprint-Based Engineering', 'Zero-Downtime Deployment'],
-        image: '/assets/images/service/SERVICE02.png',
+        image: '/assets/images/solutions/software/soft-sub-business-software.png',
+        bestSuitedFor: [
+          'Replacing spreadsheets, manual workarounds, and outdated legacy systems',
+          'Supporting workflows and business processes that standard software cannot easily accommodate',
+          'Centralizing business rules, operational data, and internal processes',
+          'Reducing dependence on rigid software limitations and fragmented tools',
+        ],
+        whatWeBuild: [
+          'Custom Business Management Systems',
+          'Internal Operations & Administration Platforms',
+          'Workflow-Driven Business Software',
+          'Back-Office Systems & Operational Tools',
+          'Custom Management & Process Applications',
+        ],
+        whatWeHandle: [
+          'Requirements, workflow mapping & data architecture',
+          'Application architecture & interface development',
+          'Business logic, rules & workflow implementation',
+          'Data structures, APIs & system integrations where required',
+          'Authentication, permissions & security controls where required',
+          'Testing, quality assurance & performance optimization',
+          'Deployment setup for the agreed environment',
+        ],
+        whatYouReceive: [
+          'Production-ready custom software system',
+          'Configured data, application & integration architecture',
+          'User access and permission controls where required',
+          'Required workflows, business rules & system integrations',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Modular application architectures with typed domain models ensure your software remains clean, testable, and maintainable as business requirements evolve.",
+          technologies: ["Typed Backend Services","Relational Databases","Caching & Message Queues","Cloud Infrastructure & CI/CD"],
+        },
         services: [
           {
             name: 'Enterprise Business Systems',
@@ -642,10 +912,46 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'web-apps',
         number: '02.2',
         title: 'Web Application Development',
-        summary: 'High-performance web applications built on Next.js 15, React 19, and edge computing architectures.',
+        summary:
+          'Browser-based applications, portals, and interactive web platforms designed for reliable performance, responsive access, and consistent use across modern devices.',
         philosophy: 'Blazing-fast, reactive web platforms engineered for seamless user adoption, zero lag, and mission-critical workflows.',
         engagementLifecycle: ['UX & Flow Discovery', 'Component Design System', 'Full-Stack Implementation', 'Edge Global Deployment'],
-        image: '/assets/images/service/SERVICE02.png',
+        image: '/assets/images/solutions/software/soft-sub-web-saas.png',
+        bestSuitedFor: [
+          'Giving customers, partners, or employees secure access through the web',
+          'Creating customer portals, self-service accounts, and interactive business tools',
+          'Building browser-based platforms and digital service experiences',
+          'Modernizing outdated portals into faster, responsive web applications',
+        ],
+        whatWeBuild: [
+          'Full-Stack Web Applications & Platforms',
+          'Customer, Client & Partner Portals',
+          'Interactive Management & Administration Interfaces',
+          'Browser-Based Business Applications',
+          'Responsive Web Applications & Progressive Web Apps',
+        ],
+        whatWeHandle: [
+          'Requirements, user journeys & responsive interface planning',
+          'Frontend interface development & interaction implementation',
+          'Backend services, APIs & data structures',
+          'User authentication, account access & permissions where required',
+          'Application performance, caching & response optimization',
+          'Cross-browser and multi-device testing',
+          'Deployment setup for the agreed environment',
+        ],
+        whatYouReceive: [
+          'Production-ready web application for modern browsers and devices',
+          'Configured application, API & data architecture',
+          'User authentication and access controls where required',
+          'Responsive interfaces tested across desktop, tablet, and mobile',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Server-rendered components combined with strategic edge caching deliver fast initial page loads, smooth navigation, and solid SEO capabilities.",
+          technologies: ["Server-Rendered Frameworks","Responsive UI Components","Secure Authentication & APIs","Relational Databases"],
+        },
         services: [
           {
             name: 'Full-Stack Web Applications',
@@ -678,10 +984,48 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'product-dev',
         number: '02.3',
         title: 'Product Development & Engineering',
-        summary: 'Taking software products from initial technical blueprint to scalable, revenue-generating SaaS platforms.',
+        summary:
+          'End-to-end software product engineering for building, launching, and evolving digital products—from early concepts and MVPs to mature platforms and major product releases.',
         philosophy: 'From initial technical blueprint to revenue-generating SaaS—disciplined product engineering built to scale.',
         engagementLifecycle: ['Product Scope & Roadmap', 'Multi-Tenant Architecture', 'Core Feature Velocity', 'Go-To-Market Launch'],
-        image: '/assets/images/service/SERVICE02.png',
+        image: '/assets/images/solutions/software/soft-sub-mvp-product.png',
+        bestSuitedFor: [
+          'Bringing new digital products from concept through development and launch',
+          'Building new software products or product lines for established businesses',
+          'Re-engineering early prototypes or existing products for reliability and scale',
+          'Extending existing products with new features, modules, and technical improvements',
+        ],
+        whatWeBuild: [
+          'Digital Software Products & Platforms',
+          'Minimum Viable Products (MVPs)',
+          'Software-as-a-Service (SaaS) Products',
+          'Multi-Tenant & Account-Based Platforms',
+          'Product Feature Modules & Expansion Systems',
+          'Developer APIs & Product Extension Interfaces',
+        ],
+        whatWeHandle: [
+          'Product scoping, technical planning & release roadmapping',
+          'Product architecture, data modeling & engineering foundations',
+          'Core feature development & user-flow implementation',
+          'Account, onboarding, subscription & billing flows where required',
+          'Multi-tenant architecture & access controls where required',
+          'Testing, performance checks & release readiness',
+          'Deployment setup for the agreed environment',
+          'Ongoing technical evolution planning where part of the engagement',
+        ],
+        whatYouReceive: [
+          'Production-ready digital product, MVP, or major product release',
+          'Modular codebase designed for continued product development',
+          'Configured product workflows and account systems where required',
+          'Product integrations and supporting APIs where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & architecture guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Iterative milestone releases backed by automated testing pipelines allow fast time-to-market while keeping technical debt and rework low.",
+          technologies: ["Full-Stack Application Frameworks","Billing & Subscription Gateways","Relational Databases","Cloud Infrastructure & Containers"],
+        },
         services: [
           {
             name: 'SaaS Platform Engineering',
@@ -714,10 +1058,44 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'product-design',
         number: '02.4',
         title: 'Product Design & Design Systems',
-        summary: 'Pixel-precise design systems, user journey wireframes, and design tokens that bridge design and production code.',
+        summary:
+          'User research, interface design, interactive prototypes, and reusable design systems created to make digital products easier to use, consistent across features, and clearer to implement.',
         philosophy: 'Design systems and accessible interfaces that eliminate user friction and bridge the gap between design and production code.',
         engagementLifecycle: ['User Journey Mapping', 'Design Token Architecture', 'Component Library Build', 'Design-to-Code Handoff'],
-        image: '/assets/images/service/SERVICE02.png',
+        image: '/assets/images/solutions/software/soft-sub-ui-ux.png',
+        bestSuitedFor: [
+          'Designing new software products, applications, or platforms',
+          'Establishing consistent interface patterns across growing digital products',
+          'Turning complex product workflows into clear, usable experiences',
+          'Creating a shared design foundation for product and engineering work',
+        ],
+        whatWeBuild: [
+          'Product Interfaces & Application Screen Flows',
+          'Reusable UI Component Libraries & Design Systems',
+          'Interactive Prototypes for Testing & Review',
+          'Design Tokens & Interface Standards',
+          'Responsive Application Layouts for Desktop, Tablet & Mobile',
+        ],
+        whatWeHandle: [
+          'User journey mapping, workflow analysis & information architecture',
+          'Wireframing & high-fidelity interface design',
+          'Interaction patterns, visual hierarchy & component consistency',
+          'Responsive layouts across required screen sizes',
+          'Accessibility considerations & usability consistency',
+          'Design system structure & developer handoff specifications',
+        ],
+        whatYouReceive: [
+          'Implementation-ready interface designs and design system assets',
+          'Interactive prototypes for testing, review & engineering guidance',
+          'Required screen designs and responsive layout specifications',
+          'Organized components, design tokens, typography & color standards',
+          'Developer handoff notes and implementation specifications',
+          'Client-owned custom design files, assets, and documentation, subject to third-party licenses',
+        ],
+        technicalApproach: {
+          description: "Design tokens mapped directly to CSS variables ensure visual consistency across screens and seamless handoff to frontend engineers.",
+          technologies: ["Interface Design & Wireframing Tools","Design Token Systems","Clickable Prototyping","Accessibility Evaluation (WCAG)"],
+        },
         services: [
           {
             name: 'Enterprise Design Systems',
@@ -748,87 +1126,91 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     ],
     expertiseCards: [
       {
-        title: 'HIGH-CONCURRENCY DISTRIBUTED APIS',
-        stat: 'P99 Latency < 16ms',
-        category: 'DISTRIBUTED ARCHITECTURE',
-        description: 'Ultra-low latency microservices engineered in Go and Node.js capable of supporting 50,000+ simultaneous WebSocket sessions.',
-        image: '/assets/images/service/SERVICE02.png',
-        href: '#custom-software',
+        title: 'MAINTAINABLE ARCHITECTURE',
+        stat: 'MODULAR DESIGN',
+        category: 'ENGINEERING STANDARD',
+        description: 'Software structured for clarity, maintainability, and future changes.',
+        image: '/assets/images/solutions/software/software-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'MULTI-TENANT SAAS PLATFORMS',
-        stat: '99.99% Production Uptime',
-        category: 'PRODUCT ENGINEERING',
-        description: 'B2B SaaS architectures with automated tenant isolation, metered Stripe billing, and granular Row-Level Security.',
-        image: '/assets/images/service/SERVICE02.png',
-        href: '#product-dev',
+        title: 'CLEAR DATA STRUCTURES',
+        stat: 'DATA MODELING',
+        category: 'ENGINEERING STANDARD',
+        description: 'Data models designed around the information the system actually needs to manage.',
+        image: '/assets/images/solutions/software/software-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'DATABASE ARCHITECTURE & TUNING',
-        stat: '< 5ms Query Latency',
-        category: 'DATA LAYER OPTIMIZATION',
-        description: 'Advanced PostgreSQL indexing, connection pooling, and read-replica routing engineered for zero lock contention under high write loads.',
-        image: '/assets/images/service/SERVICE02.png',
-        href: '#custom-software',
+        title: 'TESTING & QUALITY ASSURANCE',
+        stat: 'QUALITY CONTROLS',
+        category: 'ENGINEERING STANDARD',
+        description: 'Critical workflows, business rules, and edge cases are tested according to project requirements.',
+        image: '/assets/images/solutions/software/software-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'CLOUD INFRASTRUCTURE & DEVOPS',
-        stat: '100% Blue/Green Rollouts',
-        category: 'CLOUD & INFRASTRUCTURE',
-        description: 'Terraform-managed multi-region infrastructure with automated rollbacks, zero production downtime, and comprehensive audit telemetry.',
-        image: '/assets/images/service/SERVICE02.png',
-        href: '#custom-software',
+        title: 'SECURE ACCESS & INTEGRATION',
+        stat: 'ACCESS & INTEGRATION',
+        category: 'ENGINEERING STANDARD',
+        description: 'Authentication, permissions, and system connections are designed according to the application’s needs.',
+        image: '/assets/images/solutions/software/software-specimen.png',
+        href: '#core-services',
       },
     ],
     processSteps: [
       {
         step: '01',
-        name: 'TECHNICAL DISCOVERY',
+        name: 'UNDERSTAND',
         iconType: 'search',
-        description: 'We define the database schema, API contracts, concurrency targets, and cloud infrastructure blueprint.',
+        description: 'Review the business problem, operational workflows, user requirements, and technical constraints.',
+        image: '/assets/images/solutions/methodology/methodology-01-understand.png',
       },
       {
         step: '02',
-        name: 'SUBSYSTEM PROTOTYPING',
+        name: 'DESIGN',
         iconType: 'cube',
-        description: 'Building the core business logic, database migrations, authentication, and high-throughput background queues.',
+        description: 'Map system architecture, interface user journeys, database schemas, and API contracts.',
+        image: '/assets/images/solutions/methodology/methodology-02-design.png',
       },
       {
         step: '03',
-        name: 'FRONTEND ASSEMBLY',
+        name: 'BUILD & TEST',
         iconType: 'lightbulb',
-        description: 'Integrating responsive Next.js frontend, micro-interactions, state management, and real-time WebSocket feeds.',
+        description: 'Engineer production software with modular code, testing critical paths, and validating user workflows.',
+        image: '/assets/images/solutions/methodology/methodology-03-build.png',
       },
       {
         step: '04',
-        name: 'PRODUCTION CUTOVER',
+        name: 'DEPLOY & EVOLVE',
         iconType: 'check',
-        description: 'Executing zero-downtime blue/green deployment, load testing at 5x peak capacity, and 24/7 telemetry monitoring.',
+        description: 'Launch to production, monitor stability, provide documentation, and iterate as business requirements expand.',
+        image: '/assets/images/solutions/methodology/methodology-04-deploy.png',
       },
     ],
     featuredProjects: [
       {
         title: 'ULTRA-LOW LATENCY FINTECH TRADING PORTAL',
         category: 'PRODUCT ENGINEERING',
-        metric: 'P99 < 16ms',
+        metric: 'TECHNICAL DEMONSTRATION // High-Throughput Trading Interface',
         year: 'FINANCIAL MARKETS, 2026',
-        image: '/assets/images/service/SERVICE02.png',
+        image: '/assets/images/solutions/software/software-specimen.png',
         href: '/work/fintech-trading-portal',
       },
       {
         title: 'MULTI-TENANT B2B SAAS ENTERPRISE ENGINE',
         category: 'FULL-STACK ARCHITECTURE',
-        metric: '99.99% Uptime',
+        metric: 'KAIROTRIX BUILD // Multi-Tenant SaaS Platform',
         year: 'COMMERCIAL PLATFORM, 2026',
-        image: '/assets/images/service/SERVICE02.png',
+        image: '/assets/images/solutions/software/software-specimen.png',
         href: '/work/saas-enterprise-engine',
       },
       {
         title: 'DISTRIBUTED CLOUD MICROSERVICES MESH',
         category: 'KUBERNETES & GO',
-        metric: '50K+ WebSockets',
+        metric: 'TECHNICAL DEMONSTRATION // Distributed Microservices Mesh',
         year: 'HIGH-CONCURRENCY CLUSTER, 2026',
-        image: '/assets/images/service/SERVICE02.png',
+        image: '/assets/images/solutions/software/software-specimen.png',
         href: '/work/cloud-microservices-mesh',
       },
     ],
@@ -870,9 +1252,9 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         ],
       },
     ],
-    ctaHeadline: 'Ready to engineer your mission-critical software platform?',
+    ctaHeadline: 'Have a software problem to solve?',
     ctaDescription:
-      'Schedule an engineering review with our lead systems architects. We analyze your technical architecture, pinpoint bottlenecks, and outline a development sprint.',
+      'Tell us what you want to build, modernize, or replace. We’ll help you determine the right product scope, architecture, and technology stack before writing a line of code.',
     prevSlug: 'ai-intelligent-systems',
     nextSlug: 'automation-digital-operations',
   },
@@ -890,33 +1272,60 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     categoryTag: 'Workflow Orchestration & Operations Automation',
     subtitle: 'Automate repetitive workflows, documents, approvals, communications, and administrative tasks so everyday operations require less manual work.',
     executiveSummary:
-      'We eliminate manual operational bottlenecks with autonomous workflow orchestration, multi-system webhook synchronization, and self-healing background workers that run 24/7 with zero human intervention.',
-    image: '/assets/images/service/SERVICE03.png',
-    statusBadge: 'Zero Human Bottlenecks',
-    telemetry: {
-      sla: '99.99% Queue Reliability',
-      engine: 'Event-Driven Distributed Mesh',
-      latency: '14,200 Events / Min',
-      concurrency: 'Zero Manual Interventions',
-    },
+      'KAIROTRIX builds dependable business process automations, workflow orchestration engines, document processing, and operational monitoring to reduce repetitive manual work.',
+    image: '/assets/images/solutions/sub_hero/s3.png',
+    gridImage: '/assets/images/solutions/grid/grid-automation-operations.png',
+    systemFocusImage: '/assets/images/solutions/automation/automation-system-focus.png',
+    statusBadge: 'Automated Operations',
+    engineeringFocus: [
+      { label: 'Reliability', value: 'Defined Execution Rules' },
+      { label: 'Resilience', value: 'Retry & Recovery Logic' },
+      { label: 'Exceptions', value: 'Human Review Routing' },
+      { label: 'Visibility', value: 'Workflow Activity Logs' },
+    ],
     marqueeItems: [
-      '14,200 EVENTS PROCESSED / MIN',
-      '99.99% QUEUE RELIABILITY',
-      '90% MANUAL PROCESS REDUCTION',
-      '0.001% WORKFLOW ERROR RATE',
-      'SELF-HEALING BACKGROUND BOTS',
-      'IDEMPOTENT EVENT ORCHESTRATION',
+      'BUSINESS PROCESS AUTOMATION',
+      'WORKFLOW AUTOMATION',
+      'DOCUMENT AUTOMATION',
+      'APPROVAL AUTOMATION',
+      'COMMUNICATION AUTOMATION',
+      'AI-POWERED AUTOMATION',
     ],
     editorialSplit: {
-      badge: 'AUTONOMOUS WORKFLOWS',
-      headline: 'ORCHESTRATING OPERATIONAL ENGINES WITH PURPOSE',
-      lead: 'We transform fragile manual handoffs into resilient, event-driven pipelines that execute round-the-clock with guaranteed delivery and self-healing error recovery.',
-      statNumber: '90%',
-      statLabel: 'Elimination of Manual Cross-System Data Copying and Verification',
+      badge: 'SYSTEM FOCUS',
+      headline: 'KEEPING BUSINESS WORKFLOWS MOVING DEPENDABLY.',
+      lead: 'We automate recurring operational tasks, departmental handoffs, and document processing so information moves smoothly between systems with less manual effort.',
+      editorialHighlight: {
+        lead: 'Operational Automation',
+        detail: 'Process automation, task orchestration, and document workflows.',
+      },
+      focusCards: [
+        {
+          tag: 'FOCUS 01',
+          title: 'REDUCED REPETITIVE WORK',
+          subtitle: 'Less manual handoffs & data re-entry',
+          description:
+            'Automate routine tasks, notifications, and cross-tool data movement across sales, operations, support, and finance.',
+        },
+        {
+          tag: 'FOCUS 02',
+          title: 'COORDINATED EXECUTION',
+          subtitle: 'Orderly multi-step workflows',
+          description:
+            'Coordinate multi-step operational processes with state management, dependency tracking, queues, and automated retry handling.',
+        },
+        {
+          tag: 'FOCUS 03',
+          title: 'OPERATIONAL CONTINUITY',
+          subtitle: 'Visibility, monitoring & exception handling',
+          description:
+            'Surface workflow bottlenecks, log execution history, and route edge cases for human review before they disrupt operations.',
+        },
+      ],
       problemSolved:
-        'Eliminates copy-paste errors across CRMs, delayed customer onboarding, manual invoice audits, and operational bottlenecks that limit company throughput.',
+        'Data-entry errors across systems, delayed approvals, manual document reviews, and operational bottlenecks that slow fulfillment.',
       strategicAdvantage:
-        'Your operational capacity scales 10x without requiring a linear increase in administrative headcount or manual oversight.',
+        'Automated workflows help teams spend less time on routine administrative tasks while maintaining clear execution logs and review paths.',
     },
     subCategories: [
       {
@@ -924,13 +1333,47 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'process-automation',
         number: '03.1',
         title: 'Business Process Automation',
-        summary: 'Systematic end-to-end automation of core business processes across sales, operations, finance, and logistics.',
-        image: '/assets/images/service/SERVICE03.png',
+        summary:
+          'Automating manual handoffs, data transfers, and recurring operational tasks across your existing business tools so everyday processes run faster and with fewer errors.',
+        image: '/assets/images/solutions/automation/auto-sub-workflow.png',
+        bestSuitedFor: [
+          'Eliminating repetitive manual data entry and copying between business software',
+          'Automating customer, client, or vendor onboarding workflows',
+          'Streamlining order processing, status updates, and fulfillment handoffs',
+          'Connecting recurring administrative, billing, and departmental tasks',
+        ],
+        whatWeBuild: [
+          'Customer & Client Onboarding Automations',
+          'Order Processing & Fulfillment Workflows',
+          'Billing, Invoicing & Notification Automations',
+          'Cross-Tool Data Transfer & Handoff Routines',
+          'Departmental Operational Workflows',
+        ],
+        whatWeHandle: [
+          'Operational process mapping, trigger identification & workflow planning',
+          'Conditional decision logic, branching rules & validation checks',
+          'Tool connections, API integrations & webhook event handlers',
+          'Error handling, retry behavior & failure alert notifications',
+          'End-to-end testing against real-world operational scenarios',
+          'Operational handover, team walkthrough & rollout support',
+        ],
+        whatYouReceive: [
+          'Configured and tested business process automation workflows',
+          'Connected business tools, triggers, and automated actions',
+          'Failure notifications and alert routing where required',
+          'Execution history, run logs, and operational visibility',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Idempotent workflow logic with automated retries and dead-letter queues ensures tasks run reliably without duplicate executions or silent failures.",
+          technologies: ["Integration & Automation Platforms","Custom Scripting & Webhooks","API Connectors","Notification Services"],
+        },
         services: [
           {
             name: 'Client Onboarding Automation',
             scope: 'Instant verification, automated account provisioning, contract generation, and initial welcome sequence orchestration.',
-            deliverables: ['DocuSign / PandaDoc webhook listener', 'Automated workspace creation scripts', 'CRM status synchronization'],
+            deliverables: ['Document signature webhook listeners', 'Automated workspace provisioning scripts', 'CRM status synchronization'],
             tags: ['Node.js', 'Zapier / Make', 'Webhooks', 'PostgreSQL'],
           },
           {
@@ -943,7 +1386,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
             name: 'Inventory & Order Fulfillment Routing',
             scope: 'Real-time multi-channel stock level synchronization across Shopify, Amazon, and 3PL warehouse management systems.',
             deliverables: ['Bi-directional inventory sync queue', 'Low-stock automated alert dispatch', 'Fulfillment routing rules'],
-            tags: ['Shopify API', 'Redis BullMQ', 'FastAPI'],
+            tags: ['E-Commerce APIs', 'Asynchronous Queues', 'REST Services'],
           },
           {
             name: 'Employee Lifecycle Automation',
@@ -958,20 +1401,56 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'workflows',
         number: '03.2',
         title: 'Workflow & Task Orchestration',
-        summary: 'Distributed, resilient state machine workflows that execute multi-step logic with guaranteed idempotency.',
-        image: '/assets/images/service/SERVICE03.png',
+        summary:
+          'Reliable workflow systems that coordinate complex, multi-step operations across background tasks, connected services, and system events while maintaining progress, dependencies, retries, and failure recovery.',
+        image: '/assets/images/solutions/automation/auto-sub-document-ocr.png',
+        bestSuitedFor: [
+          'Multi-step processes where tasks must happen in a defined order',
+          'Long-running workflows that need to preserve progress if a system is interrupted',
+          'Coordinating background jobs, system events, and dependent tasks',
+          'Operations that require automated retries, recovery, or exception handling',
+        ],
+        whatWeBuild: [
+          'Multi-Step Workflow Orchestration Systems',
+          'Background Task & Job Processing Systems',
+          'Event-Driven Workflow & Message Coordination',
+          'Stateful Task Execution Systems',
+          'Automated Retry, Recovery & Exception Workflows',
+        ],
+        whatWeHandle: [
+          'Workflow steps, dependencies & execution-flow design',
+          'Event triggers, background processing & system integrations',
+          'Task timing, retries & failure-handling rules',
+          'Parallel and sequential task coordination',
+          'Exception handling and recovery behavior',
+          'Workflow testing across failure and interruption scenarios',
+          'Execution logging & operational visibility',
+        ],
+        whatYouReceive: [
+          'Production-ready workflow orchestration system',
+          'Configured background tasks, event triggers & processing workflows',
+          'Retry, recovery & alerting rules where required',
+          'Execution history and operational visibility',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Durable execution frameworks guarantee workflow state is preserved across network interruptions, external API downtime, and server restarts.",
+          technologies: ["Durable Workflow Engines","Background Worker Queues","Stateful Event Handlers","Execution Tracing & Logs"],
+        },
         services: [
           {
-            name: 'Temporal / Inngest Workflow Engines',
+            name: 'Durable & Event-Driven Workflow Engines',
             scope: 'Durable execution engines where workflows survive server restarts, network failures, and third-party rate limits.',
             deliverables: ['Durable workflow step definitions', 'Automated retry and exponential backoff logic', 'Workflow state dashboard'],
-            tags: ['Temporal', 'Inngest', 'TypeScript', 'Docker'],
+            tags: ['Durable Workflows', 'Event-Driven Functions', 'TypeScript', 'Containers'],
           },
           {
             name: 'Event-Driven Webhook Meshes',
             scope: 'High-availability webhook ingestion layers that buffer, validate HMAC signatures, and fan out events reliably.',
             deliverables: ['HMAC verification middleware', 'Dead-letter queue (DLQ) replay UI', 'Redis-backed rate-limiter'],
-            tags: ['Redis', 'BullMQ', 'Next.js API', 'AWS SQS'],
+            tags: ['In-Memory Queues', 'Job Workers', 'Web Frameworks', 'Cloud Queues'],
           },
           {
             name: 'Cross-System Multi-Step Approvals',
@@ -992,8 +1471,45 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'document-automation',
         number: '03.3',
         title: 'Document & Approval Automation',
-        summary: 'AI-assisted optical character recognition (OCR), structural extraction, and automated document compilation.',
-        image: '/assets/images/service/SERVICE03.png',
+        summary:
+          'Automated document workflows that generate paperwork from business data, extract information from incoming files, and move documents through structured review, approval, and sign-off processes.',
+        image: '/assets/images/solutions/automation/auto-sub-approvals.png',
+        bestSuitedFor: [
+          'Generating standardized contracts, proposals, invoices, and reports automatically',
+          'Extracting information from forms, receipts, invoices, and PDF documents',
+          'Reducing delays in multi-person or multi-department review and approval processes',
+          'Maintaining clear approval history and document records',
+        ],
+        whatWeBuild: [
+          'Automated Document Generation Pipelines',
+          'Document Data Extraction & Processing Workflows',
+          'Multi-Step Review, Approval & Sign-Off Workflows',
+          'E-Signature & Approval Integrations',
+          'Document Audit Trail & Archival Systems',
+        ],
+        whatWeHandle: [
+          'Document templates, dynamic fields & generation logic',
+          'Structured data extraction from documents, files & forms',
+          'Review rules, approval sequences & reminder workflows',
+          'Integration with storage, e-signature and business systems where required',
+          'Data completeness checks, validation rules & exception handling',
+          'Testing across representative document formats and edge cases',
+          'Deployment setup for the agreed environment',
+        ],
+        whatYouReceive: [
+          'Production-ready document and approval automation workflow',
+          'Configured document templates, fields & generation logic',
+          'Document extraction and processing workflows where required',
+          'Approval routing, history tracking & exception notifications',
+          'Connected storage, e-signature or business-system integrations where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Document extraction pipelines pair structured layout parsers with validation schemas to convert unstructured documents into verified database records.",
+          technologies: ["Document Parsing & OCR Engines","Template Generation Pipelines","Electronic Signature Integrations","Secure Cloud Storage"],
+        },
         services: [
           {
             name: 'Intelligent PDF & Invoice Extraction',
@@ -1004,8 +1520,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
           {
             name: 'Automated Contract Generation',
             scope: 'Assembling complex legal agreements and commercial proposals dynamically from client CRM data and standardized clause libraries.',
-            deliverables: ['Dynamic PDF rendering engine', 'DocuSign API signing envelope flow', 'Clause versioning database'],
-            tags: ['React-PDF', 'DocuSign API', 'TypeScript'],
+            deliverables: ['Dynamic PDF generation engine', 'Electronic signature envelope flow', 'Clause versioning storage'],
+            tags: ['Document Generation', 'E-Signature APIs', 'TypeScript'],
           },
           {
             name: 'Compliance & Verification Workflows',
@@ -1026,8 +1542,44 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'digital-ops',
         number: '03.4',
         title: 'Autonomous Digital Operations',
-        summary: 'Self-healing background bots, uptime monitoring, automated incident response, and continuous operational observability.',
-        image: '/assets/images/service/SERVICE03.png',
+        summary:
+          'Automated monitoring, scheduled maintenance, and operational response workflows designed to help digital systems stay reliable, surface issues quickly, and reduce routine manual oversight.',
+        image: '/assets/images/solutions/automation/auto-sub-admin-tasks.png',
+        bestSuitedFor: [
+          'Replacing repetitive manual system checks with automated monitoring',
+          'Automating routine maintenance, cleanup, and scheduled system tasks',
+          'Detecting application errors, failed jobs, and service interruptions',
+          'Improving operational visibility without constant manual supervision',
+        ],
+        whatWeBuild: [
+          'Automated Application Health & Status Monitoring',
+          'Scheduled Maintenance, Archival & Cleanup Workflows',
+          'Operational Alerting & Incident Notification Workflows',
+          'Automated Retry & Recovery Routines',
+          'Operational Status & Execution Visibility',
+        ],
+        whatWeHandle: [
+          'Health-check criteria, thresholds & monitoring logic',
+          'Alert triggers and notification routing across approved channels',
+          'Scheduled maintenance, cleanup & archival routines',
+          'Error detection, retry behavior & escalation paths',
+          'Testing across representative failure and recovery scenarios',
+          'Deployment setup for scheduled jobs and operational services',
+        ],
+        whatYouReceive: [
+          'Configured application monitoring and operational health checks',
+          'Alerting and notification workflows',
+          'Scheduled maintenance and cleanup routines where required',
+          'Retry and recovery logic where required',
+          'System health and execution visibility',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Lightweight cron runners and automated health probes monitor service status continuously with minimal infrastructure overhead.",
+          technologies: ["System Health Probes","Scheduled Task Runners","Incident Alerting Channels","Uptime & Resource Monitors"],
+        },
         services: [
           {
             name: 'Self-Healing Background Bots',
@@ -1058,71 +1610,91 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     ],
     expertiseCards: [
       {
-        title: 'DURABLE WORKFLOW ENGINES',
-        stat: '14.2K Events / Min',
-        category: 'STATE MACHINE ORCHESTRATION',
-        description: 'Durable execution engines built on Temporal and Inngest that survive server restarts, network failures, and API outages.',
-        image: '/assets/images/service/SERVICE03.png',
-        href: '#workflows',
+        title: 'RETRY & RECOVERY',
+        stat: 'FAULT TOLERANCE',
+        category: 'ENGINEERING STANDARD',
+        description: 'Failed steps can be retried or recovered according to defined workflow rules, reducing the risk of duplicate processing.',
+        image: '/assets/images/solutions/automation/automation-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'INTELLIGENT DOCUMENT PIPELINES',
-        stat: '90% Manual Reduction',
-        category: 'DOCUMENT INTELLIGENCE',
-        description: 'Layout-aware OCR and multi-modal models parsing multi-page supplier invoices with automatic ERP ledger entry.',
-        image: '/assets/images/service/SERVICE03.png',
-        href: '#document-automation',
+        title: 'EXCEPTION HANDLING',
+        stat: 'HUMAN REVIEW',
+        category: 'ENGINEERING STANDARD',
+        description: 'Unexpected or ambiguous situations can be routed for review instead of silently failing.',
+        image: '/assets/images/solutions/automation/automation-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'EXECUTION VISIBILITY',
+        stat: 'WORKFLOW HISTORY',
+        category: 'ENGINEERING STANDARD',
+        description: 'Logs and workflow history help show what happened and where issues occurred.',
+        image: '/assets/images/solutions/automation/automation-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'OPERATIONAL MONITORING',
+        stat: 'STATE ALERTS',
+        category: 'ENGINEERING STANDARD',
+        description: 'Important workflow or application states can be monitored and surfaced through alerts where required.',
+        image: '/assets/images/solutions/automation/automation-specimen.png',
+        href: '#core-services',
       },
     ],
     processSteps: [
       {
         step: '01',
-        name: 'OPERATIONAL AUDIT',
+        name: 'MAP PROCESS',
         iconType: 'search',
-        description: 'We map out every manual step, system boundary, and handoff delay across your sales, operations, and finance tools.',
+        description: 'Audit existing operational steps, cross-tool handoffs, data inputs, and recurring manual bottlenecks.',
+        image: '/assets/images/solutions/methodology/methodology-01-understand.png',
       },
       {
         step: '02',
-        name: 'IDEMPOTENT PIPELINES',
+        name: 'DESIGN AUTOMATION',
         iconType: 'cube',
-        description: 'Architecting resilient webhook ingesters, step-function orchestrators, and automated failure-recovery handlers.',
+        description: 'Define trigger conditions, workflow sequencing, validation rules, retry policies, and human review boundaries.',
+        image: '/assets/images/solutions/methodology/methodology-02-design.png',
       },
       {
         step: '03',
-        name: 'SHADOW RUN TEST',
+        name: 'BUILD & VALIDATE',
         iconType: 'lightbulb',
-        description: 'Running the automated pipeline in shadow mode parallel to human staff to verify 100% data fidelity.',
+        description: 'Build automation workflows, connect relevant APIs, and test against edge cases and failure scenarios.',
+        image: '/assets/images/solutions/methodology/methodology-03-build.png',
       },
       {
         step: '04',
-        name: 'LIVE PRODUCTION CUTOVER',
+        name: 'DEPLOY & MONITOR',
         iconType: 'check',
-        description: 'Cutting over live operations to autonomous workers with 24/7 telemetry, rate-limit safeguards, and proactive alerts.',
+        description: 'Roll out into production, observe live execution, configure alerts where needed, and refine workflows as operational needs shift.',
+        image: '/assets/images/solutions/methodology/methodology-04-deploy.png',
       },
     ],
     featuredProjects: [
       {
         title: 'GLOBAL LOGISTICS AUTOMATED EVENT MESH',
         category: 'WORKFLOW AUTOMATION',
-        metric: '14.2K Events / Min',
+        metric: 'TECHNICAL DEMONSTRATION // Logistics Event Mesh',
         year: 'FREIGHT PLATFORM, 2026',
-        image: '/assets/images/service/SERVICE03.png',
+        image: '/assets/images/solutions/automation/automation-specimen.png',
         href: '/work/logistics-event-mesh',
       },
       {
         title: 'COMMERCIAL INVOICE INTELLIGENCE ENGINE',
         category: 'DOCUMENT AUTOMATION',
-        metric: '90% Reduction',
-        year: 'ENTERPRISE ACCOUNTING, 2026',
-        image: '/assets/images/service/SERVICE03.png',
+        metric: 'KAIROTRIX BUILD // Commercial Document Processor',
+        year: 'FINANCIAL OPERATIONS, 2026',
+        image: '/assets/images/solutions/automation/automation-specimen.png',
         href: '/work/commercial-document-processor',
       },
       {
         title: 'SELF-HEALING CLOUD INCIDENT ORCHESTRATOR',
         category: 'DIGITAL OPERATIONS',
-        metric: '99.99% Reliability',
+        metric: 'TECHNICAL DEMONSTRATION // Operational Incident Workflow',
         year: 'CLOUD INFRASTRUCTURE, 2026',
-        image: '/assets/images/service/SERVICE03.png',
+        image: '/assets/images/solutions/automation/automation-specimen.png',
         href: '/work/incident-orchestrator',
       },
     ],
@@ -1130,9 +1702,9 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
       {
         category: 'Workflow & Orchestration Engines',
         items: [
-          { name: 'Temporal.io', role: 'Durable code-as-configuration workflows' },
-          { name: 'Inngest', role: 'Event-driven serverless step functions' },
-          { name: 'BullMQ', role: 'High-throughput Redis job queues' },
+          { name: 'Workflow Engines', role: 'Durable code-as-configuration workflows' },
+          { name: 'Event Step Functions', role: 'Event-driven serverless step workflows' },
+          { name: 'Asynchronous Job Queues', role: 'High-throughput queue and worker management' },
           { name: 'AWS Step Functions', role: 'Cloud-native state machine coordination' },
         ],
       },
@@ -1159,14 +1731,14 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         items: [
           { name: 'Slack Block Kit API', role: 'Interactive approval cards and alert channels' },
           { name: 'SendGrid / Resend', role: 'Transactional notification delivery' },
-          { name: 'HubSpot / Salesforce API', role: 'Bidirectional CRM sync endpoints' },
+          { name: 'CRM & ERP Connectors', role: 'Bidirectional synchronization endpoints' },
           { name: 'Stripe API', role: 'Automated billing and payment event hooks' },
         ],
       },
     ],
-    ctaHeadline: 'Ready to automate your manual operational bottlenecks?',
+    ctaHeadline: 'Have a workflow problem to solve?',
     ctaDescription:
-      'Let us audit your operational workflows. We will identify the top 3 processes costing you time and build a fully automated proof of concept.',
+      'Tell us what manual tasks, data handoffs, or approval bottlenecks are slowing your business down. We’ll help design an automation workflow that runs quietly and reliably in the background.',
     prevSlug: 'software-product-engineering',
     nextSlug: 'digital-transformation',
   },
@@ -1184,33 +1756,60 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     categoryTag: 'Modernization & Enterprise Web Craft',
     subtitle: 'Modernize how your business works and interacts online through websites, digital workflows, process digitization, and user-focused UI/UX design.',
     executiveSummary:
-      'We modernize traditional businesses by decoupling legacy monoliths, architecting bespoke high-performance web experiences, and migrating outdated digital workflows to resilient cloud-native systems.',
-    image: '/assets/images/service/SERVICE04.png',
-    statusBadge: '100% SLA Guarantee',
-    telemetry: {
-      sla: '100% Data Integrity',
-      engine: 'Next.js 15 + Headless Engine',
-      latency: '< 40ms Edge Delivery',
-      concurrency: 'Zero Cutover Downtime',
-    },
+      'KAIROTRIX modernizes legacy digital experiences, converts manual processes into structured digital systems, and refines interfaces for performance and ease of use.',
+    image: '/assets/images/solutions/sub_hero/s4.png',
+    gridImage: '/assets/images/solutions/grid/grid-digital-transformation.png',
+    systemFocusImage: '/assets/images/solutions/digital/digital-system-focus.png',
+    statusBadge: 'Modern Web Architecture',
+    engineeringFocus: [
+      { label: 'Modernization', value: 'Staged Migration Strategy' },
+      { label: 'Architecture', value: 'Component-Driven Web Architecture' },
+      { label: 'Delivery', value: 'Performance-Focused Implementation' },
+      { label: 'Standards', value: 'Accessibility-Aware Design Systems' },
+    ],
     marqueeItems: [
-      '100% CUTOVER UPTIME',
-      'SUB-0.8S CORE WEB VITALS',
-      '4X CONVERSION ACCELERATION',
-      '100/100 LIGHTHOUSE PERFORMANCE',
-      'HEADLESS CLOUD MIGRATION',
-      'LEGACY MONOLITH DECOUPLING',
+      'BUSINESS WEBSITES',
+      'E-COMMERCE & CMS',
+      'PROCESS DIGITIZATION',
+      'DIGITAL WORKFLOWS',
+      'UI/UX DESIGN',
+      'WEBSITE MODERNIZATION',
     ],
     editorialSplit: {
-      badge: 'MODERNIZATION CRAFT',
-      headline: 'TRANSFORMING LEGACY DIGITAL PRESENCE WITH PURPOSE',
-      lead: 'We guide traditional enterprises away from sluggish legacy systems, delivering modern, accessible digital architectures that win customers and scale seamlessly.',
-      statNumber: '4x',
-      statLabel: 'Average Inbound Conversion Increase Post-Modernization',
+      badge: 'SYSTEM FOCUS',
+      headline: 'MODERNIZING HOW YOUR BUSINESS OPERATES DIGITALLY.',
+      lead: 'We help organizations replace outdated tools, digitize paper- or spreadsheet-driven processes, and improve user experiences so operations run smoother and customers engage easily.',
+      editorialHighlight: {
+        lead: 'Digital Modernization',
+        detail: 'Digital presence, process digitization, and user interface craft.',
+      },
+      focusCards: [
+        {
+          tag: 'FOCUS 01',
+          title: 'PROCESS DIGITIZATION',
+          subtitle: 'Convert manual work into structured systems',
+          description:
+            'Transform fragmented paper forms, spreadsheets, and manual steps into clear, standardized digital workflows.',
+        },
+        {
+          tag: 'FOCUS 02',
+          title: 'EXPERIENCE REFINEMENT',
+          subtitle: 'Reduce usability friction & improve clarity',
+          description:
+            'Audit and redesign websites, portals, and customer interfaces to reduce usability friction, improve clarity, and support user engagement.',
+        },
+        {
+          tag: 'FOCUS 03',
+          title: 'MODERN CONTENT ARCHITECTURE',
+          subtitle: 'Structured, maintainable publishing',
+          description:
+            'Modernize legacy CMS setups with structured headless publishing workflows that give teams direct control over routine content updates.',
+        },
+      ],
       problemSolved:
-        'Eliminates fragile legacy monoliths, archaic user interfaces, slow-loading websites, and manual paperwork that frustrates customers.',
+        'Outdated websites, manual paper or spreadsheet processes, confusing user interfaces, and sluggish customer experiences.',
       strategicAdvantage:
-        'Your business presents a modern, premium digital presence backed by lightning-fast cloud infrastructure that outperforms competitors.',
+        'Modern, intuitive digital experiences backed by structured, maintainable web systems that evolve with your team.',
     },
     subCategories: [
       {
@@ -1218,8 +1817,44 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'website-development',
         number: '04.1',
         title: 'Website Development & Web Craft',
-        summary: 'Aesthetic, high-performance web experiences built with custom typography, fluid motion, and strict technical SEO.',
-        image: '/assets/images/service/SERVICE04.png',
+        summary:
+          'Modern business websites, digital flagships, and web experiences designed for clear communication, responsive access, strong performance, and engaging presentation across devices.',
+        image: '/assets/images/solutions/digital/digital-sub-web-dev.png',
+        bestSuitedFor: [
+          'Replacing outdated, slow, or difficult-to-maintain business websites',
+          'Launching modern corporate websites or digital flagships',
+          'Improving mobile usability, page performance, and content structure',
+          'Building interactive, content-rich web experiences with purposeful motion',
+        ],
+        whatWeBuild: [
+          'Corporate & Business Websites',
+          'Digital Flagships & Brand-Focused Web Platforms',
+          'Interactive Web Experiences & Presentation Sites',
+          'Marketing, Content & Resource Hubs',
+          'Multi-Region & Multi-Language Web Platforms',
+        ],
+        whatWeHandle: [
+          'Information architecture, page hierarchy & content structure',
+          'Responsive interface design & interaction implementation',
+          'Performance optimization & Core Web Vitals improvements',
+          'Technical SEO structure, semantic markup & metadata',
+          'Content integration and CMS setup where required',
+          'Accessibility considerations, cross-browser testing & deployment setup',
+        ],
+        whatYouReceive: [
+          'Production-ready, responsive website',
+          'Structured page templates and content workflows where required',
+          'Search-engine-ready technical structure and metadata',
+          'Responsive layouts and optimized web assets',
+          'CMS configuration where included in project scope',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Static generation and edge caching deliver fast page loads, reliable uptime, and responsive mobile experiences across all devices.",
+          technologies: ["Modern Static & Server Frameworks","Responsive UI & Motion Systems","Edge Delivery Networks (CDN)","Technical SEO & Metadata Tooling"],
+        },
         services: [
           {
             name: 'Flagship Corporate Websites',
@@ -1252,8 +1887,45 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'process-digitization',
         number: '04.2',
         title: 'Process Digitization & Modernization',
-        summary: 'Replacing paper forms, manual spreadsheets, and physical clipboard logs with secure, cloud-connected digital tools.',
-        image: '/assets/images/service/SERVICE04.png',
+        summary:
+          'Transforming manual, paper-based, spreadsheet-driven, and fragmented business processes into structured digital workflows, centralized records, and easier-to-use operational tools.',
+        image: '/assets/images/solutions/digital/digital-sub-process-digitization.png',
+        bestSuitedFor: [
+          'Replacing paper forms, physical logs, and manual tracking with digital workflows',
+          'Moving critical operations out of complex or fragile spreadsheets',
+          'Centralizing operational records that are scattered across files, departments, or systems',
+          'Improving how field and office teams capture, track, search, and update business information',
+        ],
+        whatWeBuild: [
+          'Spreadsheet-to-Digital Workflow Systems',
+          'Digital Operations & Tracking Tools',
+          'Structured Data Capture & Digital Form Workflows',
+          'Centralized Operational Record Systems',
+          'Activity, Status & Process Tracking Interfaces',
+        ],
+        whatWeHandle: [
+          'Existing process assessment & workflow mapping',
+          'Data structure planning & operational record modeling',
+          'Digital forms, validation rules & step-by-step workflow design',
+          'Historical data cleanup, validation & migration where required',
+          'User access, permissions & security controls where required',
+          'Testing against real operational scenarios',
+          'User onboarding & rollout guidance where required',
+        ],
+        whatYouReceive: [
+          'Production-ready digital workflow or operational tracking system',
+          'Structured digital records and data model',
+          'Migrated historical data where included in project scope',
+          'User access and permission controls where required',
+          'Search, filtering, tracking and export functions where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Structured relational databases combined with guided form interfaces eliminate data duplication and spreadsheet formula errors.",
+          technologies: ["Relational Databases","Web-Based Data Entry Forms","Role-Based Access Controls","Reporting & Export Utilities"],
+        },
         services: [
           {
             name: 'Paper-to-Digital Workflow Replacement',
@@ -1286,8 +1958,42 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'ui-ux-design',
         number: '04.3',
         title: 'UI/UX Research & Interface Design',
-        summary: 'Human-centered digital product design rooted in user interviews, wireframing, and rigorous accessibility testing.',
-        image: '/assets/images/service/SERVICE04.png',
+        summary:
+          'User research, usability audits, and interface redesigns that identify friction in existing digital experiences and improve clarity, accessibility, and ease of use.',
+        image: '/assets/images/solutions/digital/digital-sub-legacy-upgrade.png',
+        bestSuitedFor: [
+          'Existing portals, websites, or applications with confusing user journeys or high drop-off',
+          'Internal tools that are difficult for employees to learn or use efficiently',
+          'Reviewing and improving accessibility across existing digital interfaces',
+          'Modernizing outdated screens, workflows, and interaction patterns',
+        ],
+        whatWeBuild: [
+          'UX Audit Reports & Prioritized Recommendations',
+          'Redesigned User Journeys & Screen Flows',
+          'High-Fidelity Interface Redesigns',
+          'Interactive Prototypes for Testing & Review',
+          'Usability & Accessibility Improvement Plans',
+        ],
+        whatWeHandle: [
+          'User journey mapping, workflow friction analysis & usability audits',
+          'Information hierarchy & interface restructuring',
+          'Wireframing & redesigned interface concepts',
+          'Interactive prototypes & user feedback testing where required',
+          'Accessibility review & usability guidance',
+          'Implementation specifications & developer handoff notes',
+        ],
+        whatYouReceive: [
+          'Usability assessment with prioritized improvement opportunities',
+          'Redesigned interface screens and responsive layout specifications',
+          'Interactive prototypes for testing, review & engineering guidance',
+          'Interface style and hierarchy guidance where required',
+          'Developer handoff notes and implementation specifications',
+          'Client-owned custom design files, assets, and documentation, subject to third-party licenses',
+        ],
+        technicalApproach: {
+          description: "Human-centered design frameworks combined with iterative user testing ensure software workflows are intuitive and friction-free before code is written.",
+          technologies: ["Usability & Journey Mapping Tools","Interactive Prototyping","Accessibility Audit Standards","Design Specification Specs"],
+        },
         services: [
           {
             name: 'User Research & Journey Mapping',
@@ -1320,8 +2026,45 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'cms-modernization',
         number: '04.4',
         title: 'Headless CMS & Web Modernization',
-        summary: 'Migrating from sluggish, insecure WordPress or Drupal setups to blazing-fast headless content platforms.',
-        image: '/assets/images/service/SERVICE04.png',
+        summary:
+          'Modernizing content management and web architecture by separating content editing from frontend presentation, creating structured publishing workflows, and improving how content is managed, delivered, and maintained.',
+        image: '/assets/images/solutions/digital/digital-sub-ux-experience.png',
+        bestSuitedFor: [
+          'Replacing or decoupling slow, fragile, or plugin-heavy legacy CMS setups',
+          'Giving content teams more control over routine publishing and page updates',
+          'Managing content across multiple websites, applications, or regional experiences from a shared source',
+          'Modernizing content delivery, performance, and maintainability without rebuilding every part of the publishing workflow',
+        ],
+        whatWeBuild: [
+          'Headless Content Management Architectures',
+          'Decoupled Frontend & CMS Integrations',
+          'Structured Content Models & Editorial Workflows',
+          'Content Migration & URL Preservation Pipelines',
+          'Media Optimization & Asset Delivery Workflows',
+        ],
+        whatWeHandle: [
+          'Content modeling & editorial workflow planning',
+          'Structured content design for pages, articles & media',
+          'Content migration, URL preservation & redirect planning',
+          'Frontend integration with content APIs',
+          'Preview, draft & publishing workflows where required',
+          'Performance, caching & asset-delivery configuration',
+          'Editorial walkthroughs & publishing guidance',
+        ],
+        whatYouReceive: [
+          'Configured headless CMS and structured content model',
+          'Connected frontend and content delivery setup',
+          'Preview and publishing workflows where required',
+          'Migrated content and redirect configuration where included in scope',
+          'Media and asset delivery configuration where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation & editorial guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Decoupling content authoring from frontend presentation gives marketing teams publishing freedom without compromising page speed or site security.",
+          technologies: ["Headless Content Platforms","Decoupled Web Frontends","Content APIs & Webhooks","Edge Caching & Media Optimization"],
+        },
         services: [
           {
             name: 'Headless CMS Architecture',
@@ -1352,71 +2095,91 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     ],
     expertiseCards: [
       {
-        title: 'ENTERPRISE WEB CRAFT & INTERFACES',
-        stat: '100/100 Lighthouse Performance',
-        category: 'FLAGSHIP WEB CRAFT',
-        description: 'World-class corporate digital platforms with bespoke typography, fluid scroll physics, and sub-second edge asset delivery.',
-        image: '/assets/images/service/SERVICE04.png',
-        href: '#website-development',
+        title: 'USABILITY & ACCESSIBILITY',
+        stat: 'INTERACTION DESIGN',
+        category: 'ENGINEERING STANDARD',
+        description: 'Clear hierarchy, accessible interaction patterns, and responsive experiences across devices.',
+        image: '/assets/images/solutions/digital/digital-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'LEGACY MONOLITH DECOUPLING',
-        stat: 'Zero Downtime Cutover',
-        category: 'MODERNIZATION',
-        description: 'Safe extraction of modular Next.js frontends and cloud microservices from aging legacy WordPress and PHP backbones.',
-        image: '/assets/images/service/SERVICE04.png',
-        href: '#cms-modernization',
+        title: 'PERFORMANCE & MAINTAINABILITY',
+        stat: 'PERFORMANCE OPTIMIZATION',
+        category: 'ENGINEERING STANDARD',
+        description: 'Modern implementation practices that support efficient delivery, easier maintenance, and responsive experiences.',
+        image: '/assets/images/solutions/digital/digital-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'STRUCTURED CONTENT & DATA',
+        stat: 'CONTENT STRUCTURE',
+        category: 'ENGINEERING STANDARD',
+        description: 'Content and operational information are organized so they are easier to manage and evolve.',
+        image: '/assets/images/solutions/digital/digital-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'CONTROLLED MODERNIZATION',
+        stat: 'STAGED MIGRATION',
+        category: 'ENGINEERING STANDARD',
+        description: 'Migrations and redesigns are planned to reduce disruption and preserve important content, URLs, or workflows where required.',
+        image: '/assets/images/solutions/digital/digital-specimen.png',
+        href: '#core-services',
       },
     ],
     processSteps: [
       {
         step: '01',
-        name: 'DIGITAL ASSET AUDIT',
+        name: 'UNDERSTAND CURRENT STATE',
         iconType: 'search',
-        description: 'Analyzing existing web infrastructure, server costs, user friction points, and legacy performance bottlenecks.',
+        description: 'Audit existing processes, current websites, content structures, and user friction points.',
+        image: '/assets/images/solutions/methodology/methodology-01-understand.png',
       },
       {
         step: '02',
-        name: 'DESIGN & PROTOTYPING',
+        name: 'IDENTIFY FRICTION',
         iconType: 'cube',
-        description: 'Creating the modern design token architecture, interactive wireframes, and headless CMS content schemas.',
+        description: 'Map operational bottlenecks, manual workarounds, usability issues, and system dependencies that need modernizing.',
+        image: '/assets/images/solutions/methodology/methodology-02-design.png',
       },
       {
         step: '03',
-        name: 'MODERN WEB ASSEMBLY',
+        name: 'REDESIGN & MODERNIZE',
         iconType: 'lightbulb',
-        description: 'Assembling the Next.js frontend, integrating purposeful motion and technical SEO, and migrating historical data.',
+        description: 'Build modern digital workflows, craft responsive interfaces, and organize content into structured systems.',
+        image: '/assets/images/solutions/methodology/methodology-03-build.png',
       },
       {
         step: '04',
-        name: 'ZERO-DOWNTIME CUTOVER',
+        name: 'LAUNCH & EVOLVE',
         iconType: 'check',
-        description: 'Switching DNS routing seamlessly, implementing 301 redirect matrices, and training internal marketing staff.',
+        description: 'Deploy in planned stages, train internal teams, monitor user engagement, and iterate based on real feedback.',
+        image: '/assets/images/solutions/methodology/methodology-04-deploy.png',
       },
     ],
     featuredProjects: [
       {
         title: 'KAIROTRIX DIGITAL ARCHITECTURE PLATFORM',
         category: 'MODERN WEB CRAFT',
-        metric: '100/100 Score',
-        year: 'FLAGSHIP EXPERIENCE, 2026',
-        image: '/assets/images/service/SERVICE04.png',
+        metric: 'KAIROTRIX BUILD // Digital Architecture Platform',
+        year: 'PRODUCTION SYSTEM, 2026',
+        image: '/assets/images/solutions/digital/digital-specimen.png',
         href: '/',
       },
       {
         title: 'HEADLESS CORPORATE PORTAL & CMS MIGRATION',
         category: 'DIGITAL MODERNIZATION',
-        metric: '< 40ms Edge',
+        metric: 'TECHNICAL DEMONSTRATION // Corporate Web Portal Migration',
         year: 'ENTERPRISE CUTOVER, 2026',
-        image: '/assets/images/service/SERVICE04.png',
+        image: '/assets/images/solutions/digital/digital-specimen.png',
         href: '/work/headless-corporate-portal',
       },
       {
         title: 'ACCESSIBLE DESIGN SYSTEM INFRASTRUCTURE',
         category: 'DESIGN TOKENS & UI',
-        metric: 'WCAG 2.2 AA',
+        metric: 'KAIROTRIX BUILD // Design System Infrastructure',
         year: 'DESIGN SYSTEM, 2026',
-        image: '/assets/images/service/SERVICE04.png',
+        image: '/assets/images/solutions/digital/digital-specimen.png',
         href: '/work/design-system-infrastructure',
       },
     ],
@@ -1458,9 +2221,9 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         ],
       },
     ],
-    ctaHeadline: 'Ready to modernize your digital presence?',
+    ctaHeadline: 'Have a modernization problem to solve?',
     ctaDescription:
-      'Schedule a digital transformation discovery session. We will evaluate your current web assets and architect a modern, high-performance roadmap.',
+      'Tell us about the legacy website, manual spreadsheet process, or confusing user interface holding your business back. We’ll help outline a practical path to modernize it without unnecessary complexity.',
     prevSlug: 'automation-digital-operations',
     nextSlug: 'data-business-intelligence',
   },
@@ -1478,33 +2241,60 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     categoryTag: 'Analytics, Data Pipelines & Decision Systems',
     subtitle: 'Turn business data into useful insights through analytics, KPI dashboards, interactive reports, and natural-language tools for exploring information.',
     executiveSummary:
-      'We transform fragmented raw data into sub-second visual intelligence, automated anomaly alerts, and trustworthy semantic metrics that empower executive decision-making with zero guesswork.',
-    image: '/assets/images/service/SERVICE05.png',
-    statusBadge: 'Sub-Second Analytics',
-    telemetry: {
-      sla: '99.99% Data Freshness SLA',
-      engine: 'ClickHouse + Apache Arrow Engine',
-      latency: '< 420ms Query Times',
-      concurrency: '10M+ Rows Scanned / Sec',
-    },
+      'KAIROTRIX centralizes scattered business data, builds analytical storage and reporting dashboards, and implements forecasting and natural-language query tools for clearer decisions.',
+    image: '/assets/images/solutions/sub_hero/s5.png',
+    gridImage: '/assets/images/solutions/grid/grid-data-bi.png',
+    systemFocusImage: '/assets/images/solutions/data/data-system-focus.png',
+    statusBadge: 'Operational Intelligence',
+    engineeringFocus: [
+      { label: 'Pipelines', value: 'Unified Data Ingestion Pipelines' },
+      { label: 'Queries', value: 'Optimized Analytical Queries' },
+      { label: 'Interface', value: 'Natural-Language Query Interface' },
+      { label: 'Integrity', value: 'Data Validation & Quality Checks' },
+    ],
     marqueeItems: [
-      '< 420MS QUERY TIMES',
-      '10M+ ROWS SCANNED / SEC',
-      '100% METRIC CERTAINTY',
-      '99.99% FRESHNESS GUARANTEE',
-      'TEXT-TO-SQL AI COPILOTS',
-      'REAL-TIME EXECUTIVE COMMAND CENTERS',
+      'BUSINESS DATA ANALYTICS',
+      'SALES & PERFORMANCE ANALYSIS',
+      'OPERATIONAL ANALYTICS',
+      'KPI DASHBOARDS',
+      'INTERACTIVE REPORTING',
+      'NATURAL-LANGUAGE DATA QUERIES',
     ],
     editorialSplit: {
-      badge: 'DECISION INTELLIGENCE',
-      headline: 'UNIFYING ENTERPRISE METRICS WITH PURPOSE',
-      lead: 'We transform scattered spreadsheets and database silos into unified, high-speed analytical command centers with single-source-of-truth reliability.',
-      statNumber: '< 420ms',
-      statLabel: 'Complex Multi-Million Row Analytical Query Response Times',
+      badge: 'SYSTEM FOCUS',
+      headline: 'TURNING SCATTERED BUSINESS DATA INTO CLEAR VISIBILITY.',
+      lead: 'We organize fragmented data across business tools, databases, and spreadsheets into structured analytical foundations so leadership and operational teams can make informed decisions from reliable numbers.',
+      editorialHighlight: {
+        lead: 'Reliable Data Foundation',
+        detail: 'Centralized analytical storage, interactive KPI dashboards, and plain-English data exploration.',
+      },
+      focusCards: [
+        {
+          tag: 'FOCUS 01',
+          title: 'DATA CENTRALIZATION',
+          subtitle: 'Bring scattered sources into one foundation',
+          description:
+            'Consolidate, clean, and structure data from multiple tools into analytical storage with scheduled or automated sync pipelines.',
+        },
+        {
+          tag: 'FOCUS 02',
+          title: 'OPERATIONAL REPORTING',
+          subtitle: 'Monitor performance in interactive dashboards',
+          description:
+            'Track revenue, sales pipelines, department KPIs, and operational activity with clear drill-down reporting views.',
+        },
+        {
+          tag: 'FOCUS 03',
+          title: 'DECISION ASSISTANCE',
+          subtitle: 'Forecast trends & query data in plain language',
+          description:
+            'Estimate future patterns with statistical models and allow team members to ask business data questions in plain English.',
+        },
+      ],
       problemSolved:
-        'Eliminates conflicting revenue figures, delayed month-end reporting, slow queries that crash production databases, and uninformed executive decisions.',
+        'Conflicting numbers across tools, slow reporting cycles, and blind spots in operational metrics.',
       strategicAdvantage:
-        'Leadership gains instant visibility into real-time unit economics, customer churn signals, and operational bottlenecks from any device.',
+        'Centralized reporting and intuitive dashboards giving leadership and operational teams clearer visibility into key business metrics.',
     },
     subCategories: [
       {
@@ -1512,26 +2302,61 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'analytics',
         number: '05.1',
         title: 'Business Data Analytics & Warehousing',
-        summary: 'Modern data stacks that ingest, cleanse, model, and store enterprise data in ultra-fast analytical warehouses.',
-        image: '/assets/images/service/SERVICE05.png',
+        summary:
+          'Centralizing business data from tools, databases, and spreadsheets into structured analytical storage and automated pipelines so reporting and analysis can work from a more consistent, reliable data foundation.',
+        image: '/assets/images/solutions/data/data-sub-kpi-dashboards.png',
+        bestSuitedFor: [
+          'Bringing scattered business data from multiple tools, spreadsheets, and databases into one analytical environment',
+          'Resolving inconsistent metric definitions and conflicting numbers across departments',
+          'Reducing manual work spent extracting, cleaning, and preparing data for reporting',
+          'Creating a structured data foundation for ongoing analysis, dashboards, and decision-support systems',
+        ],
+        whatWeBuild: [
+          'Centralized Analytical Data Warehouses & Storage',
+          'Automated Data Ingestion & Synchronization Pipelines',
+          'Structured & Standardized Analytical Data Models',
+          'Business Metric & Reporting Layers',
+          'Data Quality, Reconciliation & Validation Workflows',
+        ],
+        whatWeHandle: [
+          'Data source assessment & pipeline architecture',
+          'Data ingestion, extraction & transformation workflows',
+          'Analytical storage design & data modeling',
+          'Business metric definitions & reporting consistency',
+          'Scheduled synchronization, freshness checks & error alerting',
+          'Data access controls & permission boundaries where required',
+        ],
+        whatYouReceive: [
+          'Configured analytical data storage and ingestion pipelines',
+          'Connected data sources and synchronization workflows',
+          'Structured reporting data models and agreed metric definitions',
+          'Data quality checks and pipeline monitoring where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation, data model documentation & maintenance guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Modern ELT (Extract, Load, Transform) patterns transform data inside cloud warehouses, providing high query performance and verifiable reporting metrics.",
+          technologies: ["Cloud Data Warehouses","Data Transformation Pipelines","Ingestion & Sync Connectors","Standardized Metric Modeling"],
+        },
         services: [
           {
             name: 'Cloud Data Warehouse Setup',
-            scope: 'Designing scalable, cost-effective data warehouses on Snowflake, BigQuery, or ClickHouse with optimized partition schemes.',
+            scope: 'Designing scalable, cost-effective cloud data warehouses and analytical databases with optimized partition and query schemes.',
             deliverables: ['Columnar database schema architecture', 'Role-based data access policies', 'Automated backup and retention policies'],
-            tags: ['ClickHouse', 'BigQuery', 'Snowflake', 'PostgreSQL'],
+            tags: ['Analytical Warehouses', 'Columnar Databases', 'Cloud Storage', 'PostgreSQL'],
           },
           {
             name: 'Automated ELT Data Pipelines',
-            scope: 'Scheduled ingestion pipelines extracting data from Stripe, Salesforce, Google Ads, and production databases into the warehouse.',
-            deliverables: ['dbt data transformation models', 'Airbyte / Fivetran pipeline integrations', 'Data freshness monitoring monitors'],
-            tags: ['dbt', 'Airbyte', 'Python', 'SQL'],
+            scope: 'Scheduled ingestion pipelines extracting data from payment systems, CRM platforms, advertising networks, and production databases into the central data store.',
+            deliverables: ['Modular data transformation models', 'Data ingestion pipeline integrations', 'Data freshness and lineage monitors'],
+            tags: ['Data Transformation Tools', 'ETL/ELT Connectors', 'Python', 'SQL'],
           },
           {
             name: 'Data Cleaning & Schema Normalization',
             scope: 'Deduplicating customer identities, handling currency conversions, and standardizing disparate date formats into clean tables.',
-            deliverables: ['Data normalization dbt scripts', 'Automated anomaly data tests', 'Data lineage documentation graph'],
-            tags: ['dbt', 'Great Expectations', 'Python', 'SQL'],
+            deliverables: ['Data normalization scripts', 'Automated anomaly data tests', 'Data lineage documentation graph'],
+            tags: ['Data Modeling Tools', 'Data Testing Frameworks', 'Python', 'SQL'],
           },
           {
             name: 'Semantic Layer & Metric Standardization',
@@ -1546,8 +2371,44 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'dashboards',
         number: '05.2',
         title: 'Executive & KPI Dashboards',
-        summary: 'Fast, interactive visualization command centers customized for CEOs, CFOs, sales heads, and operations leaders.',
-        image: '/assets/images/service/SERVICE05.png',
+        summary:
+          'Custom dashboards and reporting interfaces that bring important business metrics into clear, interactive views so leadership and operational teams can monitor performance, identify changes, and make informed decisions.',
+        image: '/assets/images/solutions/data/data-sub-analytics-bi.png',
+        bestSuitedFor: [
+          'Replacing fragmented spreadsheet reports and manually assembled performance updates',
+          'Giving leadership and operational teams clearer visibility into business activity and KPIs',
+          'Monitoring sales, operations, customer activity, delivery, or department performance in one place',
+          'Moving from static reports to interactive dashboards with filtering and drill-down analysis',
+        ],
+        whatWeBuild: [
+          'Executive KPI Dashboards & Leadership Scorecards',
+          'Operational & Department Performance Dashboards',
+          'Sales, Revenue & Customer Activity Views',
+          'Interactive Drill-Down & Filterable Reporting Interfaces',
+          'Scheduled Reports, Digests & Metric Alerts',
+        ],
+        whatWeHandle: [
+          'KPI definition, metric hierarchy & dashboard planning',
+          'Dashboard interface design & information hierarchy',
+          'Connections to approved databases, warehouses, APIs & reporting sources',
+          'Filtering, comparison & drill-down logic',
+          'User access, permissions & data visibility controls where required',
+          'Scheduled reports, exports & notification workflows where required',
+          'Testing against reporting requirements and expected data states',
+        ],
+        whatYouReceive: [
+          'Production-ready dashboard or embedded reporting interface',
+          'Connected live, scheduled, or on-demand data feeds as required',
+          'Configured filters, date ranges & drill-down views',
+          'User access and visibility controls where required',
+          'Scheduled report delivery or metric notifications where included in scope',
+          'Project-specific documentation, metric definitions & administrative guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Aggregated query caching and lightweight visualization components ensure dashboards load quickly even when querying large operational datasets.",
+          technologies: ["Interactive Visualization Frameworks","Aggregated Query Caches","Role-Based Dashboard Portals","Automated Report Delivery"],
+        },
         services: [
           {
             name: 'Executive Command Centers',
@@ -1564,8 +2425,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
           {
             name: 'Sales & Pipeline Performance Dashboards',
             scope: 'Visual funnel tracking conversion rates at every deal stage, rep performance quotas, and projected closing dates.',
-            deliverables: ['Interactive sales funnel diagrams', 'Cohort analysis matrices', 'HubSpot / Salesforce live sync'],
-            tags: ['Recharts', 'HubSpot API', 'TypeScript', 'SQL'],
+            deliverables: ['Interactive sales funnel diagrams', 'Cohort analysis matrices', 'Live CRM data sync'],
+            tags: ['Charting Libraries', 'CRM Connectors', 'TypeScript', 'SQL'],
           },
           {
             name: 'Automated Board & Investor Reports',
@@ -1580,14 +2441,49 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'predictive',
         number: '05.3',
         title: 'Predictive Modeling & Forecasting',
-        summary: 'Applying machine learning and statistical models to forecast customer churn, inventory demand, and seasonal revenue.',
-        image: '/assets/images/service/SERVICE05.png',
+        summary:
+          'Statistical and machine learning models that use historical business data to estimate future trends, anticipate demand, identify risks, and detect unusual patterns that may need attention.',
+        image: '/assets/images/solutions/data/data-sub-pipelines-etl.png',
+        bestSuitedFor: [
+          'Forecasting seasonal demand, inventory requirements, staffing needs, or operational volume',
+          'Identifying early indicators of customer churn, renewal risk, or changing account behavior',
+          'Detecting unusual financial, operational, or performance patterns',
+          'Replacing static planning assumptions with data-driven forecasts and scenario analysis',
+        ],
+        whatWeBuild: [
+          'Demand, Sales & Operational Forecasting Models',
+          'Customer Churn & Retention Risk Models',
+          'Anomaly & Outlier Detection Systems',
+          'Scenario Planning & Sensitivity Analysis Models',
+          'Forecast Outputs & Decision-Support Alerts',
+        ],
+        whatWeHandle: [
+          'Historical data assessment, preparation & feature engineering',
+          'Model selection, baseline comparison & validation',
+          'Backtesting against historical data and agreed evaluation criteria',
+          'Integration of forecast outputs into dashboards or operational systems',
+          'Alert thresholds, confidence ranges & anomaly rules where required',
+          'Model evaluation documentation & retraining guidance',
+        ],
+        whatYouReceive: [
+          'Production-ready forecasting or predictive model pipeline',
+          'Connected data inputs and forecast output workflow',
+          'Configured alert or anomaly rules where required',
+          'Evaluation report with baseline comparisons and validation results',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation, retraining guidance & maintenance notes',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Time-series forecasting and gradient boosting models trained on historical data provide verifiable probabilistic predictions without black-box complexity.",
+          technologies: ["Statistical & Machine Learning Libraries","Time-Series Analysis Tools","Data Validation Pipelines","Inference APIs"],
+        },
         services: [
           {
             name: 'Customer Churn Prediction',
             scope: 'Early warning algorithms that detect declining user activity patterns and flag at-risk accounts weeks before cancellation.',
             deliverables: ['Trained churn classification model', 'Automated CRM customer risk tags', 'Proactive retention outreach triggers'],
-            tags: ['Python', 'Scikit-Learn', 'XGBoost', 'HubSpot API'],
+            tags: ['Python', 'Statistical Models', 'Machine Learning Libraries', 'CRM APIs'],
           },
           {
             name: 'Inventory Demand Forecasting',
@@ -1614,8 +2510,43 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'nl-queries',
         number: '05.4',
         title: 'Natural-Language Data Queries',
-        summary: 'Text-to-SQL AI interfaces enabling business users to query complex enterprise databases in plain English.',
-        image: '/assets/images/service/SERVICE05.png',
+        summary:
+          'Conversational data interfaces that let business users ask questions in plain language and receive clear answers, tables, or charts from approved structured data sources without writing SQL.',
+        image: '/assets/images/solutions/data/data-sub-conversational-query.png',
+        bestSuitedFor: [
+          'Giving non-technical leaders and operational teams faster access to business data',
+          'Enabling self-service reporting and exploratory questions across approved datasets',
+          'Providing conversational access to business metrics through internal tools or communication platforms',
+          'Reducing repetitive data requests by making common questions easier to answer directly',
+        ],
+        whatWeBuild: [
+          'Plain-Language Business Data Query Interfaces',
+          'Conversational Analytics Assistants',
+          'Guided Self-Service Data Exploration Tools',
+          'Automated Metric Summaries & Trend Explanations',
+          'Structured Query & Metric Interpretation Layers',
+        ],
+        whatWeHandle: [
+          'Data source assessment, semantic mapping & business metric definition',
+          'Natural-language query translation with controlled read-only execution where required',
+          'User access controls & data visibility boundaries',
+          'Query result formatting into summaries, tables, or charts',
+          'Integration with approved internal tools, communication platforms, or web interfaces',
+          'Query validation, ambiguity handling & safeguards against unauthorized access',
+        ],
+        whatYouReceive: [
+          'Production-ready natural-language data query interface or integration',
+          'Connected approved data sources and business metric definitions',
+          'Query access controls and read-only safeguards where required',
+          'Structured output formats for answers, tables, and charts',
+          'Deployment configuration for the agreed environment',
+          'Project-specific documentation, example queries & administrative guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Constrained semantic mappings and read-only execution boundaries ensure AI queries are mathematically accurate and adhere strictly to database security permissions.",
+          technologies: ["Natural-Language Query Translators","Read-Only Database Connectors","Chat & Collaboration Integrations","Output Formatting Components"],
+        },
         services: [
           {
             name: 'Text-to-SQL AI Query Interfaces',
@@ -1646,71 +2577,91 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     ],
     expertiseCards: [
       {
-        title: 'REAL-TIME TELEMETRY COMMAND CENTERS',
-        stat: '< 420ms Query Times',
-        category: 'EXECUTIVE INTELLIGENCE',
-        description: 'Interactive C-suite command centers connected to ClickHouse columnar warehouses for instantaneous visibility into cash, burn, and growth.',
-        image: '/assets/images/service/SERVICE05.png',
-        href: '#dashboards',
+        title: 'DATA VALIDATION',
+        stat: 'VALIDATION CHECKS',
+        category: 'ENGINEERING STANDARD',
+        description: 'Checks help identify missing, inconsistent, or unexpected data before it reaches reporting layers.',
+        image: '/assets/images/solutions/data/data-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'NATURAL-LANGUAGE TEXT-TO-SQL ENGINES',
-        stat: '100% Metric Accuracy',
-        category: 'CONVERSATIONAL ANALYTICS',
-        description: 'AI-grounded semantic querying enabling leadership to ask natural-language questions and receive validated charts in seconds.',
-        image: '/assets/images/service/SERVICE05.png',
-        href: '#nl-queries',
+        title: 'CONSISTENT METRIC DEFINITIONS',
+        stat: 'METRIC ALIGNMENT',
+        category: 'ENGINEERING STANDARD',
+        description: 'Important business metrics are defined consistently so reports and dashboards interpret them the same way.',
+        image: '/assets/images/solutions/data/data-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'CONTROLLED DATA ACCESS',
+        stat: 'ROLE PERMISSIONS',
+        category: 'ENGINEERING STANDARD',
+        description: 'Permissions and visibility rules are applied according to user roles and data sensitivity.',
+        image: '/assets/images/solutions/data/data-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'FRESHNESS & TRACEABILITY',
+        stat: 'PIPELINE VISIBILITY',
+        category: 'ENGINEERING STANDARD',
+        description: 'Refresh checks, transformation history, and pipeline visibility can be introduced where required.',
+        image: '/assets/images/solutions/data/data-specimen.png',
+        href: '#core-services',
       },
     ],
     processSteps: [
       {
         step: '01',
-        name: 'DATA SCHEMA AUDIT',
+        name: 'IDENTIFY SOURCES',
         iconType: 'search',
-        description: 'Auditing existing databases, CRM schemas, spreadsheets, and reporting bottlenecks with department heads.',
+        description: 'Audit data sources, reporting requirements, database schemas, and current spreadsheet workarounds.',
+        image: '/assets/images/solutions/methodology/methodology-01-understand.png',
       },
       {
         step: '02',
-        name: 'WAREHOUSE ENGINEERING',
+        name: 'STRUCTURE DATA',
         iconType: 'cube',
-        description: 'Setting up the columnar warehouse, automated ELT ingest pipelines, and clean dbt normalization models.',
+        description: 'Design analytical storage structures, clean incoming data, and establish structured synchronization pipelines.',
+        image: '/assets/images/solutions/methodology/methodology-02-design.png',
       },
       {
         step: '03',
-        name: 'DASHBOARD ASSEMBLY',
+        name: 'MODEL & VALIDATE',
         iconType: 'lightbulb',
-        description: 'Engineering interactive executive dashboards, semantic metric models, and automated Slack alert triggers.',
+        description: 'Define business metric layers, validate calculation logic, and verify data consistency.',
+        image: '/assets/images/solutions/methodology/methodology-03-build.png',
       },
       {
         step: '04',
-        name: 'GOVERNANCE & ADOPTION',
+        name: 'EXPOSE & EVOLVE',
         iconType: 'check',
-        description: 'Establishing access control permissions, data freshness alerts, and training teams on natural-language query tools.',
+        description: 'Deploy interactive dashboards, forecasting models, or query interfaces, and refine as reporting needs expand.',
+        image: '/assets/images/solutions/methodology/methodology-04-deploy.png',
       },
     ],
     featuredProjects: [
       {
         title: 'HIGH-THROUGHPUT TELEMETRY COMMAND CENTER',
         category: 'DATA & ANALYTICS',
-        metric: '< 420ms Queries',
-        year: 'FINANCIAL STREAMING, 2026',
-        image: '/assets/images/service/SERVICE05.png',
+        metric: 'TECHNICAL DEMONSTRATION // Telemetry Command Center',
+        year: 'OPERATIONAL TELEMETRY, 2026',
+        image: '/assets/images/solutions/data/data-specimen.png',
         href: '/work/telemetry-command-center',
       },
       {
         title: 'EXECUTIVE NATURAL-LANGUAGE COPILOT',
         category: 'AI DECISION SYSTEMS',
-        metric: '100% Metric Trust',
+        metric: 'EXPERIMENT // Conversational Analytics Engine',
         year: 'EXECUTIVE SUITE, 2026',
-        image: '/assets/images/service/SERVICE05.png',
+        image: '/assets/images/solutions/data/data-specimen.png',
         href: '/work/executive-intelligence-copilot',
       },
       {
         title: 'CLICKHOUSE ANALYTICS LAKEHOUSE PIPELINE',
         category: 'COLUMNAR WAREHOUSING',
-        metric: '10M+ Rows / Sec',
+        metric: 'TECHNICAL DEMONSTRATION // Analytical Data Pipeline',
         year: 'ENTERPRISE DATA ENGINE, 2026',
-        image: '/assets/images/service/SERVICE05.png',
+        image: '/assets/images/solutions/data/data-specimen.png',
         href: '/work/clickhouse-lakehouse',
       },
     ],
@@ -1720,14 +2671,14 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         items: [
           { name: 'ClickHouse', role: 'Blazing fast columnar analytical store' },
           { name: 'PostgreSQL', role: 'Primary operational relational storage' },
-          { name: 'Snowflake / BigQuery', role: 'Enterprise cloud data lakehouse' },
+          { name: 'Cloud Data Warehouses', role: 'Scalable analytical data storage & lakehouses' },
           { name: 'Apache Arrow', role: 'In-memory columnar data interchange' },
         ],
       },
       {
         category: 'Transformation & Orchestration',
         items: [
-          { name: 'dbt (Data Build Tool)', role: 'Modular SQL data transformation and testing' },
+          { name: 'Transformation Frameworks', role: 'Modular SQL data transformation, testing & lineage' },
           { name: 'Airbyte', role: 'Open-source ELT data extraction connectors' },
           { name: 'Dagster / Airflow', role: 'Data pipeline orchestration and asset tracking' },
           { name: 'Python & Pandas', role: 'Statistical transformation and data modeling' },
@@ -1752,9 +2703,9 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         ],
       },
     ],
-    ctaHeadline: 'Ready to build your single source of business truth?',
+    ctaHeadline: 'Have a data problem to solve?',
     ctaDescription:
-      'Schedule a data architecture discovery session. We will evaluate your scattered data sources and outline a unified, real-time analytics command center.',
+      'Tell us about the scattered spreadsheets, conflicting metric numbers, or blind spots in your business reporting. We’ll help build a clean data foundation and dashboards you can trust.',
     prevSlug: 'digital-transformation',
     nextSlug: 'technology-integration',
   },
@@ -1772,33 +2723,60 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     categoryTag: 'API Fabrics, Middleware & System Synchronization',
     subtitle: 'Connect the software your business already uses through APIs, CRM and ERP integrations, payment services, and reliable data synchronization between systems.',
     executiveSummary:
-      'We bridge disparate software stacks, IoT hardware telemetry, and enterprise ERP backbones with robust, resilient multi-protocol middleware adapters that guarantee zero data divergence.',
-    image: '/assets/images/service/SERVICE06.png',
-    statusBadge: 'Multi-Protocol Active',
-    telemetry: {
-      sla: '99.999% Delivery Guarantee',
-      engine: 'Multi-Protocol Middleware Fabric',
-      latency: 'Bi-Directional Sync Active',
-      concurrency: 'Multi-Protocol Routing',
-    },
+      'KAIROTRIX connects isolated software platforms, synchronizes commercial and operational records, and integrates payment and data workflows into a coordinated ecosystem.',
+    image: '/assets/images/solutions/sub_hero/s6.png',
+    gridImage: '/assets/images/solutions/grid/grid-technology-integration.png',
+    systemFocusImage: '/assets/images/solutions/integration/integration-system-focus.png',
+    statusBadge: 'Connected Systems',
+    engineeringFocus: [
+      { label: 'Processing', value: 'Repeat-Safe Event Handling' },
+      { label: 'Sync', value: 'Coordinated Data Synchronization' },
+      { label: 'Recovery', value: 'Defined Retry Policies' },
+      { label: 'Reconciliation', value: 'Record Alignment Checks' },
+    ],
     marqueeItems: [
-      '99.999% DELIVERY GUARANTEE',
-      'SUB-50MS SYNC SPEED',
-      'ZERO DATA DIVERGENCE',
-      'ENTERPRISE ERP & CRM BRIDGES',
-      'RESILIENT WEBHOOK MESHES',
-      'CRYPTOGRAPHIC RECONCILIATION',
+      'API & SYSTEM INTEGRATION',
+      'CRM & ERP INTEGRATION',
+      'PAYMENT INTEGRATION',
+      'AUTOMATED DATA SYNC',
+      'DATA MAPPING & TRANSFORMATION',
+      'DATA MIGRATION',
     ],
     editorialSplit: {
-      badge: 'INTEGRATION FABRIC',
-      headline: 'BRIDGING DISCONNECTED SYSTEMS WITH PURPOSE',
-      lead: 'We build secure, resilient integration fabrics that eliminate duplicate records and synchronize your tools in real time with zero data divergence.',
-      statNumber: '< 50ms',
-      statLabel: 'Bi-Directional Multi-System Synchronization Latency',
+      badge: 'SYSTEM FOCUS',
+      headline: 'CONNECTING ISOLATED SYSTEMS INTO A UNIFIED FLOW.',
+      lead: 'We engineer reliable API connectors, CRM/ERP bridges, payment workflows, and data synchronization so information moves between software tools with less manual re-entry.',
+      editorialHighlight: {
+        lead: 'Connected Ecosystem',
+        detail: 'Custom API connectors, CRM/ERP synchronization, and transactional data flows.',
+      },
+      focusCards: [
+        {
+          tag: 'FOCUS 01',
+          title: 'SYSTEM CONNECTIVITY',
+          subtitle: 'Bridge third-party tools & internal platforms',
+          description:
+            'Custom API connectors, webhooks, and middleware connecting independent SaaS applications and partner services.',
+        },
+        {
+          tag: 'FOCUS 02',
+          title: 'COMMERCIAL ALIGNMENT',
+          subtitle: 'Synchronize CRM, ERP & operational records',
+          description:
+            'Keep customer profiles, sales deals, orders, inventory counts, and billing records aligned across departments.',
+        },
+        {
+          tag: 'FOCUS 03',
+          title: 'TRANSACTION RELIABILITY',
+          subtitle: 'Process payments & reconcile records',
+          description:
+            'Integrate secure payment flows, subscription billing, and reconciliation checks that help identify record discrepancies.',
+        },
+      ],
       problemSolved:
-        'Eliminates duplicate customer records, out-of-sync inventory counts, broken third-party webhooks, and manual batch data imports.',
+        'Disconnected tools, duplicate customer records, out-of-sync inventory, and fragile integration scripts.',
       strategicAdvantage:
-        'Your enterprise operates with real-time operational continuity—when an event happens in one system, every downstream platform updates instantly.',
+        'Reliable integration flows that synchronize information between software tools and reduce repetitive manual data entry.',
     },
     subCategories: [
       {
@@ -1806,8 +2784,43 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'api-integration',
         number: '06.1',
         title: 'API & System Integration',
-        summary: 'Enterprise API gateways, protocol translation, and high-concurrency microservice communication adapters.',
-        image: '/assets/images/service/SERVICE06.png',
+        summary:
+          'Custom API connectors, middleware, and integration services that connect third-party platforms, partner services, and internal software into a reliable, coordinated digital ecosystem.',
+        image: '/assets/images/solutions/integration/integ-sub-api-gateway.png',
+        bestSuitedFor: [
+          'Business platforms and software tools that cannot share data or trigger actions automatically',
+          'Eliminating manual copy-paste and duplicate data entry between disconnected SaaS applications',
+          'Connecting custom internal software to external partner, vendor, or supplier APIs',
+          'Replacing fragile, unmaintained, or deprecated integration scripts with structured connectors',
+        ],
+        whatWeBuild: [
+          'Custom API Connectors & Software Integrations',
+          'API Gateways & Request Routing Middleware',
+          'Payload Transformation & Protocol Translation Adapters',
+          'Webhook Receivers, Dispatchers & Event Relays',
+          'Secure Partner & Third-Party Integration Layers',
+        ],
+        whatWeHandle: [
+          'API documentation review, endpoint assessment & authentication configuration',
+          'Data mapping, payload transformation & schema validation',
+          'Rate limiting, retry logic, timeout handling & error management',
+          'Centralized logging, execution monitoring & failure alerting',
+          'Integration testing with sandbox environments and simulated payloads',
+          'Deployment, secure credential management & production cutover',
+        ],
+        whatYouReceive: [
+          'Production-ready API integration or middleware service',
+          'Connected software endpoints and validated data flows',
+          'Configured retry policies, rate-limit controls, and error alerting',
+          'Comprehensive data mapping and endpoint documentation',
+          'Deployment configuration for the agreed environment',
+          'Technical runbook, authentication guidance & administrative notes',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Idempotent message processing and schema-validated gateways ensure reliable communication between distinct software platforms without data loss.",
+          technologies: ["API Gateways & Middleware","Data Transformation Layers","Webhook Listeners","Rate Limiting & Logging Tools"],
+        },
         services: [
           {
             name: 'Enterprise API Gateway Architecture',
@@ -1823,7 +2836,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
           },
           {
             name: 'Third-Party SaaS API Integrations',
-            scope: 'Connecting specialized SaaS APIs (Slack, DocuSign, Twilio, Google, AWS) into your core internal application logic.',
+            scope: 'Connecting third-party SaaS APIs, communication tools, and cloud services into your core internal application logic.',
             deliverables: ['OAuth2 token refresh manager', 'Rate-limit handling queue', 'Comprehensive error fallback handlers'],
             tags: ['OAuth2', 'TypeScript', 'Redis', 'Webhooks'],
           },
@@ -1840,26 +2853,61 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'crm-erp',
         number: '06.2',
         title: 'CRM & ERP Synchronization',
-        summary: 'Deep, bidirectional synchronization between enterprise ERP systems (SAP, NetSuite) and customer CRMs (Salesforce, HubSpot).',
-        image: '/assets/images/service/SERVICE06.png',
+        summary:
+          'Synchronization between customer relationship, ERP, inventory, accounting, and operational systems so customer, order, billing, and fulfillment records stay aligned across the business.',
+        image: '/assets/images/solutions/integration/integ-sub-crm-erp.png',
+        bestSuitedFor: [
+          'Resolving conflicting customer, account, or order records across disconnected systems',
+          'Automating handoffs from sales activity into orders, billing, fulfillment, or finance workflows',
+          'Reducing manual re-entry of customer, billing, inventory, and order information',
+          'Keeping commercial and operational records consistent across departments',
+        ],
+        whatWeBuild: [
+          'CRM-to-ERP Synchronization Pipelines',
+          'Customer & Account Record Alignment Workflows',
+          'Deal-to-Order & Billing Integrations',
+          'Inventory & Fulfillment Synchronization',
+          'Record Matching, Deduplication & Conflict-Resolution Workflows',
+        ],
+        whatWeHandle: [
+          'Field mapping, entity relationships & data alignment',
+          'Record matching, deduplication & conflict-resolution rules',
+          'Event-driven or scheduled synchronization based on system requirements',
+          'Data validation, retry handling & synchronization logging',
+          'Testing with representative business scenarios',
+          'Initial data reconciliation & production rollout where required',
+        ],
+        whatYouReceive: [
+          'Production-ready CRM and ERP synchronization workflow',
+          'Connected systems with one-way, bidirectional, or scheduled data flows as required',
+          'Documented field mappings and synchronization rules',
+          'Logging, failure alerts & synchronization visibility where required',
+          'Deployment configuration for the agreed environment',
+          'Project-specific administrative documentation & maintenance guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Transactional synchronization and change detection eliminate duplicate records and reconcile conflicting field updates between independent platforms.",
+          technologies: ["CRM Platform APIs","ERP & Accounting Connectors","Bidirectional Sync Engines","Conflict Resolution & Audit Logs"],
+        },
         services: [
           {
-            name: 'Salesforce & HubSpot Bidirectional Sync',
+            name: 'CRM Bidirectional Synchronization',
             scope: 'Real-time synchronization of leads, contacts, deals, and activities between marketing CRMs and internal databases.',
             deliverables: ['Bidirectional field mapping configuration', 'Conflict resolution logic rules', 'Near-instant webhook sync workers'],
-            tags: ['Salesforce API', 'HubSpot API', 'Node.js', 'Redis'],
+            tags: ['CRM APIs', 'Node.js', 'In-Memory Caches', 'Webhook Listeners'],
           },
           {
-            name: 'NetSuite & SAP ERP Connectors',
+            name: 'ERP & Backoffice Connectors',
             scope: 'Integrating enterprise ERP accounting, billing, and inventory ledgers with modern customer-facing web applications.',
             deliverables: ['SuiteTalk / OData connector endpoints', 'Two-way invoice and payment sync', 'Automated ERP record reconciliation'],
-            tags: ['NetSuite SuiteTalk', 'SAP OData', 'Python', 'PostgreSQL'],
+            tags: ['ERP APIs', 'Enterprise Connectors', 'Python', 'Relational Databases'],
           },
           {
             name: 'Customer 360 Unified Identity Graph',
             scope: 'Merging duplicate contacts across multiple platforms into a single canonical customer record with complete interaction history.',
             deliverables: ['Fuzzy matching identity resolution scripts', 'Master Data Management (MDM) schema', 'Customer 360 API endpoint'],
-            tags: ['PostgreSQL', 'Python', 'Redis', 'dbt'],
+            tags: ['PostgreSQL', 'Python', 'In-Memory Caching', 'Data Transformation Engines'],
           },
           {
             name: 'ERP Data Migration & Cutover',
@@ -1873,33 +2921,70 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         id: 'payments',
         anchorId: 'payments',
         number: '06.3',
-        title: 'Payment & Billing Gateways',
-        summary: 'Rock-solid financial integration architectures for credit cards, ACH, global currencies, and complex recurring subscription billing.',
-        image: '/assets/images/service/SERVICE06.png',
+        title: 'Payment & Financial Systems Integration',
+        summary:
+          'Integration of payment gateways, billing systems, invoicing workflows, and transaction events into digital products and business platforms, with appropriate security controls and failure handling.',
+        image: '/assets/images/solutions/integration/integ-sub-payments.png',
+        bestSuitedFor: [
+          'Adding checkout, recurring billing, or paid account flows to digital products',
+          'Connecting software platforms to payment providers, bank payment methods, or invoicing systems',
+          'Supporting subscription plans, multi-currency pricing, tax workflows, or digital receipts where required',
+          'Automating payment status updates, reconciliation, failed-payment handling, and transaction notifications',
+        ],
+        whatWeBuild: [
+          'Checkout & Payment Gateway Integrations',
+          'Subscription & Recurring Billing Systems',
+          'Automated Invoicing & Payment Collection Workflows',
+          'Multi-Currency, Tax & Pricing Integrations',
+          'Transaction Event & Payment Reconciliation Workflows',
+        ],
+        whatWeHandle: [
+          'Payment provider evaluation & integration planning',
+          'Checkout and billing flow implementation',
+          'Secure payment-token and provider-hosted payment workflows where appropriate',
+          'Transaction event handling for payments, renewals, refunds, failures & disputes',
+          'Currency, tax, invoicing & receipt workflows where required',
+          'Failure states, retry behavior & edge-case testing',
+          'Production deployment & verification for the agreed environment',
+        ],
+        whatYouReceive: [
+          'Production-ready payment or billing integration',
+          'Connected payment provider and transaction event workflows',
+          'Checkout or billing management interfaces where included in scope',
+          'Failure handling, status updates & notification logic where required',
+          'Reconciliation workflows where included in scope',
+          'Deployment configuration for the agreed environment',
+          'Project-specific administrative documentation & operational guidance',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Tokenized client-side checkouts and signed webhook verification guarantee financial transactions are processed securely and audited end-to-end.",
+          technologies: ["Payment Gateway APIs","Subscription & Invoicing Engines","Secure Client-Side Tokenization","Webhook Event Listeners"],
+        },
         services: [
           {
-            name: 'Stripe & Stripe Billing Integrations',
+            name: 'Subscription & Billing Integrations',
             scope: 'Custom subscription flows, metered usage billing, customer portal self-service, and robust webhook listeners.',
-            deliverables: ['Stripe webhook listener with signature verification', 'Usage-based metering event dispatcher', 'Hosted customer portal setup'],
-            tags: ['Stripe API', 'TypeScript', 'Next.js', 'Redis'],
+            deliverables: ['Payment webhook listener with signature verification', 'Usage-based metering event dispatcher', 'Hosted customer billing portal setup'],
+            tags: ['Payment Gateway APIs', 'TypeScript', 'Web Frameworks', 'Event Caches'],
           },
           {
             name: 'Multi-Gateway Payment Failover',
-            scope: 'Intelligent payment routing that automatically retries failed transactions through backup gateways (Adyen, PayPal, Authorize.net).',
+            scope: 'Intelligent payment routing that automatically retries failed transactions across secondary gateways to minimize revenue churn.',
             deliverables: ['Payment routing decision engine', 'Card decline classification logic', 'PCI-DSS compliant tokenization layer'],
-            tags: ['Adyen API', 'Stripe', 'Node.js', 'PostgreSQL'],
+            tags: ['Payment Gateways', 'Failover Routing', 'Node.js', 'Relational Databases'],
           },
           {
-            name: 'ACH & Bank Transfer Pipelines',
-            scope: 'Direct B2B bank payment integrations with automated Plaid account verification and micro-deposit reconciliation.',
-            deliverables: ['Plaid Link integration UI', 'ACH transaction state tracking worker', 'Automated return code notification hooks'],
-            tags: ['Plaid API', 'Stripe ACH', 'TypeScript'],
+            name: 'Bank Transfer & Direct Debit Pipelines',
+            scope: 'Direct B2B bank payment integrations with automated account verification and bank-transfer reconciliation.',
+            deliverables: ['Bank account verification interface', 'Bank transfer state-tracking worker', 'Automated return code notification hooks'],
+            tags: ['Bank Verification APIs', 'Direct Transfer Protocols', 'TypeScript'],
           },
           {
             name: 'Global Currency & Tax Compliance',
-            scope: 'Automated VAT/GST calculation and collection across 100+ countries with Stripe Tax and Avalara integrations.',
-            deliverables: ['Stripe Tax / TaxJar API integration', 'Multi-currency pricing display', 'Quarterly tax liability export reports'],
-            tags: ['Stripe Tax', 'TaxJar', 'Next.js', 'JSON'],
+            scope: 'Automated tax calculation, multi-currency invoicing, and regulatory reporting integrated into the checkout flow.',
+            deliverables: ['Automated tax calculation integration', 'Multi-currency checkout display', 'Quarterly tax liability export reports'],
+            tags: ['Tax Engines', 'Multi-Currency Calculators', 'Web Frameworks', 'JSON'],
           },
         ],
       },
@@ -1908,8 +2993,43 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         anchorId: 'data-sync',
         number: '06.4',
         title: 'Cross-System Data Synchronization',
-        summary: 'Distributed event buses, change-data-capture (CDC), and real-time webhook routing that keep all corporate datastores in lockstep.',
-        image: '/assets/images/service/SERVICE06.png',
+        summary:
+          'Synchronization workflows that keep operational records, shared data, and system states aligned across multiple applications, databases, and connected services.',
+        image: '/assets/images/solutions/integration/integ-sub-data-sync.png',
+        bestSuitedFor: [
+          'Keeping data changes consistent across multiple business systems',
+          'Preventing stale, duplicated, or conflicting records between connected applications',
+          'Synchronizing inventory, account, operational, or status information across channels',
+          'Replacing fragile manual or batch-based sync processes with more reliable synchronization workflows',
+        ],
+        whatWeBuild: [
+          'Cross-System Data Synchronization Pipelines',
+          'Event-Driven & Scheduled Synchronization Workflows',
+          'Data Reconciliation & Consistency Checks',
+          'Multi-System Record & State Synchronization',
+          'Failed-Event Retry & Recovery Workflows',
+        ],
+        whatWeHandle: [
+          'Data source assessment, entity mapping & synchronization design',
+          'Event-driven or scheduled synchronization based on system requirements',
+          'Duplicate-prevention and repeat-safe processing',
+          'Retry handling, timeout behavior & failed-event management',
+          'Data reconciliation and discrepancy alerts where required',
+          'Testing across representative load, interruption, and recovery scenarios',
+        ],
+        whatYouReceive: [
+          'Production-ready cross-system synchronization workflow',
+          'Connected systems with configured synchronization triggers',
+          'Retry, recovery & failure-notification logic where required',
+          'Reconciliation checks and discrepancy reporting where included in scope',
+          'Deployment configuration for the agreed environment',
+          'Project-specific technical documentation, architecture guidance & operational notes',
+          'Client-owned custom project code and IP, subject to third-party technologies and licenses',
+        ],
+        technicalApproach: {
+          description: "Decoupled event queues with distributed locking ensure data consistency across multiple databases without performance bottlenecks.",
+          technologies: ["Distributed Event Queues","Change Detection Pipelines","Reconciliation Audit Checkers","Dead-Letter Queue Tooling"],
+        },
         services: [
           {
             name: 'Change Data Capture (CDC) Pipelines',
@@ -1921,7 +3041,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
             name: 'Resilient Webhook Mesh & Fan-Out',
             scope: 'Receiving external webhooks, buffering them in Redis queues, and fanning out payloads reliably to internal microservices.',
             deliverables: ['High-availability webhook receiver', 'Automatic retry with exponential backoff', 'Failed payload inspection console'],
-            tags: ['Redis', 'BullMQ', 'Next.js', 'FastAPI'],
+            tags: ['Message Queues', 'Worker Processes', 'Modern Web Frameworks', 'REST APIs'],
           },
           {
             name: 'IoT & Telemetry Hardware Bridges',
@@ -1940,71 +3060,91 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     ],
     expertiseCards: [
       {
-        title: 'ENTERPRISE CRM & ERP FABRIC',
-        stat: '< 50ms Sync Speed',
-        category: 'SYSTEM BRIDGES',
-        description: 'Bi-directional synchronization between Salesforce, NetSuite, SAP, and custom production databases with cryptographic reconciliation.',
-        image: '/assets/images/service/SERVICE06.png',
-        href: '#crm-erp',
+        title: 'REPEAT-SAFE PROCESSING',
+        stat: 'DEDUPLICATION',
+        category: 'ENGINEERING STANDARD',
+        description: 'Integration logic is designed to reduce duplicate processing when the same event or request is received more than once.',
+        image: '/assets/images/solutions/integration/integration-specimen.png',
+        href: '#core-services',
       },
       {
-        title: 'MULTI-PROTOCOL API GATEWAYS',
-        stat: '99.999% Delivery SLA',
-        category: 'API FABRICS',
-        description: 'High-availability reverse proxy gateways handling gRPC, GraphQL, REST, and WebSockets with centralized token authentication.',
-        image: '/assets/images/service/SERVICE06.png',
-        href: '#api-integration',
+        title: 'RETRY & FAILURE HANDLING',
+        stat: 'RECOVERY RULES',
+        category: 'ENGINEERING STANDARD',
+        description: 'Temporary connection failures, timeouts, and unavailable services are handled according to defined recovery rules.',
+        image: '/assets/images/solutions/integration/integration-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'INTEGRATION VISIBILITY',
+        stat: 'ACTIVITY TRACING',
+        category: 'ENGINEERING STANDARD',
+        description: 'Logs and synchronization history help trace system activity and investigate failures.',
+        image: '/assets/images/solutions/integration/integration-specimen.png',
+        href: '#core-services',
+      },
+      {
+        title: 'DATA VALIDATION & RECONCILIATION',
+        stat: 'RECORD CHECKS',
+        category: 'ENGINEERING STANDARD',
+        description: 'Validation and reconciliation checks help identify mismatched or incomplete records between connected systems.',
+        image: '/assets/images/solutions/integration/integration-specimen.png',
+        href: '#core-services',
       },
     ],
     processSteps: [
       {
         step: '01',
-        name: 'TOPOLOGY AUDIT',
+        name: 'UNDERSTAND SYSTEMS',
         iconType: 'search',
-        description: 'Mapping out every software endpoint, data schema, protocol, and rate limit across your vendor stack.',
+        description: 'Audit source endpoints, authentication protocols, rate limits, and business transaction requirements.',
+        image: '/assets/images/solutions/methodology/methodology-01-understand.png',
       },
       {
         step: '02',
-        name: 'GATEWAY ENGINEERING',
+        name: 'MAP DATA & CONTRACTS',
         iconType: 'cube',
-        description: 'Building type-safe API adapters, schema mapping layers, and idempotent message queues in isolated environments.',
+        description: 'Define field-level entity mappings, schema validations, deduplication rules, and conflict-handling logic.',
+        image: '/assets/images/solutions/methodology/methodology-02-design.png',
       },
       {
         step: '03',
-        name: 'PARALLEL SYNC TEST',
+        name: 'CONNECT & INTEGRATE',
         iconType: 'lightbulb',
-        description: 'Running real-time bi-directional synchronization in parallel to ensure 100% data integrity with zero duplicates.',
+        description: 'Build custom API connectors, event listeners, payload transformations, and credential handling appropriate to the deployment environment.',
+        image: '/assets/images/solutions/methodology/methodology-03-build.png',
       },
       {
         step: '04',
-        name: 'PRODUCTION CUTOVER',
+        name: 'TEST & DEPLOY',
         iconType: 'check',
-        description: 'Switching live production traffic to the new integration fabric with 24/7 telemetry monitoring and automated alerts.',
+        description: 'Validate across edge cases, connection timeouts, and recovery scenarios, then deploy with sync activity monitoring.',
+        image: '/assets/images/solutions/methodology/methodology-04-deploy.png',
       },
     ],
     featuredProjects: [
       {
         title: 'ENTERPRISE MULTI-PROTOCOL API GATEWAY',
         category: 'TECHNOLOGY INTEGRATION',
-        metric: '99.999% Delivery',
+        metric: 'TECHNICAL DEMONSTRATION // Multi-Protocol API Gateway',
         year: 'ENTERPRISE FABRIC, 2026',
-        image: '/assets/images/service/SERVICE06.png',
+        image: '/assets/images/solutions/integration/integration-specimen.png',
         href: '/work/enterprise-api-gateway',
       },
       {
         title: 'REAL-TIME WEBHOOK MESH & EVENT ROUTER',
         category: 'EVENT ARCHITECTURE',
-        metric: 'Sub-50ms Sync',
+        metric: 'TECHNICAL DEMONSTRATION // Real-Time Webhook Mesh',
         year: 'FINTECH EVENT MESH, 2026',
-        image: '/assets/images/service/SERVICE06.png',
+        image: '/assets/images/solutions/integration/integration-specimen.png',
         href: '/work/realtime-webhook-mesh',
       },
       {
-        title: 'SALESFORCE & SAP BIDIRECTIONAL SYNC',
+        title: 'ENTERPRISE CRM & ERP BIDIRECTIONAL SYNC',
         category: 'ERP/CRM INTEGRATION',
-        metric: 'Zero Divergence',
+        metric: 'KAIROTRIX BUILD // CRM & ERP Synchronization',
         year: 'GLOBAL ERP SYNC, 2026',
-        image: '/assets/images/service/SERVICE06.png',
+        image: '/assets/images/solutions/integration/integration-specimen.png',
         href: '/work/crm-erp-sync',
       },
     ],
@@ -2030,10 +3170,10 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
       {
         category: 'Enterprise SaaS Connectors',
         items: [
-          { name: 'Salesforce & HubSpot API', role: 'Full CRM bidirectional synchronization' },
-          { name: 'NetSuite SuiteTalk & SAP', role: 'Enterprise ERP ledger integration' },
-          { name: 'Stripe & Plaid API', role: 'Payment processing & bank verification' },
-          { name: 'DocuSign & Okta API', role: 'Identity management & e-signature pipelines' },
+          { name: 'CRM Platform APIs', role: 'Full CRM bidirectional synchronization & lead routing' },
+          { name: 'ERP & Accounting Connectors', role: 'Enterprise ERP ledger integration & billing sync' },
+          { name: 'Payment Gateways & Banking APIs', role: 'Payment processing, subscriptions & bank verification' },
+          { name: 'Identity & E-Signature Services', role: 'Identity management & e-signature workflows' },
         ],
       },
       {
@@ -2046,9 +3186,9 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
         ],
       },
     ],
-    ctaHeadline: 'Ready to unify your disconnected enterprise software systems?',
+    ctaHeadline: 'Have an integration problem to solve?',
     ctaDescription:
-      'Book an integration architecture consultation. We analyze your tech stack, identify duplicate data flows, and build a unified, real-time integration fabric.',
+      'Tell us about the disconnected software platforms, manual data re-entry, or out-of-sync records complicating your operations. We’ll help connect your systems with clean, reliable integration pipelines.',
     prevSlug: 'data-business-intelligence',
     nextSlug: 'ai-intelligent-systems',
   },

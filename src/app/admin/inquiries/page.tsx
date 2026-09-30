@@ -42,10 +42,10 @@ export default function AdminInquiriesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-neutral-950 tracking-tight font-display">
-            Client Inquiries &amp; Leads
+            Contact Messages
           </h1>
           <p className="text-xs sm:text-sm text-neutral-600 mt-1">
-            Real-time messages submitted from the public <code className="text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded font-mono font-semibold">/contact</code> portal.
+            Messages sent by visitors through the public <code className="text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded font-mono font-semibold">/contact</code> form.
           </p>
         </div>
 
@@ -54,7 +54,7 @@ export default function AdminInquiriesPage() {
           className="px-3.5 py-2 rounded-xl bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-700 text-xs font-mono flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto shadow-xs"
         >
           <RefreshCw className={cn('w-3.5 h-3.5 text-neutral-500', loading && 'animate-spin')} />
-          <span>Refresh Leads</span>
+          <span>Refresh</span>
         </button>
       </div>
 

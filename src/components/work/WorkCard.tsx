@@ -23,6 +23,8 @@ export function WorkCard({ specimen, index }: WorkCardProps) {
     >
       <Link
         href={`/work/${specimen.slug}`}
+        data-cursor="project"
+        data-cursor-text="VIEW SPECIMEN ↗"
         className="block relative w-full h-full"
       >
         {/* === FULL-BLEED BACKGROUND MEDIA === */}

@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { HeroBackgroundCanvas } from '@/components/home/HeroBackgroundCanvas';
+import { EASE_CINEMATIC } from '@/lib/animations';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KAIROTRIX HeroSection — Cinematic Identity & Scroll-Controlled Video Reveal
@@ -262,7 +264,12 @@ export function HeroSection() {
         </div>
 
         {/* ── Layer 2: Commanding Centered Identity Stage ─────────────────────── */}
-        <div className="absolute inset-0 z-10 pointer-events-none">
+        <motion.div
+          initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.85, ease: EASE_CINEMATIC }}
+          className="absolute inset-0 z-10 pointer-events-none"
+        >
           {/* Main Symmetrical Lockup: EXACTLY CENTERED at 50vh, locked to the video logo mark */}
           <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex items-center justify-center px-4">
             {/* Left Tagline: BUILT TO EVOLVE */}
@@ -307,7 +314,7 @@ export function HeroSection() {
               Custom Software &bull; AI Systems &bull; Business Automation
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* ── Layer 3: Masked Video Container (Positioned ABOVE identity) ─────── */}
         {/* Starts as a commanding 150px logo mark in the center, expands on scroll */}
@@ -378,11 +385,10 @@ export function HeroSection() {
                 </Link>
 
                 <Link
-                  href="/solutions#find-solution"
+                  href="/contact"
                   className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/25 text-neutral-0 font-display text-xs md:text-sm font-bold tracking-[0.16em] uppercase shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 active:scale-95 group"
                 >
-                  <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
-                  <span>Find Your Solution</span>
+                  <span>Discuss Your Project</span>
                 </Link>
               </div>
             </div>
@@ -395,13 +401,20 @@ export function HeroSection() {
         {/* ── Layer 5: Scroll Indicator ─────────────────────────────────────── */}
         <div
           ref={scrollHintRef}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 will-change-[opacity]"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 will-change-[opacity]"
           aria-hidden="true"
         >
-          <span className="font-tech text-[9px] tracking-[0.35em] uppercase font-bold text-neutral-700">
-            Scroll
-          </span>
-          <div className="w-px h-8 animate-pulse bg-gradient-to-b from-neutral-700 to-transparent" />
+          <motion.div
+            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, delay: 0.5, ease: EASE_CINEMATIC }}
+            className="flex flex-col items-center gap-2"
+          >
+            <span className="font-tech text-[9px] tracking-[0.35em] uppercase font-bold text-neutral-700">
+              Scroll
+            </span>
+            <div className="w-px h-8 animate-pulse bg-gradient-to-b from-neutral-700 to-transparent" />
+          </motion.div>
         </div>
       </section>
     </div>

@@ -36,19 +36,22 @@ export default async function InsightsPage() {
   return (
     <main className="w-full min-h-screen bg-[#FAFAFC]">
       <InsightsHero totalArticles={insights.length} />
-      <Suspense
-        fallback={
-          <div className="w-full py-24 flex items-center justify-center">
-            <div className="flex items-center gap-3 font-tech text-xs uppercase tracking-widest text-neutral-500">
-              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-              <span>Loading Articles...</span>
+      {/* ─── OVERLAY CURTAIN: Sections slide UP OVER sticky Hero (Spector effect) ─── */}
+      <div className="relative z-10 w-full bg-[#FAFAFC] shadow-[0_-30px_70px_rgba(0,0,0,0.06)] border-t border-neutral-200/80">
+        <Suspense
+          fallback={
+            <div className="w-full py-24 flex items-center justify-center">
+              <div className="flex items-center gap-3 font-tech text-xs uppercase tracking-widest text-neutral-500">
+                <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+                <span>Loading Articles...</span>
+              </div>
             </div>
-          </div>
-        }
-      >
-        <InsightsGrid initialInsights={insights} />
-      </Suspense>
-      <InsightsCTA />
+          }
+        >
+          <InsightsGrid initialInsights={insights} />
+        </Suspense>
+        <InsightsCTA />
+      </div>
     </main>
   );
 }

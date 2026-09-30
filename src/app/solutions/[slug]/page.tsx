@@ -10,6 +10,8 @@ import { SolutionMethodology } from '@/components/solutions/detail/SolutionMetho
 import { SolutionRelatedWork } from '@/components/solutions/detail/SolutionRelatedWork';
 import { SolutionContactCTA } from '@/components/solutions/detail/SolutionContactCTA';
 import { SolutionNavigationCTA } from '@/components/solutions/detail/SolutionNavigationCTA';
+import { SolutionScreenNav } from '@/components/solutions/detail/SolutionScreenNav';
+import { getWorkSpecimensByDiscipline } from '@/lib/services/workService';
 
 interface SolutionDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -27,14 +29,14 @@ export async function generateMetadata({ params }: SolutionDetailPageProps): Pro
 
   if (!solution) {
     return {
-      title: 'Discipline Not Found — KAIROTRIX',
+      title: 'Solution Not Found — KAIROTRIX',
     };
   }
 
   const subServiceNames = solution.subCategories.flatMap((c) => c.services.map((s) => s.name));
 
   return {
-    title: `${solution.title} — KAIROTRIX Solutions Architecture`,
+    title: `${solution.title} — Solutions | KAIROTRIX`,
     description: solution.executiveSummary,
     keywords: [
       solution.title,
@@ -45,10 +47,15 @@ export async function generateMetadata({ params }: SolutionDetailPageProps): Pro
       'enterprise software architecture',
       'technology partner',
     ],
+    alternates: {
+      canonical: `https://kairotrix.com/solutions/${solution.slug}`,
+    },
     openGraph: {
-      title: `${solution.number} // ${solution.title} — KAIROTRIX`,
+      title: `${solution.title} — Solutions | KAIROTRIX`,
       description: solution.executiveSummary,
-      type: 'article',
+      url: `https://kairotrix.com/solutions/${solution.slug}`,
+      siteName: 'KAIROTRIX',
+      type: 'website',
     },
   };
 }
@@ -61,8 +68,10 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
     notFound();
   }
 
-  // Schema.org structured data (Service + OfferCatalog)
-  const jsonLd = {
+  const relatedProjects = await getWorkSpecimensByDiscipline(slug);
+
+  // Schema.org structured data (Service + OfferCatalog + BreadcrumbList)
+  const serviceJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     serviceType: solution.title,
@@ -70,18 +79,51 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
       '@type': 'Organization',
       name: 'KAIROTRIX',
       url: 'https://kairotrix.com',
+      description:
+        'Technology and software solutions company that designs and builds custom software, AI systems, automation workflows, and data platforms.',
     },
     description: solution.executiveSummary,
     areaServed: 'Global',
+    url: `https://kairotrix.com/solutions/${solution.slug}`,
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: `${solution.title} Service Catalogue`,
+      name: `${solution.title} Services`,
       itemListElement: solution.subCategories.map((sub, idx) => ({
-        '@type': 'OfferCatalog',
-        name: sub.title,
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: sub.title,
+          description: sub.summary,
+          url: `https://kairotrix.com/solutions/${solution.slug}#${sub.anchorId}`,
+        },
         position: idx + 1,
       })),
     },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://kairotrix.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Solutions',
+        item: 'https://kairotrix.com/solutions',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: solution.title,
+        item: `https://kairotrix.com/solutions/${solution.slug}`,
+      },
+    ],
   };
 
   return (
@@ -89,10 +131,13 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
       {/* Inject Structured Data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([serviceJsonLd, breadcrumbJsonLd]) }}
       />
 
       <main className="w-full min-h-screen bg-[#FAFAFC] text-neutral-900">
+        {/* Screen-Edge Prev / Next Solution Navigator */}
+        <SolutionScreenNav solution={solution} />
+
         {/* 01. Hero with Flanked Carousel */}
         <SolutionHero solution={solution} />
 
@@ -102,7 +147,7 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
         {/* 03. Editorial Rationale & Purpose */}
         <SolutionImpact solution={solution} />
 
-        {/* 04. Explore Capabilities & Systems (Complete Interactive Explorer) */}
+        {/* 04. Core Services & Systems (Complete Interactive Service Explorer) */}
         <SolutionSubServices solution={solution} />
 
         {/* 05. Engineering Depth (Selected Technical Proof & Production Standards) */}
@@ -111,8 +156,8 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
         {/* 06. 4-Column Clear Engineering Process Cards */}
         <SolutionMethodology solution={solution} />
 
-        {/* 07. 3-Column Featured Projects Showcase */}
-        <SolutionRelatedWork solution={solution} />
+        {/* 07. Featured Builds from Work Catalog */}
+        <SolutionRelatedWork solution={solution} projects={relatedProjects} />
 
         {/* 08. High-Impact Obsidian Contact CTA Card */}
         <SolutionContactCTA solution={solution} />

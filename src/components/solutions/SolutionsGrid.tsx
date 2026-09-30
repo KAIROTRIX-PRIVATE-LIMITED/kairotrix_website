@@ -10,14 +10,22 @@ import {
   SOLUTIONS_DATA,
   type SolutionDetail,
 } from '@/data/solutionsData';
+import {
+  MaskedReveal,
+  DrawLine,
+  revealMeta,
+  revealBody,
+  EASE_CINEMATIC,
+  EASE_PRECISE,
+} from '@/lib/animations';
 
 const LEFT_RIBBON_ITEMS = [
-  '01 // AI SYSTEMS & AGENTS',
-  '02 // CUSTOM SOFTWARE & PRODUCTS',
-  '03 // BUSINESS AUTOMATION',
-  '04 // WEBSITES & EXPERIENCES',
-  '05 // DATA & INTELLIGENCE',
-  '06 // SYSTEM INTEGRATION',
+  'AI SYSTEMS & AGENTS',
+  'CUSTOM SOFTWARE & PRODUCTS',
+  'BUSINESS AUTOMATION',
+  'WEBSITES & EXPERIENCES',
+  'DATA & INTELLIGENCE',
+  'SYSTEM INTEGRATION',
 ];
 
 const RIGHT_RIBBON_ITEMS = [
@@ -44,14 +52,6 @@ const SOLUTION_DESCRIPTIONS: Record<string, string> = {
     'Connect the software your business already uses through APIs, CRM and ERP integrations, payment services, and reliable data synchronization between systems.',
 };
 
-const CORE_SERVICE_COUNTS: Record<string, string> = {
-  'ai-intelligent-systems': '4 CORE SERVICES',
-  'software-product-engineering': '4 CORE SERVICES',
-  'automation-digital-operations': '1 CORE SERVICE',
-  'digital-transformation': '3 CORE SERVICES',
-  'data-business-intelligence': '2 CORE SERVICES',
-  'technology-integration': '2 CORE SERVICES',
-};
 
 interface DisciplineRowProps {
   discipline: SolutionDetail;
@@ -62,16 +62,21 @@ interface DisciplineRowProps {
 
 function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowProps) {
   const shouldReduceMotion = useReducedMotion();
+  const isEven = index % 2 === 0;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
+      initial={{
+        opacity: 0,
+        x: shouldReduceMotion ? 0 : isEven ? -22 : 22,
+        y: shouldReduceMotion ? 0 : 12,
+      }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
       transition={{
-        duration: 0.45,
-        delay: index * 0.05,
-        ease: [0.16, 1, 0.3, 1],
+        duration: 0.55,
+        delay: index * 0.07,
+        ease: EASE_CINEMATIC,
       }}
       className="scroll-mt-28"
     >
@@ -108,7 +113,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
             <div className="relative w-[140px] h-[84px] flex items-center justify-center p-2 bg-gradient-to-br from-brand-50/70 via-white to-neutral-50/80 overflow-hidden">
               <div className="absolute inset-0 bg-brand-500/10 blur-sm pointer-events-none" />
               <Image
-                src={discipline.image}
+                src={discipline.gridImage || discipline.image}
                 alt={discipline.title}
                 fill
                 className="object-contain p-2 drop-shadow-[0_4px_14px_rgba(147,51,234,0.22)] transition-transform duration-500 group-hover:scale-105"
@@ -119,12 +124,8 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
 
           {/* Discipline Text Stack */}
           <div className="space-y-1.5 min-w-0">
-            {/* Meta Eyebrow: SOLUTION XX // 06 */}
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold text-brand-700 bg-brand-50 group-hover:bg-brand-600 group-hover:text-white px-2.5 py-0.5 rounded-md border border-brand-200 group-hover:border-brand-600 transition-colors duration-300 shrink-0">
-                SOLUTION {discipline.number} // 06
-              </span>
-            </div>
+            {/* Meta Eyebrow: CORE SOLUTION */}
+           
 
             {/* Discipline Title */}
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-neutral-900 group-hover:text-brand-600 transition-colors duration-300">
@@ -144,7 +145,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
           {/* Mobile Image (shown only on small screens < sm) */}
           <div className="sm:hidden relative w-12 h-12 shrink-0 rounded-lg overflow-hidden border border-neutral-200/80 bg-neutral-50 p-1">
             <Image
-              src={discipline.image}
+              src={discipline.gridImage || discipline.image}
               alt={discipline.title}
               fill
               className="object-contain p-1"
@@ -153,7 +154,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
           </div>
 
           <span className="hidden md:inline-block text-xs font-tech font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-brand-600 transition-colors">
-            {CORE_SERVICE_COUNTS[discipline.slug] || `${discipline.subCategories.length} CORE SERVICES`}
+            EXPLORE
           </span>
 
           <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-neutral-200/90 flex items-center justify-center text-neutral-400 group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-[0_4px_16px_rgba(147,51,234,0.25)] transition-all duration-300 shadow-2xs">
@@ -257,28 +258,47 @@ export function SolutionsGrid() {
         
         {/* Section Header */}
         <div className="mb-8 sm:mb-12 max-w-5xl mx-auto">
-          <div className="flex items-center gap-3 mb-3 sm:mb-4">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={revealMeta}
+            className="flex items-center gap-3 mb-3 sm:mb-4"
+          >
             <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
             <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-              02 // EXPLORE SOLUTIONS
+              EXPLORE SOLUTIONS
             </span>
-            <div className="h-px w-10 sm:w-16 bg-neutral-200" />
-          </div>
+            <DrawLine className="h-px w-10 sm:w-16 bg-neutral-300" delay={0.2} />
+          </motion.div>
+
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
-            SIX CORE{' '}
-            <span className="gradient-signature-text">
-              SOLUTIONS.
-            </span>
+            <MaskedReveal delay={0.1}>
+              <span>CORE </span>
+              <span className="gradient-signature-text">SOLUTIONS.</span>
+            </MaskedReveal>
           </h2>
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-2xl font-normal leading-relaxed">
+
+          <motion.p
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={revealBody}
+            className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-2xl font-normal leading-relaxed"
+          >
             From AI and custom software to automation, digital experiences, data, and integration—explore the technology we design and build around real business needs.
-          </p>
+          </motion.p>
         </div>
 
-        {/* The 6 Disciplines (Single Column Editorial Directory with Slide-in Image on Hover) */}
+        {/* Top dividing hairline */}
+        <div className="max-w-5xl mx-auto">
+          <DrawLine className="h-px w-full bg-neutral-200/80" delay={0.15} origin="left" />
+        </div>
+
+        {/* Core Solutions Directory (Single Column Editorial Directory with Slide-in Image on Hover) */}
         <div
           onMouseLeave={() => setHoveredSlug(null)}
-          className="max-w-5xl mx-auto divide-y divide-neutral-200/80 border-y border-neutral-200/80"
+          className="max-w-5xl mx-auto divide-y divide-neutral-200/80"
         >
           {disciplines.map((discipline, index) => (
             <DisciplineRow
@@ -289,6 +309,11 @@ export function SolutionsGrid() {
               onHover={() => setHoveredSlug(discipline.slug)}
             />
           ))}
+        </div>
+
+        {/* Bottom dividing hairline */}
+        <div className="max-w-5xl mx-auto">
+          <DrawLine className="h-px w-full bg-neutral-200/80" delay={0.25} origin="right" />
         </div>
 
       </div>

@@ -59,7 +59,7 @@ export function InsightsCard({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98 }}
         transition={{ duration: 0.4, delay: Math.min(index * 0.04, 0.25) }}
-        className={`group relative rounded-3xl overflow-hidden bg-neutral-950 border border-neutral-200/80 hover:border-brand-500/60 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col ${className}`}
+        className={`group relative overflow-hidden bg-neutral-950 border border-neutral-200/80 hover:border-brand-500/60 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col ${className}`}
         onMouseEnter={() => setIsSelfHovered(true)}
         onMouseLeave={() => setIsSelfHovered(false)}
       >

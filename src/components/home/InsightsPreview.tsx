@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
   ChevronLeft,
@@ -17,98 +18,27 @@ import {
   Play,
 } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { EASE_CINEMATIC, EASE_PRECISE, MaskedReveal, DrawLine, revealTag } from '@/lib/animations';
+import type { InsightSpecimen } from '@/data/insightsData';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KAIROTRIX Section 06 — "Insights Preview" (Split Editorial Carousel)
-//
-// Asymmetrical Split Layout:
-// Left: Sticky architectural header, narrative, research tags, odometer counter,
-//       progress bar, and navigation controls.
-// Right: Cards carousel with exact 1.5 card visibility (full card + half next card)
-//        and directional left-fade when cards move leftwards.
-// Strictly Light Theme (#FAFAFC / #FFFFFF), generous whitespace, refined typography.
+// Asymmetrical Split Layout (Dynamic DB-backed)
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface InsightArticle {
   id: string;
-  badge: 'SYSTEM BLUEPRINT' | 'PERSPECTIVE' | 'TECHNICAL DEEP DIVE' | 'CASE STUDY' | 'RESEARCH';
+  badge: string;
   title: string;
   excerpt: string;
   readTime: string;
   date: string;
   tags: string[];
   slug: string;
-  videoSrc: string;
-  icon: typeof FileText;
+  videoSrc?: string;
+  image?: string;
+  icon?: typeof FileText;
 }
-
-const INSIGHTS: InsightArticle[] = [
-  {
-    id: 'deterministic-ai-agents',
-    badge: 'SYSTEM BLUEPRINT',
-    title: 'Architecting Deterministic Autonomous AI Agents for Enterprise Workflows',
-    excerpt:
-      'How to eliminate non-deterministic LLM hallucinations using strict schema validation contracts, tool-calling guardrails, and persistent context memory.',
-    readTime: '8 min read',
-    date: 'Sep 2026',
-    tags: ['Autonomous Agents', 'Schema Contracts', 'Tool-Use'],
-    slug: '/insights/deterministic-ai-agents',
-    videoSrc: '/assets/videos/smart-search.mp4',
-    icon: Cpu,
-  },
-  {
-    id: 'problem-first-vs-saas-sprawl',
-    badge: 'PERSPECTIVE',
-    title: 'Why Problem-First Architecture Outperforms Pre-Packaged SaaS Vendor Stacks',
-    excerpt:
-      'A critical breakdown of enterprise software sprawl and how purpose-built bespoke software delivers significantly higher 5-year operational ROI.',
-    readTime: '5 min read',
-    date: 'Aug 2026',
-    tags: ['Architecture', 'ROI', 'Software Strategy'],
-    slug: '/insights/problem-first-vs-saas-sprawl',
-    videoSrc: '/assets/videos/ai-assistant.mp4',
-    icon: Sparkles,
-  },
-  {
-    id: 'sub-50ms-telemetry-nextjs',
-    badge: 'TECHNICAL DEEP DIVE',
-    title: 'Engineering Sub-50ms Real-Time Event Telemetry with Next.js 15 & WebSockets',
-    excerpt:
-      'How to ingest and render thousands of high-frequency events per second with memory-efficient client canvas pipelines and WebSocket event streams.',
-    readTime: '7 min read',
-    date: 'Aug 2026',
-    tags: ['Next.js 15', 'WebSockets', 'Telemetry'],
-    slug: '/insights/sub-50ms-telemetry-nextjs',
-    videoSrc: '/assets/videos/automated-workflows.mp4',
-    icon: Activity,
-  },
-  {
-    id: 'legacy-spreadsheets-to-event-bridge',
-    badge: 'CASE STUDY',
-    title: 'From Fragile Spreadsheets to an Event-Driven Operations Engine: A Technical Retrospective',
-    excerpt:
-      'The step-by-step architectural transition from manual operational spreadsheets to an automated webhook bridge syncing ERP and CRM databases.',
-    readTime: '9 min read',
-    date: 'Jul 2026',
-    tags: ['Digital Transformation', 'Webhooks', 'ERP Sync'],
-    slug: '/insights/legacy-spreadsheets-to-event-bridge',
-    videoSrc: '/assets/videos/live-dashboard.mp4',
-    icon: Layers,
-  },
-  {
-    id: 'rag-vector-vs-hybrid-benchmarks',
-    badge: 'RESEARCH',
-    title: 'Evaluating RAG Retrieval Fidelity: Dense Vector Embeddings vs Hybrid BM25 Search',
-    excerpt:
-      'Empirical benchmarks comparing dense vector embeddings against hybrid BM25 lexical search across complex multi-tenant enterprise documentation.',
-    readTime: '6 min read',
-    date: 'Jun 2026',
-    tags: ['Vector DB', 'RAG Retrieval', 'Benchmarks'],
-    slug: '/insights/rag-vector-vs-hybrid-benchmarks',
-    videoSrc: '/assets/videos/fast-analytics.mp4',
-    icon: BookOpen,
-  },
-];
 
 const TOPIC_TAGS = [
   'AI & Autonomous Agents',
@@ -118,7 +48,7 @@ const TOPIC_TAGS = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Individual InsightCard with Hover Video Playback
+// Individual InsightCard with Hover Video/Image Playback
 // ─────────────────────────────────────────────────────────────────────────────
 
 function InsightCard({
@@ -135,7 +65,7 @@ function InsightCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const prefersReduced = useReducedMotion();
-  const IconComponent = article.icon;
+  const IconComponent = article.icon || FileText;
 
   const handleMouseEnter = () => {
     if (prefersReduced) return;
@@ -176,17 +106,26 @@ function InsightCard({
       {/* Top accent line on hover */}
       <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-brand-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
 
-      {/* ── Top 58%: Video Thumbnail (Plays on Hover) ─────────────── */}
+      {/* ── Top 58%: Video/Image Thumbnail ─────────────── */}
       <div className="relative h-[58%] w-full overflow-hidden bg-neutral-950 border-b border-neutral-100">
-        <video
-          ref={videoRef}
-          src={article.videoSrc}
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-500 ease-out opacity-90 group-hover:opacity-100"
-        />
+        {article.videoSrc ? (
+          <video
+            ref={videoRef}
+            src={article.videoSrc}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-500 ease-out opacity-90 group-hover:opacity-100"
+          />
+        ) : article.image ? (
+          <Image
+            src={article.image}
+            alt={article.title}
+            fill
+            className="object-cover scale-100 group-hover:scale-105 transition-transform duration-500 ease-out opacity-90 group-hover:opacity-100"
+          />
+        ) : null}
 
         {/* Ambient Subtle Vignette */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30" />
@@ -199,20 +138,22 @@ function InsightCard({
           </span>
         </div>
 
-        {/* Live Hover Status Pill Floating Bottom Right */}
-        <div className="absolute bottom-3.5 right-3.5 z-10 px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2 text-[10px] font-mono text-white pointer-events-none shadow-sm">
-          {isPlaying ? (
-            <>
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping" />
-              <span className="text-green-300 font-bold tracking-wide">PLAYING</span>
-            </>
-          ) : (
-            <>
-              <Play className="w-3 h-3 text-brand-400 fill-brand-400" />
-              <span className="text-neutral-300 tracking-wide">HOVER TO PREVIEW</span>
-            </>
-          )}
-        </div>
+        {/* Live Hover Status Pill Floating Bottom Right (when video exists) */}
+        {article.videoSrc && (
+          <div className="absolute bottom-3.5 right-3.5 z-10 px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2 text-[10px] font-mono text-white pointer-events-none shadow-sm">
+            {isPlaying ? (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping" />
+                <span className="text-green-300 font-bold tracking-wide">PLAYING</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3 h-3 text-brand-400 fill-brand-400" />
+                <span className="text-neutral-300 tracking-wide">HOVER TO PREVIEW</span>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── Bottom 42%: Content Info ──────────────────────────────── */}
@@ -260,17 +201,35 @@ function InsightCard({
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main Section Export — Asymmetrical Split Layout
-// ─────────────────────────────────────────────────────────────────────────────
+interface InsightsPreviewProps {
+  insights?: InsightSpecimen[];
+}
 
-export function InsightsPreview() {
+export function InsightsPreview({ insights }: InsightsPreviewProps = {}) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const prefersReduced = useReducedMotion();
+
+  if (!insights || insights.length === 0) {
+    return null;
+  }
+
+  const articles: InsightArticle[] = insights.map((item) => ({
+    id: item.id,
+    badge: item.badge,
+    title: item.title,
+    excerpt: item.excerpt,
+    readTime: item.readTime,
+    date: item.date,
+    tags: item.tags,
+    slug: `/insights/${item.slug}`,
+    videoSrc: item.videoSrc,
+    image: item.image,
+    icon: FileText,
+  }));
 
   const updateScrollState = useCallback(() => {
     const el = carouselRef.current;
@@ -282,12 +241,12 @@ export function InsightsPreview() {
     const cardWidth = card.offsetWidth;
     const gap = 24;
     const rawIndex = Math.round(scrollLeft / (cardWidth + gap));
-    const activeIndex = rawIndex >= INSIGHTS.length ? 0 : Math.max(0, rawIndex);
+    const activeIndex = rawIndex >= articles.length ? 0 : Math.max(0, rawIndex);
     setCurrentIndex(activeIndex);
 
     setCanScrollPrev(activeIndex > 0);
     setCanScrollNext(true); // Always true so user can loop back to 01 from specimen 05
-  }, []);
+  }, [articles.length]);
 
   useEffect(() => {
     const el = carouselRef.current;
@@ -328,12 +287,12 @@ export function InsightsPreview() {
     if (currentIndex > 0) {
       scrollToIndex(currentIndex - 1);
     } else {
-      scrollToIndex(INSIGHTS.length - 1);
+      scrollToIndex(articles.length - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentIndex < INSIGHTS.length - 1) {
+    if (currentIndex < articles.length - 1) {
       scrollToIndex(currentIndex + 1);
     } else {
       scrollToIndex(0);
@@ -343,10 +302,10 @@ export function InsightsPreview() {
   // Background auto-advance: advances to next article after preview reading duration (~6.5s)
   // Functional Smart Pause: automatically pauses when hovered or when prefers-reduced-motion is active
   useEffect(() => {
-    if (isHovered || prefersReduced) return;
+    if (isHovered || prefersReduced || articles.length <= 1) return;
 
     const timer = setTimeout(() => {
-      if (currentIndex < INSIGHTS.length - 1) {
+      if (currentIndex < articles.length - 1) {
         scrollToIndex(currentIndex + 1);
       } else {
         scrollToIndex(0);
@@ -354,7 +313,7 @@ export function InsightsPreview() {
     }, READING_DURATION_MS);
 
     return () => clearTimeout(timer);
-  }, [currentIndex, isHovered, prefersReduced, scrollToIndex]);
+  }, [currentIndex, isHovered, prefersReduced, scrollToIndex, articles.length]);
 
   return (
     <section
@@ -372,7 +331,7 @@ export function InsightsPreview() {
             name: 'KAIROTRIX Engineering Blog & Articles',
             description:
               'Technical articles, architectural breakdowns, and engineering guides from KAIROTRIX engineers.',
-            blogPost: INSIGHTS.map((article, idx) => ({
+            blogPost: articles.map((article, idx) => ({
               '@type': 'BlogPosting',
               position: idx + 1,
               headline: article.title,
@@ -402,11 +361,7 @@ export function InsightsPreview() {
           {/* ══════════════════════════════════════════════════════════ */}
           {/* LEFT COLUMN: Header, Narrative, Telemetry, Controls & CTA */}
           {/* ══════════════════════════════════════════════════════════ */}
-          <motion.div
-            initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          <div
             className="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-36 z-20 flex flex-col justify-between"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -415,41 +370,60 @@ export function InsightsPreview() {
               {/* Eyebrow Pill */}
               <div className="flex items-center gap-3 mb-5">
                 <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-                <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                  06 // ARTICLES &amp; BLOG
-                </span>
+                <motion.span
+                  initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
+                  whileInView={{ opacity: 1, letterSpacing: '0.25em' }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease: EASE_PRECISE }}
+                  className="font-tech text-xs font-semibold text-brand-600 uppercase"
+                >
+                  ARTICLES &amp; BLOG
+                </motion.span>
                 <div className="h-px w-10 sm:w-16 bg-neutral-200" />
               </div>
 
-              {/* Main Headline */}
-              <h2
-                id="insights-preview-heading"
-                className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]"
-              >
-                ARTICLES &amp;{' '}
-                <span className="gradient-signature-text">PERSPECTIVES.</span>
-              </h2>
+              {/* Main Headline with Masked Reveal */}
+              <MaskedReveal delay={0.06}>
+                <h2
+                  id="insights-preview-heading"
+                  className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]"
+                >
+                  ARTICLES &amp;{' '}
+                  <span className="gradient-signature-text">PERSPECTIVES.</span>
+                </h2>
+              </MaskedReveal>
 
               {/* Narrative Paragraph */}
-              <p className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
+              <motion.p
+                initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.65, delay: 0.12, ease: EASE_CINEMATIC }}
+                className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal"
+              >
                 Technical articles, architectural breakdowns, and engineering guides. We write about how we build real software systems, automate complex workflows, and solve production bottlenecks.
-              </p>
+              </motion.p>
 
               {/* Topic Filters / Discipline Tags */}
               <div className="mt-6 flex flex-wrap gap-2">
-                {TOPIC_TAGS.map((tag) => (
-                  <span
+                {TOPIC_TAGS.map((tag, tIdx) => (
+                  <motion.span
                     key={tag}
+                    initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.94 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: prefersReduced ? 0 : 0.15 + tIdx * 0.06, ease: EASE_PRECISE }}
                     className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono bg-white border border-neutral-200 text-neutral-600 shadow-sm transition-colors hover:border-brand-500/40 hover:text-brand-600"
                   >
                     {tag}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </div>
 
             {/* ── Carousel Controls & Archive Action ────────────────── */}
-            <div className="mt-10 pt-8 border-t border-neutral-200/80">
+            <div className="mt-10 pt-4">
+              <DrawLine className="h-px w-full bg-neutral-200/80 mb-8" />
               <div className="flex items-center justify-between mb-8">
                 {/* Odometer Specimen Counter */}
                 <div className="flex items-baseline gap-2 font-mono">
@@ -457,7 +431,7 @@ export function InsightsPreview() {
                     {String(currentIndex + 1).padStart(2, '0')}
                   </span>
                   <span className="text-xs tracking-wider text-neutral-400 uppercase">
-                    / {String(INSIGHTS.length).padStart(2, '0')} ARTICLES
+                    / {String(articles.length).padStart(2, '0')} ARTICLES
                   </span>
                 </div>
 
@@ -511,16 +485,16 @@ export function InsightsPreview() {
                 </div>
               </Link>
             </div>
-          </motion.div>
+          </div>
 
           {/* ══════════════════════════════════════════════════════════ */}
           {/* RIGHT COLUMN: Cards Carousel with 1.5 Visible Card Ratio  */}
           {/* ══════════════════════════════════════════════════════════ */}
           <motion.div
-            initial={{ opacity: prefersReduced ? 1 : 0, x: prefersReduced ? 0 : 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.98, x: prefersReduced ? 0 : 20 }}
+            whileInView={{ opacity: 1, scale: 1, x: 0 }}
             viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.75, delay: 0.15, ease: EASE_CINEMATIC }}
             className="lg:col-span-7 xl:col-span-7 relative min-w-0"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -539,7 +513,7 @@ export function InsightsPreview() {
                 ref={carouselRef}
                 className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-4 pl-12 sm:pl-16 lg:pl-20 scroll-pl-12 sm:scroll-pl-16 lg:scroll-pl-20 pr-6 sm:pr-8 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               >
-                {INSIGHTS.map((article, idx) => {
+                {articles.map((article, idx) => {
                   const isActive = currentIndex === idx;
                   const isPast = idx < currentIndex;
 
@@ -558,18 +532,20 @@ export function InsightsPreview() {
                   );
                 })}
 
-                {/* ── Companion Loop Card (Card 01): Ensures the right side is never empty when Card 05 is active ── */}
-                <div
-                  key="loop-specimen-01"
-                  className="insight-card flex-shrink-0 w-[84vw] sm:w-[360px] lg:w-[380px] xl:w-[390px] snap-start"
-                >
-                  <InsightCard
-                    article={INSIGHTS[0]}
-                    isActive={false}
-                    isPast={false}
-                    onSelect={() => scrollToIndex(0)}
-                  />
-                </div>
+                {/* ── Companion Loop Card (Card 01): Ensures the right side is never empty when at the end ── */}
+                {articles.length > 1 && (
+                  <div
+                    key="loop-specimen-01"
+                    className="insight-card flex-shrink-0 w-[84vw] sm:w-[360px] lg:w-[380px] xl:w-[390px] snap-start"
+                  >
+                    <InsightCard
+                      article={articles[0]}
+                      isActive={false}
+                      isPast={false}
+                      onSelect={() => scrollToIndex(0)}
+                    />
+                  </div>
+                )}
 
                 {/* Trailing micro-buffer to ensure full clearance on all screen sizes */}
                 <div
@@ -581,7 +557,7 @@ export function InsightsPreview() {
 
             {/* ── Bottom Carousel Pagination Indicator Dots ─────────── */}
             <div className="flex items-center justify-center gap-2 mt-6">
-              {INSIGHTS.map((item, idx) => (
+              {articles.map((item, idx) => (
                 <button
                   key={item.id}
                   type="button"
