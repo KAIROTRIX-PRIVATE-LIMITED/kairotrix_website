@@ -17,6 +17,7 @@ import {
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { SOLUTIONS_DATA, type SolutionDetail } from '@/data/solutionsData';
 import { MaskedReveal, DrawLine, revealMeta, revealBody, cardFromRight, EASE_CINEMATIC } from '@/lib/animations';
+import { usePreloader } from '@/context/PreloaderContext';
 
 interface SolutionHeroProps {
   solution: SolutionDetail;
@@ -24,6 +25,7 @@ interface SolutionHeroProps {
 
 export function SolutionHero({ solution }: SolutionHeroProps) {
   const shouldReduceMotion = useReducedMotion();
+  const { isLoaded } = usePreloader();
   const prevSolution = SOLUTIONS_DATA[solution.prevSlug];
   const nextSolution = SOLUTIONS_DATA[solution.nextSlug];
 
@@ -99,13 +101,10 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
             <motion.div
               variants={revealMeta}
               initial="hidden"
-              animate="visible"
+              animate={isLoaded ? "visible" : "hidden"}
               className="flex items-center justify-center lg:justify-start gap-3"
             >
-              <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-              <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
-                KAIROTRIX // SOLUTION ARCHITECTURE
-              </span>
+              
               <DrawLine className="hidden sm:block w-10 sm:w-16 bg-neutral-200" delay={0.2} />
             </motion.div>
 
@@ -129,7 +128,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
             <motion.p
               variants={revealBody}
               initial="hidden"
-              animate="visible"
+              animate={isLoaded ? "visible" : "hidden"}
               transition={{ delay: 0.16 }}
               className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal max-w-xl mx-auto lg:mx-0"
             >
@@ -139,7 +138,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
             {/* Action CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{ duration: 0.45, delay: 0.24, ease: EASE_CINEMATIC }}
               className="pt-1 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 w-full sm:w-auto"
             >
@@ -228,7 +227,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
             <motion.div
               variants={cardFromRight}
               initial="hidden"
-              animate="visible"
+              animate={isLoaded ? "visible" : "hidden"}
               transition={{ duration: 0.6, delay: 0.28, ease: EASE_CINEMATIC }}
               className="absolute -bottom-5 right-2 sm:bottom-1 sm:right-2 lg:-bottom-5 lg:right-0 z-20 rounded-2xl bg-white/90 backdrop-blur-xl border border-neutral-200/90 p-3.5 sm:p-4 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08),0_4px_16px_-4px_rgba(0,0,0,0.04),0_0_20px_rgba(147,51,234,0.08)] text-neutral-900 max-w-[calc(100%-1rem)] sm:min-w-[240px]"
             >

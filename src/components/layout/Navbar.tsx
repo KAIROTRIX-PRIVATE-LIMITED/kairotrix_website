@@ -40,6 +40,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { usePreloader } from '@/context/PreloaderContext';
 
 interface SubServiceItem {
   title: string;
@@ -245,9 +246,7 @@ const SOLUTION_CATEGORIES: SolutionCategory[] = [
 
 export function Navbar() {
   const pathname = usePathname();
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
+  const { isLoaded } = usePreloader();
   const [isScrolled, setIsScrolled] = useState(false);
   const isDark = false;
 
@@ -359,13 +358,17 @@ export function Navbar() {
     }
   };
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <header
       ref={navRef}
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
         isScrolled ? 'py-2.5 sm:py-3' : 'py-3.5 sm:py-4.5',
-        !isVisible && !activeMenu && !mobileMenuOpen && '-translate-y-full pointer-events-none shadow-none'
+        (!isLoaded || (!isVisible && !activeMenu && !mobileMenuOpen)) && '-translate-y-full pointer-events-none shadow-none'
       )}
     >
       {/* Silky-Smooth Animated Backdrop Layer with 3D Specular Highlight */}

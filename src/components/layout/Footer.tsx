@@ -72,9 +72,6 @@ const FOOTER_COLUMNS: FooterColumn[] = [
 
 export function Footer() {
   const pathname = usePathname();
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
   const [emailCopied, setEmailCopied] = useState(false);
 
   const handleCopyEmail = async () => {
@@ -87,6 +84,10 @@ export function Footer() {
       setTimeout(() => setEmailCopied(false), 2200);
     }
   };
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <footer

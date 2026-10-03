@@ -69,6 +69,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+import { PreloaderProvider } from "@/context/PreloaderContext";
+import { Preloader } from "@/components/ui/Preloader";
+import { PageEntranceWrapper } from "@/components/ui/PageEntranceWrapper";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -83,18 +87,23 @@ export default function RootLayout({
       <head>
         <link
           rel="icon"
-          href="/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.svg"
+          href="/assets/brand/PRIMARY_LOGO_SQUARE/WHITE.svg"
           type="image/svg+xml"
         />
       </head>
       <body className="bg-[#FAFAFC] text-neutral-900 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
         <CursorProvider>
           <ThemeProvider>
-            <CustomCursor />
-            <Navbar />
-            <main className="flex-1 w-full">{children}</main>
-            <Footer />
-            <AIAssistant />
+            <PreloaderProvider>
+              <Preloader />
+              <CustomCursor />
+              <Navbar />
+              <main className="flex-1 w-full">
+                <PageEntranceWrapper>{children}</PageEntranceWrapper>
+              </main>
+              <Footer />
+              <AIAssistant />
+            </PreloaderProvider>
           </ThemeProvider>
         </CursorProvider>
       </body>

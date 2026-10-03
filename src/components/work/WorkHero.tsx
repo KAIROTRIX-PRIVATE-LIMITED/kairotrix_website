@@ -6,12 +6,14 @@ import Image from 'next/image';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { usePreloader } from '@/context/PreloaderContext';
 
 const HUD_VERBS = ['DEMONSTRATE', 'EXPERIMENT', 'PROTOTYPE', 'DEPLOY', 'SCALE'];
 const FILM_EASE = [0.16, 1, 0.3, 1] as const;
 
 export function WorkHero() {
   const shouldReduceMotion = useReducedMotion();
+  const { isLoaded } = usePreloader();
   const sectionRef = useRef<HTMLElement>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -132,14 +134,14 @@ export function WorkHero() {
         <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-5 sm:mb-6 mx-auto lg:mx-0">
           <motion.span
             initial={shouldReduceMotion ? {} : { scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            animate={isLoaded ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
             className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"
           />
 
           <motion.span
             initial={shouldReduceMotion ? {} : { opacity: 0, x: -18 }}
-            animate={{ opacity: 1, x: 0 }}
+            animate={isLoaded ? { opacity: 1, x: 0 } : { opacity: 0, x: -18 }}
             transition={{ duration: 0.6, delay: 0.15, ease: FILM_EASE }}
             className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase"
           >
@@ -148,7 +150,7 @@ export function WorkHero() {
 
           <motion.div
             initial={shouldReduceMotion ? {} : { scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
+            animate={isLoaded ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
             transition={{ duration: 0.5, delay: 0.28, ease: FILM_EASE }}
             style={{ originX: 0 }}
             className="h-px w-10 sm:w-16 bg-neutral-200 hidden sm:block"
@@ -156,7 +158,7 @@ export function WorkHero() {
 
           <motion.span
             initial={shouldReduceMotion ? {} : { opacity: 0, filter: 'blur(3px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            animate={isLoaded ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 0, filter: 'blur(3px)' }}
             transition={{ duration: 0.45, delay: 0.35 }}
             className="font-mono text-xs tracking-wider uppercase font-semibold text-neutral-900"
           >
@@ -165,7 +167,7 @@ export function WorkHero() {
 
           <motion.div
             initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={isLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.92 }}
             transition={{ duration: 0.4, delay: 0.42 }}
             className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white border border-neutral-200/80 font-mono text-[10px] uppercase tracking-wider text-neutral-600 shadow-2xs"
           >
@@ -181,7 +183,7 @@ export function WorkHero() {
             <div className="overflow-hidden">
               <motion.span
                 initial={shouldReduceMotion ? {} : { opacity: 0, y: '100%' }}
-                animate={{ opacity: 1, y: '0%' }}
+                animate={isLoaded ? { opacity: 1, y: '0%' } : { opacity: 0, y: '100%' }}
                 transition={{ duration: 0.85, delay: 0.22, ease: FILM_EASE }}
                 className="block"
               >
@@ -191,7 +193,7 @@ export function WorkHero() {
             <div className="overflow-hidden">
               <motion.span
                 initial={shouldReduceMotion ? {} : { opacity: 0, y: '100%' }}
-                animate={{ opacity: 1, y: '0%' }}
+                animate={isLoaded ? { opacity: 1, y: '0%' } : { opacity: 0, y: '100%' }}
                 transition={{ duration: 0.85, delay: 0.35, ease: FILM_EASE }}
                 className="gradient-signature-text block"
               >
@@ -203,7 +205,7 @@ export function WorkHero() {
           {/* 3. Subtitle: Optical Focus Pull */}
           <motion.p
             initial={shouldReduceMotion ? {} : { opacity: 0, filter: 'blur(8px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            animate={isLoaded ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 0, filter: 'blur(8px)' }}
             transition={{ duration: 0.85, delay: 0.5, ease: FILM_EASE }}
             className="text-sm sm:text-lg text-neutral-600 font-sans leading-relaxed font-normal max-w-3xl mb-7 sm:mb-8 text-center lg:text-left mx-auto lg:mx-0"
           >
@@ -215,7 +217,7 @@ export function WorkHero() {
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4 w-full sm:w-auto mx-auto lg:mx-0">
             <motion.a
               initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.94, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
+              animate={isLoaded ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.94, y: 8 }}
               transition={{ duration: 0.55, delay: 0.65, ease: FILM_EASE }}
               href="#selected-work"
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white font-bold text-sm tracking-wide hover:bg-brand-600 transition-all duration-200 shadow-md cursor-pointer group w-full sm:w-auto text-center"
@@ -226,7 +228,7 @@ export function WorkHero() {
 
             <motion.div
               initial={shouldReduceMotion ? {} : { opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={isLoaded ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
               transition={{ duration: 0.55, delay: 0.75, ease: FILM_EASE }}
               className="w-full sm:w-auto text-center"
             >

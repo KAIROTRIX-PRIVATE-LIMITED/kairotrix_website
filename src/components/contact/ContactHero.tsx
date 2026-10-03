@@ -6,9 +6,11 @@ import { motion } from 'framer-motion';
 import { ArrowDown, Mail, Clock, ShieldCheck, Sparkles, MessageSquare } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { MaskedReveal, DrawLine, revealMeta, revealBody, EASE_CINEMATIC } from '@/lib/animations';
+import { usePreloader } from '@/context/PreloaderContext';
 
 export function ContactHero() {
   const shouldReduceMotion = useReducedMotion();
+  const { isLoaded } = usePreloader();
 
   const scrollToForm = () => {
     const el = document.getElementById('contact-form-section');
@@ -44,7 +46,7 @@ export function ContactHero() {
             <motion.div
               variants={revealMeta}
               initial="hidden"
-              animate="visible"
+              animate={isLoaded ? "visible" : "hidden"}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-6 text-center lg:text-left"
             >
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
@@ -68,7 +70,7 @@ export function ContactHero() {
             <motion.p
               variants={revealBody}
               initial="hidden"
-              animate="visible"
+              animate={isLoaded ? "visible" : "hidden"}
               transition={{ delay: 0.16 }}
               className="text-base sm:text-lg lg:text-xl text-neutral-600 leading-relaxed font-normal max-w-xl mb-8 text-center lg:text-left mx-auto lg:mx-0"
             >
@@ -78,7 +80,7 @@ export function ContactHero() {
             {/* Fast Action Buttons */}
             <motion.div
               initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{ duration: 0.45, delay: 0.24, ease: EASE_CINEMATIC }}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-10 w-full sm:w-auto"
             >
@@ -104,7 +106,7 @@ export function ContactHero() {
             {/* Verified Trust Strip */}
             <motion.div
               initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
               transition={{ duration: 0.45, delay: 0.32, ease: EASE_CINEMATIC }}
               className="w-full pt-8 border-t border-neutral-200/90 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-neutral-600 font-mono"
             >
@@ -132,7 +134,7 @@ export function ContactHero() {
           {/* ── Right Column: Grand Mascot Stage (Preserving 100% of character float loop) ── */}
           <motion.div
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={isLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.7, delay: 0.15, ease: EASE_CINEMATIC }}
             className="lg:col-span-6 relative flex items-center justify-center lg:justify-end"
           >

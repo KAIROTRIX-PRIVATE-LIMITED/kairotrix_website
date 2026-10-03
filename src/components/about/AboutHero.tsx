@@ -5,8 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MaskedReveal, DrawLine, revealMeta, revealBody, EASE_CINEMATIC } from '@/lib/animations';
+import { usePreloader } from '@/context/PreloaderContext';
 
 export function AboutHero() {
+  const { isLoaded } = usePreloader();
   return (
     <section className="relative w-full bg-transparent pt-32 sm:pt-36 lg:pt-44 pb-16 sm:pb-20 overflow-hidden">
       {/* Concentric Circular Radar Lines in Background with Brand Tint */}
@@ -37,7 +39,7 @@ export function AboutHero() {
         <motion.div
           variants={revealMeta}
           initial="hidden"
-          animate="visible"
+          animate={isLoaded ? "visible" : "hidden"}
           className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mb-4 text-center"
         >
           <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
@@ -62,7 +64,7 @@ export function AboutHero() {
         {/* Agnos-Style Main Split Card */}
         <motion.div
           initial={{ opacity: 0, y: 28, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+          animate={isLoaded ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.98 }}
           transition={{ duration: 0.65, delay: 0.16, ease: EASE_CINEMATIC }}
           className="relative rounded-2xl sm:rounded-[2rem] bg-white border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_32px_rgba(147,51,234,0.06)] transition-shadow duration-300 p-5 sm:p-8 lg:p-10"
         >
@@ -74,7 +76,7 @@ export function AboutHero() {
                 <motion.h2
                   variants={revealBody}
                   initial="hidden"
-                  animate="visible"
+                  animate={isLoaded ? "visible" : "hidden"}
                   transition={{ delay: 0.22 }}
                   className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.02em] text-neutral-950 leading-snug mb-4 sm:mb-5 text-center lg:text-left"
                 >
@@ -84,7 +86,7 @@ export function AboutHero() {
                 <motion.p
                   variants={revealBody}
                   initial="hidden"
-                  animate="visible"
+                  animate={isLoaded ? "visible" : "hidden"}
                   transition={{ delay: 0.28 }}
                   className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal mb-8 max-w-xl text-center lg:text-left mx-auto lg:mx-0"
                 >
@@ -94,7 +96,7 @@ export function AboutHero() {
 
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                 transition={{ duration: 0.45, delay: 0.34, ease: EASE_CINEMATIC }}
                 className="flex justify-center lg:justify-start w-full sm:w-auto"
               >

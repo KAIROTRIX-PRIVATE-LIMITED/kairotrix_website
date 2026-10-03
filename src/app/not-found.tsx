@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Home, ArrowRight, Layers, FolderGit2 } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { usePreloader } from '@/context/PreloaderContext';
 import {
   MaskedReveal,
   DrawLine,
@@ -16,6 +17,7 @@ import {
 
 export default function NotFound() {
   const prefersReduced = useReducedMotion();
+  const { isLoaded } = usePreloader();
 
   return (
     <main className="relative w-full min-h-[85vh] bg-[#FAFAFC] flex items-center justify-center pt-32 sm:pt-36 lg:pt-40 pb-20 overflow-hidden">
@@ -30,7 +32,7 @@ export default function NotFound() {
         {/* Animated Kiro Mascot Illustration */}
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, scale: 0.92, y: 24 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
+          animate={isLoaded ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.92, y: 24 }}
           transition={{ duration: 0.6, ease: EASE_CINEMATIC }}
           className="relative mb-6"
         >

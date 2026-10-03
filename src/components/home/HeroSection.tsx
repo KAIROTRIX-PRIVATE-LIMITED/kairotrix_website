@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { usePreloader } from '@/context/PreloaderContext';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KAIROTRIX HeroSection — Unified Light-Theme Master Hero
@@ -24,6 +25,7 @@ const FILM_EASE = [0.16, 1, 0.3, 1] as const;
 
 export function HeroSection() {
   const prefersReduced = useReducedMotion();
+  const { isLoaded } = usePreloader();
 
   // ── Video scrubbing state & refs ───────────────────────────────────────────
   const containerRef = useRef<HTMLDivElement>(null);
@@ -158,7 +160,7 @@ export function HeroSection() {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate="visible"
+          animate={isLoaded ? "visible" : "hidden"}
           className="lg:col-span-7 xl:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left mx-auto lg:mx-0 w-full"
         >
           {/* Eyebrow: Precision Horizon Layout */}

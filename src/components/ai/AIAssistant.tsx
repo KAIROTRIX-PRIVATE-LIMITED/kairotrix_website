@@ -23,6 +23,7 @@ import {
   ActionButton,
 } from '@/data/aiAssistantKnowledge';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { usePreloader } from '@/context/PreloaderContext';
 
 interface ChatMessage {
   id: string;
@@ -190,9 +191,7 @@ function TypewriterMessage({
 
 export function AIAssistant() {
   const pathname = usePathname();
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
+  const { isLoaded } = usePreloader();
   const isSolutionDetailPage = Boolean(pathname?.startsWith('/solutions/') && pathname !== '/solutions');
   const prefersReduced = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
@@ -455,6 +454,10 @@ export function AIAssistant() {
       prev.map((m) => (m.id === id ? { ...m, isStreaming: false } : m))
     );
   }, []);
+
+  if (pathname?.startsWith('/admin') || !isLoaded) {
+    return null;
+  }
 
   return (
     <>
