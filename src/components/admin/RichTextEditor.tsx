@@ -1,6 +1,13 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import {
   Bold,
   Italic,
@@ -25,10 +32,8 @@ import {
   RemoveFormatting,
   X,
   Upload,
-  Check,
-  AlertCircle,
 } from 'lucide-react';
-import MediaUploader from '@/components/admin/MediaUploader';
+import { getYoutubeId } from './MediaUploader';
 
 function YoutubeIcon({ className = 'w-4 h-4' }: { className?: string }) {
   return (
@@ -43,647 +48,742 @@ function YoutubeIcon({ className = 'w-4 h-4' }: { className?: string }) {
   );
 }
 
+export interface RichTextEditorHandle {
+  exec: (command: string, val?: string | null) => void;
+  formatBlock: (tag: 'h1' | 'h2' | 'h3' | 'p' | 'blockquote' | 'pre') => void;
+  openImageModal: () => void;
+  openYoutubeModal: () => void;
+  openLinkModal: () => void;
+  activeFormats: { [key: string]: boolean };
+  wordCount: number;
+  readingTime: string;
+}
+
 interface RichTextEditorProps {
   value: string;
   onChange: (html: string) => void;
+  onRegisterPendingFile?: (blobUrl: string, file: File) => void;
   placeholder?: string;
   minHeight?: string;
+  hideToolbar?: boolean;
 }
 
-export default function RichTextEditor({
-  value,
-  onChange,
-  placeholder = 'Write your technical article here... (Use H1, H2, H3, images, code blocks, or embed YouTube videos)',
-  minHeight = '420px',
-}: RichTextEditorProps) {
-  const editorRef = useRef<HTMLDivElement>(null);
-  const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
-  const [wordCount, setWordCount] = useState(0);
-  const [readingTime, setReadingTime] = useState('1 min read');
+const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
+  function RichTextEditor(
+    {
+      value,
+      onChange,
+      onRegisterPendingFile,
+      placeholder = 'Start writing your blog content here... Use headings, bullet lists, bold text, images or embeds.',
+      minHeight = '420px',
+      hideToolbar = false,
+    },
+    ref
+  ) {
+    const editorRef = useRef<HTMLDivElement>(null);
+    const savedRangeRef = useRef<Range | null>(null);
 
-  // Insert Image Modal State
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const [imageCaption, setImageCaption] = useState('');
+    const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
+    const [wordCount, setWordCount] = useState(0);
+    const [readingTime, setReadingTime] = useState('1 min read');
 
-  // Insert YouTube Video Modal State
-  const [isYoutubeModalOpen, setIsYoutubeModalOpen] = useState(false);
-  const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [youtubeCaption, setYoutubeCaption] = useState('');
+    // Insert Image Modal State
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imageCaption, setImageCaption] = useState('');
+    const imageInputRef = useRef<HTMLInputElement>(null);
 
-  // Insert Link Modal State
-  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
-  const [linkUrl, setLinkUrl] = useState('');
-  const [linkText, setLinkText] = useState('');
+    // Insert YouTube Video Modal State
+    const [isYoutubeModalOpen, setIsYoutubeModalOpen] = useState(false);
+    const [youtubeUrl, setYoutubeUrl] = useState('');
+    const [youtubeCaption, setYoutubeCaption] = useState('');
 
-  // Initialize editor content once
-  useEffect(() => {
-    if (editorRef.current && editorRef.current.innerHTML !== value) {
-      editorRef.current.innerHTML = value || '';
-      updateWordCount(value || '');
-    }
-  }, [value]);
+    // Insert Link Modal State
+    const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+    const [linkUrl, setLinkUrl] = useState('');
+    const [linkText, setLinkText] = useState('');
 
-  const updateWordCount = useCallback((html: string) => {
-    const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    const words = text ? text.split(/\s+/).length : 0;
-    setWordCount(words);
-    const readMin = Math.max(1, Math.ceil(words / 200));
-    setReadingTime(`${readMin} min read`);
-  }, []);
+    // 1. Synchronize external value with contentEditable innerHTML
+    useEffect(() => {
+      if (editorRef.current && editorRef.current.innerHTML !== (value || '')) {
+        editorRef.current.innerHTML = value || '';
+        updateWordCount(value || '');
+      }
+    }, [value]);
 
-  const checkActiveFormats = useCallback(() => {
-    if (typeof document === 'undefined') return;
-    try {
-      setActiveFormats({
-        bold: document.queryCommandState('bold'),
-        italic: document.queryCommandState('italic'),
-        underline: document.queryCommandState('underline'),
-        strikeThrough: document.queryCommandState('strikeThrough'),
-        insertUnorderedList: document.queryCommandState('insertUnorderedList'),
-        insertOrderedList: document.queryCommandState('insertOrderedList'),
-        justifyLeft: document.queryCommandState('justifyLeft'),
-        justifyCenter: document.queryCommandState('justifyCenter'),
-        justifyRight: document.queryCommandState('justifyRight'),
-      });
-    } catch {
-      // ignore
-    }
-  }, []);
+    const updateWordCount = useCallback((html: string) => {
+      const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      setWordCount(words);
+      const readMin = Math.max(1, Math.ceil(words / 200));
+      setReadingTime(`${readMin} min read`);
+    }, []);
 
-  const exec = (command: string, val: string | null = null) => {
-    if (typeof document === 'undefined') return;
-    document.execCommand(command, false, val ?? undefined);
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-      updateWordCount(editorRef.current.innerHTML);
-    }
-    checkActiveFormats();
-  };
+    // Save selection range
+    const saveSelection = useCallback(() => {
+      if (typeof window === 'undefined') return;
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0 && editorRef.current) {
+        const range = sel.getRangeAt(0);
+        if (editorRef.current.contains(range.commonAncestorContainer)) {
+          savedRangeRef.current = range.cloneRange();
+        }
+      }
+    }, []);
 
-  const formatBlock = (tag: string) => {
-    if (typeof document === 'undefined') return;
-    document.execCommand('formatBlock', false, tag);
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-      updateWordCount(editorRef.current.innerHTML);
-    }
-  };
+    // Restore selection range
+    const restoreSelection = useCallback(() => {
+      if (typeof window === 'undefined') return;
+      const sel = window.getSelection();
+      if (sel && savedRangeRef.current && editorRef.current) {
+        sel.removeAllRanges();
+        sel.addRange(savedRangeRef.current);
+      }
+    }, []);
 
-  const handleInput = () => {
-    if (editorRef.current) {
-      const html = editorRef.current.innerHTML;
-      onChange(html);
-      updateWordCount(html);
-      checkActiveFormats();
-    }
-  };
+    const checkActiveFormats = useCallback(() => {
+      if (typeof document === 'undefined') return;
+      try {
+        setActiveFormats({
+          bold: document.queryCommandState('bold'),
+          italic: document.queryCommandState('italic'),
+          underline: document.queryCommandState('underline'),
+          strikeThrough: document.queryCommandState('strikeThrough'),
+          insertUnorderedList: document.queryCommandState('insertUnorderedList'),
+          insertOrderedList: document.queryCommandState('insertOrderedList'),
+          justifyLeft: document.queryCommandState('justifyLeft'),
+          justifyCenter: document.queryCommandState('justifyCenter'),
+          justifyRight: document.queryCommandState('justifyRight'),
+        });
+      } catch {
+        // ignore
+      }
+    }, []);
 
-  // Helper to extract YouTube video ID
-  const extractYoutubeId = (url: string): string | null => {
-    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-    return match ? match[1] : null;
-  };
+    const handleInput = useCallback(() => {
+      if (editorRef.current) {
+        const html = editorRef.current.innerHTML;
+        onChange(html);
+        updateWordCount(html);
+        checkActiveFormats();
+        saveSelection();
+      }
+    }, [onChange, updateWordCount, checkActiveFormats, saveSelection]);
 
-  // Insert Image into Editor HTML
-  const handleInsertImage = () => {
-    if (!imageUrl) return;
-    const captionHtml = imageCaption
-      ? `<figcaption class="text-center text-xs font-mono text-neutral-500 mt-2 italic">${imageCaption}</figcaption>`
-      : '';
-    const figureHtml = `
-      <figure class="my-8 rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 p-2 shadow-xs">
-        <img src="${imageUrl}" alt="${imageCaption || 'Article figure'}" class="w-full h-auto rounded-xl object-cover" />
-        ${captionHtml}
-      </figure>
-      <p><br></p>
-    `;
+    // Execute standard command
+    const exec = useCallback(
+      (command: string, val: string | null = null) => {
+        if (typeof document === 'undefined') return;
+        editorRef.current?.focus();
+        restoreSelection();
+        document.execCommand(command, false, val ?? undefined);
+        handleInput();
+      },
+      [restoreSelection, handleInput]
+    );
 
-    exec('insertHTML', figureHtml);
-    setImageUrl('');
-    setImageCaption('');
-    setIsImageModalOpen(false);
-  };
+    // Format block (H1, H2, H3, P, Quote, Pre)
+    const formatBlock = useCallback(
+      (tag: 'h1' | 'h2' | 'h3' | 'p' | 'blockquote' | 'pre') => {
+        if (typeof document === 'undefined') return;
+        editorRef.current?.focus();
+        restoreSelection();
 
-  // Insert YouTube Video into Editor HTML
-  const handleInsertYoutube = () => {
-    const videoId = extractYoutubeId(youtubeUrl);
-    if (!videoId) {
-      alert('Please enter a valid YouTube video URL.');
-      return;
-    }
+        let success = false;
+        try {
+          success = document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
+        } catch {}
+        if (!success) {
+          try {
+            success = document.execCommand('formatBlock', false, `<${tag}>`);
+          } catch {}
+        }
+        if (!success) {
+          try {
+            document.execCommand('formatBlock', false, tag);
+          } catch {}
+        }
 
-    const captionHtml = youtubeCaption
-      ? `<figcaption class="text-center text-xs font-mono text-neutral-500 mt-2">${youtubeCaption}</figcaption>`
-      : '';
+        handleInput();
+      },
+      [restoreSelection, handleInput]
+    );
 
-    const videoEmbedHtml = `
-      <figure class="my-8 rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-900 p-2 shadow-md">
-        <div class="aspect-video w-full rounded-xl overflow-hidden">
-          <iframe 
-            class="w-full h-full"
-            src="https://www.youtube-nocookie.com/embed/${videoId}?rel=0" 
-            title="${youtubeCaption || 'YouTube Video Player'}"
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen
-          ></iframe>
-        </div>
-        ${captionHtml}
-      </figure>
-      <p><br></p>
-    `;
+    // Open Image Modal
+    const openImageModal = useCallback(() => {
+      saveSelection();
+      setImageUrl('');
+      setImageFile(null);
+      setImageCaption('');
+      setIsImageModalOpen(true);
+    }, [saveSelection]);
 
-    exec('insertHTML', videoEmbedHtml);
-    setYoutubeUrl('');
-    setYoutubeCaption('');
-    setIsYoutubeModalOpen(false);
-  };
+    // Open YouTube Modal
+    const openYoutubeModal = useCallback(() => {
+      saveSelection();
+      setYoutubeUrl('');
+      setYoutubeCaption('');
+      setIsYoutubeModalOpen(true);
+    }, [saveSelection]);
 
-  // Insert Hyperlink
-  const handleInsertLink = () => {
-    if (!linkUrl) return;
-    if (linkText) {
-      const linkHtml = `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer" class="text-brand-600 hover:text-brand-700 underline font-medium">${linkText}</a>`;
-      exec('insertHTML', linkHtml);
-    } else {
-      exec('createLink', linkUrl);
-    }
-    setLinkUrl('');
-    setLinkText('');
-    setIsLinkModalOpen(false);
-  };
+    // Open Link Modal
+    const openLinkModal = useCallback(() => {
+      saveSelection();
+      const sel = window.getSelection();
+      if (sel && sel.toString().trim()) {
+        setLinkText(sel.toString().trim());
+      } else {
+        setLinkText('');
+      }
+      setLinkUrl('');
+      setIsLinkModalOpen(true);
+    }, [saveSelection]);
 
-  return (
-    <div className="w-full rounded-2xl bg-white border border-neutral-200/80 shadow-xs overflow-hidden flex flex-col">
-      {/* ─── 1. FIXED WORD-STYLE FORMATTING RIBBON ─── */}
-      <div className="p-2 sm:p-2.5 bg-neutral-100/90 border-b border-neutral-200 flex flex-wrap items-center gap-1 sm:gap-1.5 text-neutral-700 select-none sticky top-0 z-20 backdrop-blur-md">
-        {/* Headings Dropdown */}
-        <div className="flex items-center gap-1 pr-2 border-r border-neutral-200">
-          <button
-            type="button"
-            title="Normal Paragraph"
-            onClick={() => formatBlock('p')}
-            className="px-2 py-1 rounded hover:bg-neutral-200/70 text-xs font-mono font-medium flex items-center gap-1 cursor-pointer transition-colors"
-          >
-            <Pilcrow className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">P</span>
-          </button>
-          <button
-            type="button"
-            title="Heading 1 (Main Section)"
-            onClick={() => formatBlock('h1')}
-            className="px-2 py-1 rounded hover:bg-neutral-200/70 text-xs font-display font-bold flex items-center gap-0.5 cursor-pointer text-brand-700 transition-colors"
-          >
-            <Heading1 className="w-3.5 h-3.5" />
-            <span>H1</span>
-          </button>
-          <button
-            type="button"
-            title="Heading 2 (Subsection)"
-            onClick={() => formatBlock('h2')}
-            className="px-2 py-1 rounded hover:bg-neutral-200/70 text-xs font-display font-bold flex items-center gap-0.5 cursor-pointer text-purple-700 transition-colors"
-          >
-            <Heading2 className="w-3.5 h-3.5" />
-            <span>H2</span>
-          </button>
-          <button
-            type="button"
-            title="Heading 3 (Minor Topic)"
-            onClick={() => formatBlock('h3')}
-            className="px-2 py-1 rounded hover:bg-neutral-200/70 text-xs font-display font-bold flex items-center gap-0.5 cursor-pointer text-indigo-700 transition-colors"
-          >
-            <Heading3 className="w-3.5 h-3.5" />
-            <span>H3</span>
-          </button>
-        </div>
+    // Expose handle for external toolbar integration
+    useImperativeHandle(
+      ref,
+      () => ({
+        exec,
+        formatBlock,
+        openImageModal,
+        openYoutubeModal,
+        openLinkModal,
+        activeFormats,
+        wordCount,
+        readingTime,
+      }),
+      [
+        exec,
+        formatBlock,
+        openImageModal,
+        openYoutubeModal,
+        openLinkModal,
+        activeFormats,
+        wordCount,
+        readingTime,
+      ]
+    );
 
-        {/* Text Style: Bold, Italic, Underline, Strike */}
-        <div className="flex items-center gap-0.5 pr-2 border-r border-neutral-200">
-          <button
-            type="button"
-            title="Bold (Ctrl+B)"
-            onClick={() => exec('bold')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.bold ? 'bg-brand-100 text-brand-800 font-bold' : ''
-            }`}
-          >
-            <Bold className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Italic (Ctrl+I)"
-            onClick={() => exec('italic')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.italic ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <Italic className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Underline (Ctrl+U)"
-            onClick={() => exec('underline')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.underline ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <Underline className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Strikethrough"
-            onClick={() => exec('strikeThrough')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.strikeThrough ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <Strikethrough className="w-3.5 h-3.5" />
-          </button>
-        </div>
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === 'b' || e.key === 'B') {
+          e.preventDefault();
+          exec('bold');
+        } else if (e.key === 'i' || e.key === 'I') {
+          e.preventDefault();
+          exec('italic');
+        } else if (e.key === 'u' || e.key === 'U') {
+          e.preventDefault();
+          exec('underline');
+        } else if (e.key === 'z' || e.key === 'Z') {
+          if (e.shiftKey) {
+            e.preventDefault();
+            exec('redo');
+          } else {
+            e.preventDefault();
+            exec('undo');
+          }
+        } else if (e.key === 'y' || e.key === 'Y') {
+          e.preventDefault();
+          exec('redo');
+        }
+      }
+    };
 
-        {/* Lists & Quotes */}
-        <div className="flex items-center gap-0.5 pr-2 border-r border-neutral-200">
-          <button
-            type="button"
-            title="Bullet List"
-            onClick={() => exec('insertUnorderedList')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.insertUnorderedList ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <List className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Numbered List"
-            onClick={() => exec('insertOrderedList')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.insertOrderedList ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <ListOrdered className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Blockquote Callout"
-            onClick={() => formatBlock('blockquote')}
-            className="p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors"
-          >
-            <Quote className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Code Block"
-            onClick={() => formatBlock('pre')}
-            className="p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors"
-          >
-            <Code className="w-3.5 h-3.5 text-brand-700" />
-          </button>
-        </div>
+    const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        const file = e.target.files[0];
+        setImageFile(file);
+        const preview = URL.createObjectURL(file);
+        setImageUrl(preview);
+      }
+    };
 
-        {/* Alignment */}
-        <div className="hidden sm:flex items-center gap-0.5 pr-2 border-r border-neutral-200">
-          <button
-            type="button"
-            title="Align Left"
-            onClick={() => exec('justifyLeft')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.justifyLeft ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <AlignLeft className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Align Center"
-            onClick={() => exec('justifyCenter')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.justifyCenter ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <AlignCenter className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Align Right"
-            onClick={() => exec('justifyRight')}
-            className={`p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors ${
-              activeFormats.justifyRight ? 'bg-brand-100 text-brand-800' : ''
-            }`}
-          >
-            <AlignRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+    const handleInsertImage = () => {
+      if (!imageUrl) return;
 
-        {/* Rich Media: Insert Image, Insert YouTube Video, Link */}
-        <div className="flex items-center gap-1 pr-2 border-r border-neutral-200">
-          <button
-            type="button"
-            title="Insert Image (Upload or URL)"
-            onClick={() => setIsImageModalOpen(true)}
-            className="px-2.5 py-1 rounded bg-white hover:bg-brand-50 hover:text-brand-700 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer border border-neutral-200 shadow-xs"
-          >
-            <ImageIcon className="w-3.5 h-3.5 text-brand-600" />
-            <span className="hidden md:inline font-semibold">Image</span>
-          </button>
+      if (imageFile && imageUrl.startsWith('blob:') && onRegisterPendingFile) {
+        onRegisterPendingFile(imageUrl, imageFile);
+      }
 
-          <button
-            type="button"
-            title="Insert YouTube Video (Paste Link)"
-            onClick={() => setIsYoutubeModalOpen(true)}
-            className="px-2.5 py-1 rounded bg-white hover:bg-red-50 hover:text-red-700 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer border border-neutral-200 shadow-xs"
-          >
-            <YoutubeIcon className="w-3.5 h-3.5 text-red-600" />
-            <span className="hidden md:inline font-semibold">YouTube</span>
-          </button>
+      const captionHtml = imageCaption.trim()
+        ? `<figcaption class="text-center text-xs font-mono text-neutral-500 mt-2 italic">${imageCaption.trim()}</figcaption>`
+        : '';
 
-          <button
-            type="button"
-            title="Insert Hyperlink"
-            onClick={() => setIsLinkModalOpen(true)}
-            className="p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors"
-          >
-            <LinkIcon className="w-3.5 h-3.5 text-blue-600" />
-          </button>
-          <button
-            type="button"
-            title="Remove Link"
-            onClick={() => exec('unlink')}
-            className="p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer transition-colors"
-          >
-            <Unlink className="w-3.5 h-3.5 text-neutral-400" />
-          </button>
-        </div>
+      const figureHtml = `
+        <figure class="my-6 rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 p-2 shadow-xs">
+          <img src="${imageUrl}" alt="${imageCaption.trim() || 'Article figure'}" class="w-full h-auto rounded-xl object-cover" />
+          ${captionHtml}
+        </figure>
+        <p><br></p>
+      `;
 
-        {/* Utilities: Undo, Redo, Clear */}
-        <div className="flex items-center gap-0.5 ml-auto">
-          <button
-            type="button"
-            title="Undo"
-            onClick={() => exec('undo')}
-            className="p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer text-neutral-500 hover:text-neutral-900 transition-colors"
-          >
-            <Undo className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Redo"
-            onClick={() => exec('redo')}
-            className="p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer text-neutral-500 hover:text-neutral-900 transition-colors"
-          >
-            <Redo className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Clear Formatting"
-            onClick={() => exec('removeFormat')}
-            className="p-1.5 rounded hover:bg-neutral-200/70 cursor-pointer text-neutral-500 hover:text-neutral-900 transition-colors"
-          >
-            <RemoveFormatting className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
+      editorRef.current?.focus();
+      restoreSelection();
+      document.execCommand('insertHTML', false, figureHtml);
+      handleInput();
 
-      {/* ─── 2. DOCUMENT CANVAS / PAPER ─── */}
-      <div className="relative p-6 sm:p-10 flex-1 bg-white overflow-y-auto min-h-[420px]">
+      setImageUrl('');
+      setImageFile(null);
+      setImageCaption('');
+      setIsImageModalOpen(false);
+    };
+
+    const handleInsertYoutube = () => {
+      const videoId = getYoutubeId(youtubeUrl);
+      if (!videoId) {
+        alert('Please enter a valid YouTube video URL');
+        return;
+      }
+
+      const captionHtml = youtubeCaption.trim()
+        ? `<figcaption class="text-center text-xs font-mono text-neutral-500 mt-2 italic">${youtubeCaption.trim()}</figcaption>`
+        : '';
+
+      const videoEmbedHtml = `
+        <figure class="my-6 rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-900 p-2 shadow-md">
+          <div class="aspect-video w-full rounded-xl overflow-hidden">
+            <iframe 
+              class="w-full h-full"
+              src="https://www.youtube-nocookie.com/embed/${videoId}?rel=0" 
+              title="${youtubeCaption.trim() || 'YouTube Video Player'}"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen
+            ></iframe>
+          </div>
+          ${captionHtml}
+        </figure>
+        <p><br></p>
+      `;
+
+      editorRef.current?.focus();
+      restoreSelection();
+      document.execCommand('insertHTML', false, videoEmbedHtml);
+      handleInput();
+
+      setYoutubeUrl('');
+      setYoutubeCaption('');
+      setIsYoutubeModalOpen(false);
+    };
+
+    const handleInsertLink = () => {
+      if (!linkUrl) return;
+      editorRef.current?.focus();
+      restoreSelection();
+
+      if (linkText) {
+        const cleanUrl =
+          linkUrl.startsWith('http://') ||
+          linkUrl.startsWith('https://') ||
+          linkUrl.startsWith('/')
+            ? linkUrl
+            : `https://${linkUrl}`;
+        const linkHtml = `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="text-brand-600 hover:text-brand-700 underline font-medium">${linkText}</a>`;
+        document.execCommand('insertHTML', false, linkHtml);
+      } else {
+        document.execCommand('createLink', false, linkUrl);
+      }
+
+      handleInput();
+      setLinkUrl('');
+      setLinkText('');
+      setIsLinkModalOpen(false);
+    };
+
+    const previewYoutubeId = getYoutubeId(youtubeUrl);
+
+    return (
+      <div className="w-full flex flex-col">
+        {/* Optional Inline Ribbon if not hidden */}
+        {!hideToolbar && (
+          <div className="p-2 sm:p-2.5 bg-neutral-100/90 border-b border-neutral-200/90 flex flex-wrap items-center gap-1 sm:gap-1.5 text-neutral-700 select-none rounded-t-2xl">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => formatBlock('p')}
+              className="px-2 py-1.5 rounded-lg hover:bg-neutral-200/80 text-xs font-mono cursor-pointer"
+            >
+              <Pilcrow className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => formatBlock('h1')}
+              className="px-2 py-1.5 rounded-lg hover:bg-neutral-200/80 text-xs font-display font-bold cursor-pointer"
+            >
+              H1
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => formatBlock('h2')}
+              className="px-2 py-1.5 rounded-lg hover:bg-neutral-200/80 text-xs font-display font-bold cursor-pointer"
+            >
+              H2
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => formatBlock('h3')}
+              className="px-2 py-1.5 rounded-lg hover:bg-neutral-200/80 text-xs font-display font-bold cursor-pointer"
+            >
+              H3
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => exec('bold')}
+              className="p-1.5 rounded-lg hover:bg-neutral-200/80 cursor-pointer"
+            >
+              <Bold className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => exec('italic')}
+              className="p-1.5 rounded-lg hover:bg-neutral-200/80 cursor-pointer"
+            >
+              <Italic className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => exec('insertUnorderedList')}
+              className="p-1.5 rounded-lg hover:bg-neutral-200/80 cursor-pointer"
+            >
+              <List className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => exec('insertOrderedList')}
+              className="p-1.5 rounded-lg hover:bg-neutral-200/80 cursor-pointer"
+            >
+              <ListOrdered className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={openImageModal}
+              className="p-1.5 rounded-lg hover:bg-neutral-200/80 cursor-pointer text-brand-600"
+            >
+              <ImageIcon className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={openYoutubeModal}
+              className="p-1.5 rounded-lg hover:bg-neutral-200/80 cursor-pointer text-rose-600"
+            >
+              <YoutubeIcon className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={openLinkModal}
+              className="p-1.5 rounded-lg hover:bg-neutral-200/80 cursor-pointer text-blue-600"
+            >
+              <LinkIcon className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
+        {/* ContentEditable Canvas Area */}
         <div
           ref={editorRef}
           contentEditable
           suppressContentEditableWarning
           onInput={handleInput}
-          onKeyUp={checkActiveFormats}
-          onMouseUp={checkActiveFormats}
+          onKeyUp={() => {
+            checkActiveFormats();
+            saveSelection();
+          }}
+          onMouseUp={() => {
+            checkActiveFormats();
+            saveSelection();
+          }}
+          onBlur={saveSelection}
+          onKeyDown={handleKeyDown}
           data-placeholder={placeholder}
           style={{ minHeight }}
-          className="rich-editor-content outline-none text-neutral-900 text-base sm:text-lg leading-relaxed font-sans
-            prose prose-neutral max-w-none
-            prose-headings:font-display prose-headings:font-bold prose-headings:text-neutral-950 prose-headings:tracking-tight
-            prose-h1:text-2xl prose-h1:sm:text-3xl prose-h1:mt-8 prose-h1:mb-4 prose-h1:text-neutral-950
-            prose-h2:text-xl prose-h2:sm:text-2xl prose-h2:mt-6 prose-h2:mb-3 prose-h2:text-neutral-900
-            prose-h3:text-lg prose-h3:sm:text-xl prose-h3:mt-4 prose-h3:mb-2 prose-h3:text-neutral-800
-            prose-p:text-neutral-700 prose-p:mb-4
-            prose-blockquote:border-l-4 prose-blockquote:border-brand-500 prose-blockquote:bg-brand-50/60 prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:rounded-r-xl prose-blockquote:italic prose-blockquote:text-neutral-800
-            prose-pre:bg-neutral-900 prose-pre:border prose-pre:border-neutral-800 prose-pre:p-4 prose-pre:rounded-xl prose-pre:font-mono prose-pre:text-sm prose-pre:text-brand-300
-            prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-1
-            prose-ol:list-decimal prose-ol:pl-6 prose-ol:space-y-1"
+          className="rich-editor-content outline-none text-neutral-900 text-base sm:text-lg leading-relaxed font-sans w-full"
         />
-      </div>
 
-      {/* ─── 3. BOTTOM WORD COUNT & READING TIME TICKER ─── */}
-      <div className="px-4 py-2.5 bg-neutral-50 border-t border-neutral-200 flex items-center justify-between text-[11px] font-mono text-neutral-500">
-        <div className="flex items-center gap-4">
-          <span className="font-semibold text-neutral-700">{wordCount} words</span>
-          <span>•</span>
-          <span className="font-semibold text-neutral-700">{readingTime}</span>
-        </div>
-        <span className="text-neutral-400 hidden sm:inline">
-          Rich text editor • HTML formatted
-        </span>
-      </div>
-
-      {/* ─── INSERT IMAGE MODAL ─── */}
-      {isImageModalOpen && (
-        <div className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white border border-neutral-200 p-6 sm:p-8 shadow-2xl text-neutral-900">
-            <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-5">
-              <div className="flex items-center gap-2 text-brand-700 font-display font-bold text-sm">
-                <ImageIcon className="w-4 h-4 text-brand-600" />
-                <span>Insert Image into Article</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsImageModalOpen(false)}
-                className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 p-1.5 rounded-lg transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold">
-                  Upload or Select Image:
-                </label>
-                <MediaUploader
-                  value={imageUrl}
-                  onChange={(url) => setImageUrl(url)}
-                  label="Upload Image via Cloudinary or URL"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  Optional Caption / Alt Text:
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Multi-agent state machine architecture diagram"
-                  value={imageCaption}
-                  onChange={(e) => setImageCaption(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-sans placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+        {/* ─── INSERT IMAGE MODAL ─── */}
+        {isImageModalOpen && (
+          <div className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="w-full max-w-lg rounded-3xl bg-white border border-neutral-200 p-6 sm:p-8 shadow-2xl text-neutral-900">
+              <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-5">
+                <div className="flex items-center gap-2 text-brand-700 font-display font-bold text-sm">
+                  <ImageIcon className="w-4 h-4 text-brand-600" />
+                  <span>Insert Image into Article</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setIsImageModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 text-xs font-mono uppercase cursor-pointer"
+                  className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 p-1.5 rounded-lg transition-colors cursor-pointer"
                 >
-                  Cancel
+                  <X className="w-4 h-4" />
                 </button>
-                <button
-                  type="button"
-                  onClick={handleInsertImage}
-                  disabled={!imageUrl}
-                  className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-40 text-white text-xs font-mono uppercase font-bold transition-all cursor-pointer shadow-xs"
-                >
-                  Insert Image
-                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold">
+                    Choose Image File or Paste URL:
+                  </label>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml,image/avif"
+                    onChange={handleImageFileChange}
+                    className="hidden"
+                  />
+
+                  {imageUrl ? (
+                    <div className="relative rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 p-2 space-y-2">
+                      <div className="relative max-h-56 min-h-28 flex items-center justify-center overflow-hidden rounded-xl bg-neutral-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={imageUrl}
+                          alt="Preview"
+                          className="max-h-52 w-auto object-contain rounded-lg"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">
+                          Preview ready
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => imageInputRef.current?.click()}
+                          className="text-xs font-mono text-brand-600 hover:underline cursor-pointer"
+                        >
+                          Change Image
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => imageInputRef.current?.click()}
+                      className="p-6 rounded-2xl border-2 border-dashed border-neutral-300 hover:border-brand-500 bg-neutral-50 hover:bg-brand-50/20 text-center cursor-pointer transition-colors"
+                    >
+                      <Upload className="w-6 h-6 text-brand-600 mx-auto mb-2" />
+                      <p className="text-xs font-semibold text-neutral-900">
+                        Click to choose image file
+                      </p>
+                      <p className="text-[11px] text-neutral-500 font-mono mt-0.5">
+                        WebP, PNG, JPG, SVG (Instant preview)
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-600 mb-1">
+                    Or Direct Image URL:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://example.com/diagram.png"
+                    value={imageUrl.startsWith('blob:') ? '' : imageUrl}
+                    onChange={(e) => {
+                      setImageUrl(e.target.value);
+                      setImageFile(null);
+                    }}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-mono placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold">
+                    Caption / Figure Label (Optional):
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Figure 1: Architecture breakdown"
+                    value={imageCaption}
+                    onChange={(e) => setImageCaption(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-sans placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsImageModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 text-xs font-mono uppercase cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleInsertImage}
+                    disabled={!imageUrl}
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-500 hover:to-brand-600 disabled:opacity-40 text-white text-xs font-mono uppercase font-bold transition-all cursor-pointer shadow-xs"
+                  >
+                    Insert Image
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ─── INSERT YOUTUBE MODAL ─── */}
-      {isYoutubeModalOpen && (
-        <div className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white border border-neutral-200 p-6 sm:p-8 shadow-2xl text-neutral-900">
-            <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-5">
-              <div className="flex items-center gap-2 text-red-600 font-display font-bold text-sm">
-                <YoutubeIcon className="w-4 h-4 text-red-600" />
-                <span>Embed YouTube Video</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsYoutubeModalOpen(false)}
-                className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 p-1.5 rounded-lg transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  YouTube Video Link:
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-mono placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-red-500 transition-colors"
-                />
-                <span className="text-[10px] text-neutral-500 mt-1 block">
-                  Paste any public or unlisted YouTube video URL.
-                </span>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  Optional Video Caption / Title:
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. End-to-end benchmark walkthrough and live telemetry demo"
-                  value={youtubeCaption}
-                  onChange={(e) => setYoutubeCaption(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-sans placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-red-500 transition-colors"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+        {/* ─── INSERT YOUTUBE VIDEO MODAL ─── */}
+        {isYoutubeModalOpen && (
+          <div className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="w-full max-w-lg rounded-3xl bg-white border border-neutral-200 p-6 sm:p-8 shadow-2xl text-neutral-900">
+              <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-5">
+                <div className="flex items-center gap-2 text-rose-700 font-display font-bold text-sm">
+                  <YoutubeIcon className="w-5 h-5 text-rose-600" />
+                  <span>Embed YouTube Video</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setIsYoutubeModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 text-xs font-mono uppercase cursor-pointer"
+                  className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 p-1.5 rounded-lg transition-colors cursor-pointer"
                 >
-                  Cancel
+                  <X className="w-4 h-4" />
                 </button>
-                <button
-                  type="button"
-                  onClick={handleInsertYoutube}
-                  disabled={!youtubeUrl}
-                  className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-40 text-white text-xs font-mono uppercase font-bold transition-all cursor-pointer shadow-xs"
-                >
-                  Embed Video
-                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold">
+                    YouTube Video URL:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-mono placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-rose-500 transition-colors"
+                  />
+                </div>
+
+                {previewYoutubeId && (
+                  <div className="rounded-2xl overflow-hidden border border-neutral-200 shadow-xs bg-black">
+                    <div className="aspect-video w-full">
+                      <iframe
+                        className="w-full h-full"
+                        src={`https://www.youtube-nocookie.com/embed/${previewYoutubeId}?rel=0`}
+                        title="YouTube Preview"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
+                    Optional Video Caption:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Demonstration of real-time multi-agent negotiation"
+                    value={youtubeCaption}
+                    onChange={(e) => setYoutubeCaption(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-sans placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-rose-500 transition-colors"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsYoutubeModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 text-xs font-mono uppercase cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleInsertYoutube}
+                    disabled={!previewYoutubeId}
+                    className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-40 text-white text-xs font-mono uppercase font-bold transition-all cursor-pointer shadow-xs"
+                  >
+                    Embed Video
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ─── INSERT LINK MODAL ─── */}
-      {isLinkModalOpen && (
-        <div className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white border border-neutral-200 p-6 sm:p-8 shadow-2xl text-neutral-900">
-            <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-4">
-              <div className="flex items-center gap-2 text-blue-600 font-display font-bold text-sm">
-                <LinkIcon className="w-4 h-4 text-blue-600" />
-                <span>Insert Hyperlink</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsLinkModalOpen(false)}
-                className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 p-1.5 rounded-lg transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  Link Destination (URL):
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://example.com"
-                  value={linkUrl}
-                  onChange={(e) => setLinkUrl(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-mono placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                  Link Text (Optional if text selected):
-                </label>
-                <input
-                  type="text"
-                  placeholder="Click here"
-                  value={linkText}
-                  onChange={(e) => setLinkText(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-sans placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-colors"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+        {/* ─── INSERT LINK MODAL ─── */}
+        {isLinkModalOpen && (
+          <div className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="w-full max-w-md rounded-3xl bg-white border border-neutral-200 p-6 sm:p-8 shadow-2xl text-neutral-900">
+              <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-5">
+                <div className="flex items-center gap-2 text-blue-700 font-display font-bold text-sm">
+                  <LinkIcon className="w-4 h-4 text-blue-600" />
+                  <span>Insert Hyperlink</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setIsLinkModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 text-xs font-mono uppercase cursor-pointer"
+                  className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 p-1.5 rounded-lg transition-colors cursor-pointer"
                 >
-                  Cancel
+                  <X className="w-4 h-4" />
                 </button>
-                <button
-                  type="button"
-                  onClick={handleInsertLink}
-                  disabled={!linkUrl}
-                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-xs font-mono uppercase font-bold transition-all cursor-pointer shadow-xs"
-                >
-                  Insert Link
-                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
+                    Destination URL:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://example.com/spec or /solutions/ai-intelligent-systems"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-mono placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
+                    Display Text (Optional):
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Clickable link label"
+                    value={linkText}
+                    onChange={(e) => setLinkText(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-sans placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-colors"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsLinkModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 text-xs font-mono uppercase cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleInsertLink}
+                    disabled={!linkUrl}
+                    className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-xs font-mono uppercase font-bold transition-all cursor-pointer shadow-xs"
+                  >
+                    Apply Link
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
+        )}
+      </div>
+    );
+  }
+);
+
+export default RichTextEditor;

@@ -251,7 +251,6 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const isDark = false;
 
-
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const [activeMenu, setActiveMenu] = useState<'solutions' | null>(null);
@@ -277,11 +276,9 @@ export function Navbar() {
       // Detect whether we are in the Hero video scroll region or on /work page
       const isWorkPage = pathname?.startsWith('/work');
       const whatIsSection = document.getElementById('what-is-kairotrix');
-      const isHeroActive = whatIsSection
-        ? currentScrollY < whatIsSection.offsetTop - 100
-        : false;
+      const inHero = pathname === '/' && (whatIsSection ? currentScrollY < whatIsSection.offsetTop - 80 : currentScrollY < 600);
 
-      if (isHeroActive || isWorkPage) {
+      if (inHero || isWorkPage) {
         // Hero Section & Work Page: Hide on scroll down to allow full visual immersion, reveal on scroll up
         if (currentScrollY <= 10) {
           setIsVisible(true);
@@ -381,7 +378,7 @@ export function Navbar() {
               aria-label="KAIROTRIX Home"
             >
               <Image
-                src="/assets/brand/PRIMARY_LOGO_WIDE/KAIROTRIX_Logo_Black_Wide.svg"
+                src={isDark ? "/assets/brand/PRIMARY_LOGO_WIDE/KAIROTRIX_Logo_White_Wide.svg" : "/assets/brand/PRIMARY_LOGO_WIDE/KAIROTRIX_Logo_Black_Wide.svg"}
                 alt="KAIROTRIX"
                 width={200}
                 height={46}
@@ -394,7 +391,12 @@ export function Navbar() {
           {/* === DESKTOP NAVIGATION (CENTERED WITH FLOATING 3D GLASS PILLS) === */}
           <nav
             onMouseLeave={() => setHoveredNav(null)}
-            className="relative hidden lg:flex items-center justify-center gap-1 p-1.5 rounded-2xl bg-white/70 backdrop-blur-xl border border-black/[0.06] shadow-[0_6px_24px_rgba(147,51,234,0.12),0_2px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.9)] transition-all duration-300"
+            className={cn(
+              "relative hidden lg:flex items-center justify-center gap-1 p-1.5 rounded-2xl backdrop-blur-xl transition-all duration-300",
+              isDark
+                ? "bg-black/50 border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.12)] text-neutral-300"
+                : "bg-white/70 border border-black/[0.06] shadow-[0_6px_24px_rgba(147,51,234,0.12),0_2px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.9)]"
+            )}
           >
             
             {/* 1. Solutions Mega Menu trigger (Static parent centers menu relative to <nav>) */}
@@ -859,7 +861,12 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-xl border border-black/[0.08] bg-black/[0.04] text-neutral-700 hover:text-black hover:bg-black/[0.08] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              className={cn(
+                "lg:hidden p-2.5 rounded-xl border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
+                isDark
+                  ? "border-white/15 bg-white/10 text-white hover:bg-white/20"
+                  : "border-black/[0.08] bg-black/[0.04] text-neutral-700 hover:text-black hover:bg-black/[0.08]"
+              )}
               aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
               aria-expanded={mobileMenuOpen}
             >

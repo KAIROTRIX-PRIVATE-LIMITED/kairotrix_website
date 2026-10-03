@@ -101,7 +101,7 @@ export async function POST(request: Request) {
         tags: Array.isArray(tags) ? tags : [],
         featured: Boolean(featured),
         videoSrc: videoSrc || null,
-        image: image || '/images/solutions/hero-3d.png',
+        image: image || '',
         keyTakeaway: keyTakeaway || excerpt,
         empiricalMetricLabel: empiricalMetricLabel || null,
         empiricalMetricValue: empiricalMetricValue || null,

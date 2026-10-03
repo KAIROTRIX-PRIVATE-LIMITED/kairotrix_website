@@ -83,82 +83,73 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
       <Link
         href={`/solutions/${discipline.slug}`}
         onMouseEnter={onHover}
-        className="group relative flex items-center justify-between py-5 sm:py-6 lg:py-6.5 px-3 sm:px-5 transition-all duration-300 hover:bg-white rounded-2xl hover:shadow-[0_10px_36px_rgba(147,51,234,0.08)] overflow-hidden"
+        className="group relative flex items-center justify-between py-6 sm:py-7 lg:py-8 px-4 sm:px-8 transition-all duration-500 rounded-2xl overflow-hidden hover:bg-white border border-transparent hover:border-brand-500/25 hover:shadow-[0_16px_48px_rgba(147,51,234,0.12)] min-h-[120px] sm:min-h-[140px]"
       >
         {/* Specular sheen sweep on hover */}
         <div
-          className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-brand-500/[0.05] to-transparent z-10"
+          className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-brand-500/[0.06] to-transparent z-20"
           aria-hidden="true"
         />
 
-        {/* Left Side: Sliding Image Chamber + Discipline Content */}
-        <div className="flex items-center min-w-0 pr-4 z-20">
-          
-          {/* ── Slide-in Image Chamber (ArcSphere Studio Interaction) ── */}
+        {/* ── Full-Bleed Background Image on Hover ── */}
+        <div
+          className="pointer-events-none absolute inset-0 w-full h-full overflow-hidden z-0"
+          aria-hidden="true"
+        >
           <motion.div
             initial={false}
             animate={{
-              width: isHovered ? 140 : 0,
               opacity: isHovered ? 1 : 0,
-              marginRight: isHovered ? 20 : 0,
-              scale: isHovered ? 1 : 0.88,
+              scale: isHovered ? 1 : 1.05,
             }}
             transition={{
-              duration: shouldReduceMotion ? 0 : 0.36,
+              duration: shouldReduceMotion ? 0 : 0.45,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="hidden sm:block overflow-hidden shrink-0 rounded-xl relative border border-brand-500/20 bg-neutral-900/[0.02] shadow-2xs"
-            style={{ height: 84 }}
+            className="relative w-full h-full"
           >
-            <div className="relative w-[140px] h-[84px] flex items-center justify-center p-2 bg-gradient-to-br from-brand-50/70 via-white to-neutral-50/80 overflow-hidden">
-              <div className="absolute inset-0 bg-brand-500/10 blur-sm pointer-events-none" />
-              <Image
-                src={discipline.gridImage || discipline.image}
-                alt={discipline.title}
-                fill
-                className="object-contain p-2 drop-shadow-[0_4px_14px_rgba(147,51,234,0.22)] transition-transform duration-500 group-hover:scale-105"
-                sizes="140px"
-              />
-            </div>
+            <Image
+              src={discipline.gridImage || discipline.image}
+              alt={discipline.title}
+              fill
+              className="object-cover object-right"
+              sizes="(max-width: 1200px) 100vw, 1200px"
+              priority={index < 2}
+              
+            />
+
+            {/* Editorial Scrim Overlay: Gradient from opaque card background on the left protecting typography, smoothly revealing the full 3D artwork on the right */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FAFAFC] via-[#FAFAFC]/90 to-[#FAFAFC]/30 sm:from-white sm:via-white/85 sm:to-transparent" />
+            {/* Right edge protection ensuring action trigger maintains pristine contrast */}
+            <div className="absolute inset-y-0 right-0 w-36 bg-gradient-to-l from-white/70 via-white/30 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-brand-500/[0.03] mix-blend-multiply" />
           </motion.div>
+        </div>
 
-          {/* Discipline Text Stack */}
-          <div className="space-y-1.5 min-w-0">
-            {/* Meta Eyebrow: CORE SOLUTION */}
-           
-
+        {/* Left Side: Discipline Text Stack */}
+        <div className="relative flex items-center min-w-0 pr-4 sm:pr-8 z-10 max-w-xl lg:max-w-2xl">
+          <div className="space-y-1.5 sm:space-y-2 min-w-0">
             {/* Discipline Title */}
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-neutral-900 group-hover:text-brand-600 transition-colors duration-300">
               {discipline.title}
             </h3>
 
             {/* Plain-English Purpose Description */}
-            <p className="text-xs sm:text-sm text-neutral-600 font-normal line-clamp-2 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-neutral-600 font-normal line-clamp-2 max-w-xl sm:max-w-2xl leading-relaxed transition-colors duration-300 group-hover:text-neutral-700">
               {SOLUTION_DESCRIPTIONS[discipline.slug] || discipline.subtitle}
             </p>
           </div>
-
         </div>
 
-        {/* Right Side: Exact Core Services Count & Circular Arrow Trigger */}
-        <div className="flex items-center gap-3 shrink-0 z-20">
-          {/* Mobile Image (shown only on small screens < sm) */}
-          <div className="sm:hidden relative w-12 h-12 shrink-0 rounded-lg overflow-hidden border border-neutral-200/80 bg-neutral-50 p-1">
-            <Image
-              src={discipline.gridImage || discipline.image}
-              alt={discipline.title}
-              fill
-              className="object-contain p-1"
-              sizes="48px"
-            />
-          </div>
-
-          <span className="hidden md:inline-block text-xs font-tech font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-brand-600 transition-colors">
-            EXPLORE
-          </span>
-
-          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-neutral-200/90 flex items-center justify-center text-neutral-400 group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-[0_4px_16px_rgba(147,51,234,0.25)] transition-all duration-300 shadow-2xs">
-            <ArrowUpRight className="w-4 h-4 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        {/* Right Side: High-Contrast Unified Action Pill */}
+        <div className="relative flex items-center shrink-0 z-20 pl-2">
+          <div className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200/90 text-neutral-800 shadow-xs group-hover:bg-neutral-950 group-hover:border-neutral-950 group-hover:text-white group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)] transition-all duration-300">
+            <span className="text-[11px] sm:text-xs font-tech font-bold uppercase tracking-wider">
+              Explore
+            </span>
+            <div className="w-5 h-5 rounded-full bg-neutral-100 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+              <ArrowUpRight className="w-3.5 h-3.5 text-neutral-700 group-hover:text-white transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </div>
           </div>
         </div>
 

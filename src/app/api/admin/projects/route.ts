@@ -100,7 +100,7 @@ export async function POST(request: Request) {
         metricLabel: metricLabel || 'Verified SLA',
         techStack: Array.isArray(techStack) ? techStack : [],
         video: video || null,
-        image: image || '/assets/images/service/SERVICE01.png',
+        image: image || '',
         featured: Boolean(featured),
         year: year || new Date().getFullYear().toString(),
         client: client || 'KAIROTRIX',

@@ -67,7 +67,7 @@ export default function AdminProjectsPage() {
     headline: '',
     techStack: 'Next.js 15, TypeScript, Python',
     video: '',
-    image: '/assets/images/service/SERVICE01.png',
+    image: '',
     status: 'ACTIVE',
   });
 
@@ -133,7 +133,7 @@ export default function AdminProjectsPage() {
       headline: '',
       techStack: 'Next.js 15, TypeScript, Python',
       video: '',
-      image: '/assets/images/service/SERVICE01.png',
+      image: '',
       status: 'ACTIVE',
     });
     setFormError(null);

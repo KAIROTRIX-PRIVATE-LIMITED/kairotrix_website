@@ -33,7 +33,7 @@ function BentoRow({ pair, rowIndex }: BentoRowProps) {
           specimen={pair[0]}
           index={rowIndex * 2}
           isSingle={true}
-          className="w-full min-h-[420px] sm:min-h-[460px] lg:min-h-[480px]"
+          className="w-full min-h-[360px] sm:min-h-[440px] lg:min-h-[480px]"
         />
       </div>
     );
@@ -69,7 +69,7 @@ function BentoRow({ pair, rowIndex }: BentoRowProps) {
           specimen={pair[0]}
           index={rowIndex * 2}
           isParentHovered={hoveredIdx === 0}
-          className="w-full h-full min-h-[420px] sm:min-h-[460px] lg:min-h-[500px]"
+          className="w-full h-full min-h-[360px] sm:min-h-[420px] lg:min-h-[480px]"
         />
       </motion.div>
 
@@ -85,7 +85,7 @@ function BentoRow({ pair, rowIndex }: BentoRowProps) {
           specimen={pair[1]}
           index={rowIndex * 2 + 1}
           isParentHovered={hoveredIdx === 1}
-          className="w-full h-full min-h-[420px] sm:min-h-[460px] lg:min-h-[500px]"
+          className="w-full h-full min-h-[360px] sm:min-h-[420px] lg:min-h-[480px]"
         />
       </motion.div>
     </div>

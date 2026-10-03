@@ -1,29 +1,58 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import {
   ArrowLeft,
   Eye,
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Heading1,
+  Heading2,
+  Heading3,
+  Pilcrow,
+  List,
+  ListOrdered,
+  Quote,
+  Code,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Image as ImageIcon,
+  Link as LinkIcon,
   Save,
-  Send,
   Sparkles,
   CheckCircle2,
   AlertCircle,
-  Clock,
+  Loader2,
+  Upload,
   User,
   Tag,
-  Video,
+  FolderOpen,
   FileText,
-  Cpu,
-  Layers,
-  Loader2,
+  Film,
+  X,
+  Play,
 } from 'lucide-react';
-import RichTextEditor from '@/components/admin/RichTextEditor';
-import MediaUploader from '@/components/admin/MediaUploader';
+import RichTextEditor, { RichTextEditorHandle } from '@/components/admin/RichTextEditor';
+import { getYoutubeId } from '@/components/admin/MediaUploader';
 import { TECH_CATEGORIES } from '@/data/insightsData';
+
+function YoutubeIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    </svg>
+  );
+}
 
 interface TeamMemberRecord {
   id: string;
@@ -34,6 +63,10 @@ interface TeamMemberRecord {
 
 export default function BlogWriterCreatePage() {
   const router = useRouter();
+  const editorRef = useRef<RichTextEditorHandle>(null);
+
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   // Form State
   const [title, setTitle] = useState('');
@@ -42,24 +75,33 @@ export default function BlogWriterCreatePage() {
   const [category, setCategory] = useState<'article' | 'case-study' | 'system-blueprint' | 'research'>('article');
   const [techCategoryId, setTechCategoryId] = useState('ai-agents');
   const [tags, setTags] = useState('AI Agents, Architecture, Systems');
-  const [image, setImage] = useState('/assets/images/service/SERVICE01.png');
-  const [videoSrc, setVideoSrc] = useState('');
 
-  // Author Mapping State (Dynamically loaded from database TeamMembers)
-  const [teamMembers, setTeamMembers] = useState<TeamMemberRecord[]>([]);
+  // Media State 1: Thumbnail Image (Poster)
+  const [image, setImage] = useState('');
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+
+  // Media State 2: Hover Video (Plays when card is hovered on website)
+  const [videoSrc, setVideoSrc] = useState('');
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+
+  // Pending Editor Inline Images
+  const pendingEditorFilesRef = useRef<Map<string, File>>(new Map());
+
+  // Author State (Directly Editable + Autofill from team members)
   const [authorName, setAuthorName] = useState('KAIROTRIX Engineering');
   const [authorRole, setAuthorRole] = useState('Engineering Team');
-  const [authorAvatar, setAuthorAvatar] = useState('/assets/brand/kairotrix-symbol.svg');
+  const [teamMembers, setTeamMembers] = useState<TeamMemberRecord[]>([]);
   const [loadingTeam, setLoadingTeam] = useState(true);
 
-  // Workflow State
-  const [status, setStatus] = useState<'DRAFT' | 'PENDING_REVIEW' | 'PUBLISHED'>('DRAFT');
+  // Workflow State (Direct publish only)
+  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>('DRAFT');
   const [saving, setSaving] = useState(false);
+  const [savingStatusText, setSavingStatusText] = useState('Saving...');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
 
-  // 1. Fetch Verified Team Members to populate Authors dropdown
+  // Load team members for quick autofill
   useEffect(() => {
     async function loadTeam() {
       try {
@@ -71,7 +113,6 @@ export default function BlogWriterCreatePage() {
           if (members.length > 0) {
             setAuthorName(members[0].name);
             setAuthorRole(members[0].role);
-            setAuthorAvatar(members[0].image || '/assets/brand/kairotrix-symbol.svg');
           }
         }
       } catch (err) {
@@ -83,73 +124,142 @@ export default function BlogWriterCreatePage() {
     loadTeam();
   }, []);
 
-  // Handle Author Dropdown Change
   const handleSelectAuthor = (memberId: string) => {
     const selected = teamMembers.find((m) => m.id === memberId);
     if (selected) {
       setAuthorName(selected.name);
       setAuthorRole(selected.role);
-      setAuthorAvatar(selected.image);
     }
   };
 
-  // Submit Article (Save Draft, Submit for Review, or Publish)
-  const handleSave = async (targetStatus: 'DRAFT' | 'PENDING_REVIEW' | 'PUBLISHED') => {
+  const handleRegisterPendingFile = (blobUrl: string, file: File) => {
+    pendingEditorFilesRef.current.set(blobUrl, file);
+  };
+
+  // Thumbnail Image Selection (Preview-First)
+  const handleThumbnailFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setThumbnailFile(file);
+      const preview = URL.createObjectURL(file);
+      setImage(preview);
+    }
+  };
+
+  // Hover Video Selection (Preview-First)
+  const handleVideoFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setVideoFile(file);
+      const preview = URL.createObjectURL(file);
+      setVideoSrc(preview);
+    }
+  };
+
+  const uploadFileToCloudinary = async (file: File, folder = 'kairotrix/insights'): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+
+    const res = await fetch('/api/admin/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to upload media to cloud.');
+    }
+    return data.url;
+  };
+
+  // Direct Publish or Save Draft
+  const handleSave = async (targetStatus: 'DRAFT' | 'PUBLISHED') => {
     if (!title.trim()) {
-      setErrorMessage('Article Title is required before saving.');
+      setErrorMessage('Article Title is required before publishing.');
       return;
     }
 
     setSaving(true);
     setErrorMessage(null);
 
-    // Auto-generate clean, collision-free slug from title
-    const computedSlug =
-      title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '') || `insight-${Date.now()}`;
-
-    const selectedTech = TECH_CATEGORIES.find((c) => c.id === techCategoryId);
-    const techCategoryLabel = selectedTech ? selectedTech.label : 'Software & Web Engineering';
-
-    const tagsArray = tags
-      .split(',')
-      .map((t) => t.trim())
-      .filter(Boolean);
-
-    // If video is provided from Cloudinary and image is default, use Cloudinary video thumbnail poster
-    let finalImage = image;
-    if (videoSrc && videoSrc.includes('cloudinary.com') && (!finalImage || finalImage.includes('/service/'))) {
-      finalImage = videoSrc.replace(/\.[^/.]+$/, '.jpg');
-    }
-
-    const payload = {
-      title: title.trim(),
-      slug: computedSlug,
-      subtitle: subtitle.trim() || title.trim(),
-      excerpt: subtitle.trim() || title.trim(),
-      content: content || null,
-      category,
-      badge: 'TECHNICAL DEEP DIVE',
-      disciplineId: techCategoryId,
-      disciplineName: techCategoryLabel,
-      techCategoryId,
-      techCategoryLabel,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-      readTime: `${Math.max(1, Math.ceil((content.replace(/<[^>]*>/g, '').split(/\s+/).length) / 200))} min read`,
-      author: authorName,
-      authorRole: authorRole,
-      tags: tagsArray,
-      image: finalImage,
-      videoSrc: videoSrc || null,
-      keyTakeaway: subtitle.trim() || title.trim() || 'Verified in production engineering.',
-      empiricalMetricLabel: null,
-      empiricalMetricValue: null,
-      status: targetStatus,
-    };
-
     try {
+      // 1. Upload Cover Thumbnail Image if local file
+      let finalImage = image;
+      if (thumbnailFile && image.startsWith('blob:')) {
+        setSavingStatusText('Uploading thumbnail image to Cloudinary CDN...');
+        const uploadedUrl = await uploadFileToCloudinary(thumbnailFile, 'kairotrix/thumbnails');
+        finalImage = uploadedUrl;
+      }
+
+      // 2. Upload Hover Video if local file
+      let finalVideoSrc = videoSrc;
+      if (videoFile && videoSrc.startsWith('blob:')) {
+        setSavingStatusText('Uploading hover video to Cloudinary CDN...');
+        const uploadedUrl = await uploadFileToCloudinary(videoFile, 'kairotrix/videos');
+        finalVideoSrc = uploadedUrl;
+      }
+
+      // 3. Upload any local images in the editor body
+      let finalContent = content;
+      if (pendingEditorFilesRef.current.size > 0) {
+        setSavingStatusText('Uploading inline images to Cloudinary CDN...');
+        for (const [blobUrl, file] of Array.from(pendingEditorFilesRef.current.entries())) {
+          if (finalContent.includes(blobUrl)) {
+            try {
+              const uploadedUrl = await uploadFileToCloudinary(file, 'kairotrix/insights-body');
+              finalContent = finalContent.split(blobUrl).join(uploadedUrl);
+              URL.revokeObjectURL(blobUrl);
+            } catch (uploadErr) {
+              console.warn('Failed to upload inline body image:', uploadErr);
+            }
+          }
+        }
+        pendingEditorFilesRef.current.clear();
+      }
+
+      // 4. Compute Slug & Save to Database
+      setSavingStatusText('Publishing article to database...');
+      const computedSlug =
+        title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)+/g, '') || `insight-${Date.now()}`;
+
+      const selectedTech = TECH_CATEGORIES.find((c) => c.id === techCategoryId);
+      const techCategoryLabel = selectedTech ? selectedTech.label : 'Software & Web Engineering';
+
+      const tagsArray = tags
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      const words = (finalContent || '').replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length;
+      const readTime = `${Math.max(1, Math.ceil(words / 200))} min read`;
+
+      const payload = {
+        title: title.trim(),
+        slug: computedSlug,
+        subtitle: subtitle.trim() || title.trim(),
+        excerpt: subtitle.trim() || title.trim(),
+        content: finalContent || null,
+        category,
+        badge: category === 'system-blueprint' ? 'SYSTEM BLUEPRINT' : category === 'case-study' ? 'CASE STUDY' : 'TECHNICAL DEEP DIVE',
+        disciplineId: techCategoryId,
+        disciplineName: techCategoryLabel,
+        techCategoryId,
+        techCategoryLabel,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        readTime,
+        author: authorName.trim() || 'KAIROTRIX Engineering',
+        authorRole: authorRole.trim() || 'Engineering Team',
+        tags: tagsArray,
+        image: finalImage || '',
+        videoSrc: finalVideoSrc || null,
+        keyTakeaway: subtitle.trim() || title.trim(),
+        status: targetStatus,
+      };
+
       const res = await fetch('/api/admin/insights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -165,7 +275,7 @@ export default function BlogWriterCreatePage() {
       setSavedSuccess(true);
       setTimeout(() => {
         router.push('/admin/insights');
-      }, 1200);
+      }, 1000);
     } catch (err: unknown) {
       setErrorMessage((err as Error).message);
     } finally {
@@ -173,14 +283,17 @@ export default function BlogWriterCreatePage() {
     }
   };
 
+  const previewYoutubeId = getYoutubeId(videoSrc);
+
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 pb-16">
-      {/* ─── TOP ACTION BAR ─── */}
-      <div className="sticky top-0 z-30 bg-white/95 border-b border-neutral-200/80 px-4 sm:px-8 py-3.5 backdrop-blur-md flex flex-wrap items-center justify-between gap-4 shadow-xs">
-        <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-[#FAFAFC] text-neutral-900 pb-24">
+      {/* ─── 1. INTEGRATED STICKY TOP BAR (KAIROTRIX BRAND THEME) ─── */}
+      <header className="sticky top-0 z-30 bg-white/95 border-b border-neutral-200/90 px-4 sm:px-8 py-2.5 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shadow-xs">
+        {/* Left: Brand Eyebrow & Status */}
+        <div className="flex items-center gap-3">
           <Link
             href="/admin/insights"
-            className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 text-neutral-600 hover:text-neutral-950 transition-colors cursor-pointer shadow-xs"
+            className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 hover:text-neutral-950 transition-colors cursor-pointer shadow-xs"
             title="Back to Articles Dashboard"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -188,344 +301,653 @@ export default function BlogWriterCreatePage() {
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-700">
-                KAIROTRIX BLOG WRITER
+              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
+              <span className="font-tech text-xs tracking-[0.2em] font-semibold text-brand-700 uppercase">
+                KAIROTRIX // BLOG WRITER
               </span>
               <span className="text-neutral-300">•</span>
-              <span className="text-xs font-mono uppercase px-2.5 py-0.5 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700 font-semibold">
-                {status === 'DRAFT'
-                  ? '⚪ Draft'
-                  : status === 'PENDING_REVIEW'
-                  ? '🟡 Pending Admin Review'
-                  : '🟢 Published'}
+              <span
+                className={`text-[11px] font-mono uppercase px-2 py-0.5 rounded-full border font-semibold ${
+                  status === 'PUBLISHED'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                }`}
+              >
+                {status === 'PUBLISHED' ? '🟢 Published' : '⚪ Draft'}
               </span>
             </div>
-            <h1 className="text-sm sm:text-base font-display font-bold text-neutral-950 truncate max-w-sm sm:max-w-md">
-              {title || 'Untitled Article'}
-            </h1>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Live Preview Toggle */}
+        {/* Center: Formatting Toolbar Group */}
+        <div className="flex items-center gap-0.5 sm:gap-1 p-1 rounded-xl bg-neutral-100/80 border border-neutral-200/90 shadow-xs text-neutral-700">
+          <button
+            type="button"
+            title="Paragraph"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.formatBlock('p')}
+            className="px-2 py-1 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 text-xs font-mono font-medium cursor-pointer transition-colors"
+          >
+            <Pilcrow className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Heading 1"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.formatBlock('h1')}
+            className="px-2 py-1 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 text-xs font-display font-extrabold cursor-pointer transition-colors"
+          >
+            H1
+          </button>
+          <button
+            type="button"
+            title="Heading 2"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.formatBlock('h2')}
+            className="px-2 py-1 rounded-lg hover:bg-white hover:text-purple-700 active:bg-neutral-200 text-xs font-display font-bold cursor-pointer transition-colors"
+          >
+            H2
+          </button>
+          <button
+            type="button"
+            title="Heading 3"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.formatBlock('h3')}
+            className="px-2 py-1 rounded-lg hover:bg-white hover:text-indigo-700 active:bg-neutral-200 text-xs font-display font-semibold cursor-pointer transition-colors"
+          >
+            H3
+          </button>
+          <div className="h-4 w-px bg-neutral-200 mx-0.5" />
+
+          <button
+            type="button"
+            title="Bold (Ctrl+B)"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('bold')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 text-xs font-bold cursor-pointer transition-colors"
+          >
+            <Bold className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Italic (Ctrl+I)"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('italic')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 text-xs font-bold cursor-pointer transition-colors"
+          >
+            <Italic className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Underline (Ctrl+U)"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('underline')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 text-xs font-bold cursor-pointer transition-colors hidden sm:block"
+          >
+            <Underline className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Strikethrough"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('strikeThrough')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 text-xs cursor-pointer transition-colors hidden sm:block"
+          >
+            <Strikethrough className="w-3.5 h-3.5" />
+          </button>
+          <div className="h-4 w-px bg-neutral-200 mx-0.5" />
+
+          <button
+            type="button"
+            title="Bullet List"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('insertUnorderedList')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer transition-colors"
+          >
+            <List className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Numbered List"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('insertOrderedList')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer transition-colors"
+          >
+            <ListOrdered className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Blockquote Callout"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.formatBlock('blockquote')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer transition-colors hidden sm:block"
+          >
+            <Quote className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Code Block"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.formatBlock('pre')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer transition-colors font-mono hidden sm:block"
+          >
+            <Code className="w-3.5 h-3.5" />
+          </button>
+          <div className="h-4 w-px bg-neutral-200 mx-0.5 hidden md:block" />
+
+          <button
+            type="button"
+            title="Align Left"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('justifyLeft')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer transition-colors hidden md:block"
+          >
+            <AlignLeft className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Align Center"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('justifyCenter')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer transition-colors hidden md:block"
+          >
+            <AlignCenter className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Align Right"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.exec('justifyRight')}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer transition-colors hidden md:block"
+          >
+            <AlignRight className="w-3.5 h-3.5" />
+          </button>
+          <div className="h-4 w-px bg-neutral-200 mx-0.5" />
+
+          <button
+            type="button"
+            title="Insert Image (Instant Preview)"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.openImageModal()}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-brand-700 active:bg-neutral-200 cursor-pointer text-brand-600 transition-colors"
+          >
+            <ImageIcon className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Embed YouTube Video"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.openYoutubeModal()}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-rose-600 active:bg-neutral-200 cursor-pointer text-rose-600 transition-colors"
+          >
+            <YoutubeIcon className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Insert Hyperlink"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editorRef.current?.openLinkModal()}
+            className="p-1.5 rounded-lg hover:bg-white hover:text-blue-600 active:bg-neutral-200 cursor-pointer text-blue-600 transition-colors"
+          >
+            <LinkIcon className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Right: Word Count, Preview & Publish Actions */}
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => setPreviewMode(!previewMode)}
-            className={`px-3.5 py-2 rounded-xl border text-xs font-mono font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs ${
-              previewMode
-                ? 'bg-brand-50 border-brand-300 text-brand-700 font-bold'
-                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
-            }`}
+            className="px-3.5 py-2 rounded-xl border border-neutral-200 bg-white hover:bg-brand-50 hover:border-brand-300 hover:text-brand-700 text-neutral-700 text-xs font-mono font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
           >
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-3.5 h-3.5 text-neutral-500" />
             <span>{previewMode ? 'Back to Editor' : 'Live Preview'}</span>
           </button>
 
-          {/* Save as Draft */}
           <button
             type="button"
             disabled={saving}
             onClick={() => handleSave('DRAFT')}
-            className="px-4 py-2 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200 text-neutral-700 text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-xs"
+            className="px-3.5 py-2 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 text-xs font-mono uppercase tracking-wider font-semibold hidden md:flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
           >
-            <Save className="w-3.5 h-3.5 text-neutral-500" />
-            <span>Save Draft</span>
+            <Save className="w-3.5 h-3.5 text-neutral-400" />
+            <span>Draft</span>
           </button>
 
-          {/* Submit for Admin Review */}
-          <button
-            type="button"
-            disabled={saving}
-            onClick={() => handleSave('PENDING_REVIEW')}
-            className="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-xs"
-          >
-            <Send className="w-3.5 h-3.5 text-amber-600" />
-            <span>Submit for Review</span>
-          </button>
-
-          {/* Direct Publish (Admin) */}
           <button
             type="button"
             disabled={saving}
             onClick={() => handleSave('PUBLISHED')}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-500 hover:to-brand-600 text-white text-xs font-mono uppercase tracking-wider font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            className="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs font-mono uppercase tracking-wider font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
           >
             {saving ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Saving...</span>
+                <span>{savingStatusText}</span>
               </>
             ) : savedSuccess ? (
               <>
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
-                <span>Saved!</span>
+                <span>Published!</span>
               </>
             ) : (
               <>
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Publish Now</span>
+                <span>Publish Article</span>
               </>
             )}
           </button>
         </div>
-      </div>
+      </header>
 
-      {/* Error Banner */}
+      {/* Error Message */}
       {errorMessage && (
-        <div className="max-w-7xl mx-auto px-4 pt-4">
-          <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono flex items-center gap-2 shadow-xs">
+        <div className="max-w-4xl mx-auto px-6 pt-6">
+          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono flex items-center gap-2 shadow-xs">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
             <span>{errorMessage}</span>
           </div>
         </div>
       )}
 
-      {/* ─── MAIN WRITER WORKSPACE ─── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* ─── 2. MAIN DOCUMENT CANVAS (FULL-PAGE EXPANSIVE WIDTH) ─── */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {previewMode ? (
-          /* ─── LIVE PREVIEW MODE ─── */
-          <div className="max-w-4xl mx-auto p-8 rounded-3xl bg-white border border-neutral-200/80 shadow-xl">
-            <div className="mb-6 flex items-center justify-between pb-4 border-b border-neutral-100">
-              <span className="font-mono text-xs text-brand-700 font-bold uppercase tracking-wider">
-                PREVIEW: {title || 'Untitled Article'}
+          /* Live Preview Mode (Matching Full-Width Website Blog View) */
+          <div className="p-6 sm:p-10 md:p-14 rounded-3xl border border-neutral-200/90 bg-white shadow-xl space-y-8">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100 text-xs font-mono text-neutral-500">
+              <span className="text-brand-700 font-bold uppercase tracking-wider">
+                LIVE ARTICLE PREVIEW
               </span>
-              <span className="font-mono text-xs text-neutral-500">
-                {authorName} • {authorRole}
-              </span>
+              <span>{new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
             </div>
 
-            <div className="mb-6">
-              <span className="px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 font-mono text-xs uppercase tracking-wider font-semibold">
-                TECHNICAL DEEP DIVE
-              </span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl font-display font-bold text-neutral-950 mb-4">
-              {title || 'Your Article Title'}
-            </h1>
-            <p className="text-lg text-neutral-600 font-sans mb-8">
-              {subtitle || 'Your article subtitle and premise...'}
-            </p>
-
-            {videoSrc ? (
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-neutral-200 mb-8 shadow-xs bg-black">
+            {/* 1. TOP COVER MEDIA: THUMBNAIL IMAGE OR HOVER VIDEO ONLY (Inline YouTube/media renders inside content) */}
+            {videoSrc && !previewYoutubeId ? (
+              <div className="aspect-video w-full rounded-2xl overflow-hidden bg-neutral-900 shadow-md">
                 <video src={videoSrc} controls autoPlay muted loop className="w-full h-full object-cover" />
               </div>
             ) : image ? (
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-neutral-200 mb-8 shadow-xs">
-                <Image src={image} alt={title} fill className="object-cover" />
+              <div className="aspect-video w-full rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200 shadow-xs">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={image} alt={title || 'Thumbnail Cover'} className="w-full h-full object-cover" />
               </div>
             ) : null}
 
-            <div
-              className="prose prose-neutral max-w-none"
-              dangerouslySetInnerHTML={{ __html: content || '<p>Article body will render here...</p>' }}
-            />
-          </div>
-        ) : (
-          /* ─── WRITER EDITOR & SIDEBAR LAYOUT ─── */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Left Column (8 Cols): Title, Subtitle & MS Word Editor */}
-            <div className="lg:col-span-8 space-y-6">
-              {/* Article Title Input */}
-              <div className="p-6 rounded-2xl bg-white border border-neutral-200/80 shadow-xs space-y-4">
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold">
-                    ARTICLE TITLE *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Architecting Deterministic Autonomous AI Agents for Enterprise Workflows"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-lg sm:text-xl font-display font-bold text-neutral-950 placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-brand-500 transition-colors"
-                  />
-                </div>
+            <div className="space-y-2">
+              <span className="px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 font-mono text-xs uppercase tracking-wider font-semibold">
+                {category.toUpperCase().replace('-', ' ')}
+              </span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-neutral-950 tracking-tight leading-tight">
+                {title || 'Untitled Article'}
+              </h1>
+              {subtitle && (
+                <p className="text-lg sm:text-xl text-neutral-600 font-sans leading-relaxed">
+                  {subtitle}
+                </p>
+              )}
+            </div>
 
-                {/* Subtitle / Excerpt */}
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold">
-                    SUBTITLE / NARRATIVE PREMISE
-                  </label>
-                  <textarea
-                    rows={2}
-                    placeholder="Briefly describe the operational breakdown or key architectural insight..."
-                    value={subtitle}
-                    onChange={(e) => setSubtitle(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm font-sans text-neutral-800 placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-brand-500 resize-none transition-colors"
-                  />
-                </div>
+            <div className="flex items-center gap-3 text-xs font-mono text-neutral-500 py-3 border-y border-neutral-100">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
+                {authorName.charAt(0)}
               </div>
-
-              {/* MS Word-Style Rich Text Editor */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2 flex items-center justify-between font-semibold">
-                  <span>ARTICLE CONTENT & MEDIA BODY (MS WORD FORMATTING)</span>
-                  <span className="text-[11px] text-brand-700 font-normal">
-                    Format with H1-H3, Images & YouTube Embeds
-                  </span>
-                </label>
-                <RichTextEditor
-                  value={content}
-                  onChange={(html) => setContent(html)}
-                  placeholder="Start typing your technical breakdown... Use the ribbon toolbar above for H1, H2, H3, Bold, Italic, Images, and YouTube video embeds."
-                  minHeight="560px"
-                />
+                <span className="font-semibold text-neutral-900">{authorName}</span>
+                <span className="mx-2">•</span>
+                <span className="text-brand-600">{authorRole}</span>
               </div>
             </div>
 
-            {/* Right Column (4 Cols): Author, Cover Media & Taxonomy Sidebar */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* Author Assignment Card */}
-              <div className="p-5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs space-y-4">
-                <div className="flex items-center gap-2 text-xs font-mono text-brand-700 font-bold uppercase tracking-wider pb-2 border-b border-neutral-100">
-                  <User className="w-4 h-4 text-brand-600" />
-                  <span>Author & Team Attribution</span>
-                </div>
+            <div
+              className="article-prose-content max-w-none pt-2"
+              dangerouslySetInnerHTML={{
+                __html: content || '<p className="text-neutral-400 italic">No content written yet...</p>',
+              }}
+            />
+          </div>
+        ) : (
+          /* Normal Simple Editor Flow */
+          <>
+            {/* Title: "Enter Blog Title..." */}
+            <div className="pt-2">
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter Blog Title..."
+                className="w-full text-2xl sm:text-4xl font-display font-bold text-neutral-950 placeholder:text-neutral-300 border-none outline-none focus:ring-0 bg-transparent tracking-tight"
+              />
+            </div>
 
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold">
-                    Assign Team Author:
-                  </label>
-                  {loadingTeam ? (
-                    <div className="text-xs font-mono text-neutral-500 flex items-center gap-2 py-2">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-600" />
-                      <span>Loading team members...</span>
-                    </div>
-                  ) : teamMembers.length > 0 ? (
-                    <select
-                      value={
-                        teamMembers.find((m) => m.name === authorName)?.id || teamMembers[0]?.id
-                      }
-                      onChange={(e) => handleSelectAuthor(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:bg-white focus:outline-none focus:border-brand-500 cursor-pointer"
-                    >
-                      {teamMembers.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.name} ({m.role})
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type="text"
-                      value={authorName}
-                      onChange={(e) => setAuthorName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:bg-white"
-                    />
-                  )}
+            {/* Author / Metadata Row (Directly Editable Author Name & Role) */}
+            <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-neutral-600 pb-2">
+              {/* Editable Author Box */}
+              <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-neutral-200/90 shadow-xs">
+                <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                  {authorName ? authorName.charAt(0).toUpperCase() : 'A'}
                 </div>
-
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                    Author Title / Role:
-                  </label>
+                
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] uppercase text-neutral-400 font-semibold">Author:</span>
+                  <input
+                    type="text"
+                    value={authorName}
+                    onChange={(e) => setAuthorName(e.target.value)}
+                    placeholder="Enter author name"
+                    className="text-xs font-mono font-semibold text-neutral-900 bg-transparent border-b border-neutral-200 hover:border-neutral-400 focus:border-brand-500 outline-none w-32 sm:w-40 transition-colors"
+                  />
+                  <span className="text-neutral-300">•</span>
                   <input
                     type="text"
                     value={authorRole}
                     onChange={(e) => setAuthorRole(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-700 focus:bg-white focus:outline-none focus:border-brand-500"
-                  />
-                </div>
-              </div>
-
-              {/* Cover Media Card with Direct Cloudinary Upload */}
-              <div className="p-5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs space-y-4">
-                <div className="flex items-center gap-2 text-xs font-mono text-brand-700 font-bold uppercase tracking-wider pb-2 border-b border-neutral-100">
-                  <Video className="w-4 h-4 text-brand-600" />
-                  <span>Media & Video (Cloudinary CDN)</span>
-                </div>
-
-                <div>
-                  <MediaUploader
-                    value={image}
-                    onChange={(url) => setImage(url)}
-                    label="Cover / Thumbnail Image"
-                    folder="kairotrix/insights"
-                    accept="image"
-                    helperText="Upload to Cloudinary CDN for instant optimized loading"
+                    placeholder="Role"
+                    className="text-[11px] font-mono text-brand-600 bg-transparent border-b border-neutral-200 hover:border-neutral-400 focus:border-brand-500 outline-none w-28 sm:w-36 transition-colors"
                   />
                 </div>
 
-                <div>
-                  <MediaUploader
-                    value={videoSrc}
-                    onChange={(url) => {
-                      setVideoSrc(url);
-                      if (url && url.includes('cloudinary.com') && (!image || image.includes('/service/'))) {
-                        setImage(url.replace(/\.[^/.]+$/, '.jpg'));
-                      }
-                    }}
-                    label="Featured / Teaser Video"
-                    folder="kairotrix/insights"
-                    accept="video"
-                    placeholder="Upload MP4/WebM to Cloudinary CDN..."
-                    helperText="Cloudinary video streams dynamically on article page & feed"
-                  />
-                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                    <span className="text-[10px] font-mono text-neutral-400">Presets:</span>
-                    {[
-                      { label: 'AI Service', url: '/assets/videos/ai-service.mp4' },
-                      { label: 'Workflows', url: '/assets/videos/automated-workflows.mp4' },
-                      { label: 'Dashboard', url: '/assets/videos/live-dashboard.mp4' },
-                      { label: 'Smart Search', url: '/assets/videos/smart-search.mp4' },
-                    ].map((preset) => (
-                      <button
-                        key={preset.label}
-                        type="button"
-                        onClick={() => setVideoSrc(preset.url)}
-                        className="px-2 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200/80 text-[10px] font-mono text-neutral-600 hover:text-neutral-900 border border-neutral-200/60 transition-colors cursor-pointer"
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Taxonomy & Category */}
-              <div className="p-5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs space-y-4">
-                <div className="flex items-center gap-2 text-xs font-mono text-brand-700 font-bold uppercase tracking-wider pb-2 border-b border-neutral-100">
-                  <Tag className="w-4 h-4 text-brand-600" />
-                  <span>Taxonomy & Tags</span>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                    Tech Category:
-                  </label>
+                {/* Optional Quick Autofill from team */}
+                {teamMembers.length > 0 && (
                   <select
-                    value={techCategoryId}
-                    onChange={(e) => setTechCategoryId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:bg-white focus:outline-none focus:border-brand-500 cursor-pointer"
+                    value=""
+                    onChange={(e) => {
+                      if (e.target.value) handleSelectAuthor(e.target.value);
+                    }}
+                    title="Autofill from registered team member"
+                    className="text-[10px] font-mono text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded px-1.5 py-0.5 border border-neutral-200 cursor-pointer outline-none ml-1"
                   >
-                    {TECH_CATEGORIES.filter((c) => c.id !== 'all').map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.label}
+                    <option value="">Autofill Team...</option>
+                    {teamMembers.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} ({m.role})
                       </option>
                     ))}
                   </select>
+                )}
+              </div>
+
+              {/* Category Selector */}
+              <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-neutral-200/90 shadow-xs">
+                <FolderOpen className="w-3.5 h-3.5 text-brand-600" />
+                <select
+                  value={techCategoryId}
+                  onChange={(e) => setTechCategoryId(e.target.value)}
+                  className="bg-transparent border-none text-neutral-800 text-xs font-mono outline-none cursor-pointer"
+                >
+                  {TECH_CATEGORIES.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Publication Type */}
+              <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-neutral-200/90 shadow-xs">
+                <FileText className="w-3.5 h-3.5 text-purple-600" />
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as any)}
+                  className="bg-transparent border-none text-neutral-800 text-xs font-mono outline-none cursor-pointer"
+                >
+                  <option value="article">Technical Deep Dive</option>
+                  <option value="system-blueprint">System Blueprint</option>
+                  <option value="case-study">Case Study</option>
+                  <option value="research">Research Whitepaper</option>
+                </select>
+              </div>
+
+              {/* Tags Input */}
+              <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-neutral-200/90 shadow-xs flex-1 min-w-[200px]">
+                <Tag className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                <input
+                  type="text"
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                  placeholder="Tags: AI Agents, Systems, Architecture..."
+                  className="w-full bg-transparent text-xs font-mono text-neutral-800 placeholder:text-neutral-400 outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Clean Rounded Editor Frame (KAIROTRIX Light Theme Canvas) */}
+            <div className="rounded-3xl border border-neutral-200/90 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 bg-white p-6 sm:p-10 min-h-[440px] shadow-xs transition-all">
+              <RichTextEditor
+                ref={editorRef}
+                value={content}
+                onChange={(html) => setContent(html)}
+                onRegisterPendingFile={handleRegisterPendingFile}
+                hideToolbar={true}
+                placeholder="Start writing blog content here... Use headings, bullet lists, bold text, images or embeds."
+                minHeight="380px"
+              />
+            </div>
+
+            {/* ─── 3. THUMBNAIL IMAGE, HOVER VIDEO & SEO CARDS ─── */}
+            <div className="pt-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-brand-700 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+                  <span>Media &amp; SEO Specifications</span>
+                </h2>
+                <span className="text-[11px] font-mono text-neutral-400">
+                  Instant preview • Uploads on Publish
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
+                {/* 1. THUMBNAIL IMAGE (16:9 Static Cover) */}
+                <div className="md:col-span-4 rounded-2xl border-2 border-dashed border-neutral-300 hover:border-brand-500/80 bg-neutral-50/70 hover:bg-brand-50/20 p-5 flex flex-col justify-between text-center transition-all relative overflow-hidden min-h-[220px]">
+                  <input
+                    ref={thumbnailInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    onChange={handleThumbnailFileSelect}
+                    className="hidden"
+                  />
+
+                  <div className="w-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-mono font-bold text-neutral-800 uppercase tracking-wider flex items-center gap-1.5">
+                        <ImageIcon className="w-3.5 h-3.5 text-brand-600" />
+                        <span>Thumbnail (16:9)</span>
+                      </span>
+                      {image && (
+                        <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                          Ready
+                        </span>
+                      )}
+                    </div>
+
+                    {image ? (
+                      <div className="space-y-2">
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 flex items-center justify-center">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={image} alt="Thumbnail preview" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex items-center justify-between text-xs font-mono pt-1">
+                          <button
+                            type="button"
+                            onClick={() => thumbnailInputRef.current?.click()}
+                            className="text-brand-600 hover:underline cursor-pointer font-semibold"
+                          >
+                            Replace
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setImage('');
+                              setThumbnailFile(null);
+                            }}
+                            className="text-rose-600 hover:underline cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => thumbnailInputRef.current?.click()}
+                        className="cursor-pointer space-y-1.5 flex flex-col items-center group py-4"
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-white group-hover:bg-brand-50 border border-neutral-200 group-hover:border-brand-300 flex items-center justify-center text-neutral-500 group-hover:text-brand-600 transition-colors shadow-xs">
+                          <ImageIcon className="w-5 h-5 text-brand-600" />
+                        </div>
+                        <p className="text-xs font-bold text-neutral-900 group-hover:text-brand-700 transition-colors">
+                          Upload Thumbnail Image
+                        </p>
+                        <p className="text-[11px] text-neutral-500 font-mono">
+                          16:9 JPG, PNG, WebP image
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {!image && (
+                    <div className="w-full pt-2 mt-2 border-t border-neutral-200/60">
+                      <input
+                        type="text"
+                        value={image}
+                        onChange={(e) => setImage(e.target.value)}
+                        placeholder="Or paste image URL..."
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-neutral-200 text-[11px] font-mono text-neutral-900 placeholder:text-neutral-400 outline-none focus:border-brand-500 transition-colors shadow-xs"
+                      />
+                    </div>
+                  )}
                 </div>
 
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-1.5 font-semibold">
-                    Tags (Comma-separated):
-                  </label>
+                {/* 2. HOVER VIDEO (Plays on card hover) */}
+                <div className="md:col-span-4 rounded-2xl border-2 border-dashed border-neutral-300 hover:border-purple-500/80 bg-neutral-50/70 hover:bg-purple-50/20 p-5 flex flex-col justify-between text-center transition-all relative overflow-hidden min-h-[220px]">
                   <input
-                    type="text"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    placeholder="AI Agents, Architecture, Benchmarks"
-                    className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-brand-500"
+                    ref={videoInputRef}
+                    type="file"
+                    accept="video/mp4,video/webm"
+                    onChange={handleVideoFileSelect}
+                    className="hidden"
                   />
+
+                  <div className="w-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-mono font-bold text-neutral-800 uppercase tracking-wider flex items-center gap-1.5">
+                        <Film className="w-3.5 h-3.5 text-purple-600" />
+                        <span>Hover Video</span>
+                      </span>
+                      {videoSrc && (
+                        <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
+                          Hover Active
+                        </span>
+                      )}
+                    </div>
+
+                    {previewYoutubeId ? (
+                      <div className="space-y-2">
+                        <div className="aspect-video w-full rounded-xl overflow-hidden bg-black shadow-xs">
+                          <iframe
+                            className="w-full h-full"
+                            src={`https://www.youtube-nocookie.com/embed/${previewYoutubeId}?rel=0`}
+                            title="Preview"
+                            frameBorder="0"
+                            allowFullScreen
+                          />
+                        </div>
+                        <div className="flex items-center justify-between text-xs font-mono pt-1">
+                          <span className="text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 text-[10px]">
+                            YouTube Link
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setVideoSrc('')}
+                            className="text-rose-600 hover:underline cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : videoSrc ? (
+                      <div className="space-y-2">
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-neutral-900 border border-neutral-200 flex items-center justify-center">
+                          <video src={videoSrc} controls muted className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex items-center justify-between text-xs font-mono pt-1">
+                          <button
+                            type="button"
+                            onClick={() => videoInputRef.current?.click()}
+                            className="text-purple-600 hover:underline cursor-pointer font-semibold"
+                          >
+                            Replace Video
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setVideoSrc('');
+                              setVideoFile(null);
+                            }}
+                            className="text-rose-600 hover:underline cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => videoInputRef.current?.click()}
+                        className="cursor-pointer space-y-1.5 flex flex-col items-center group py-4"
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-white group-hover:bg-purple-50 border border-neutral-200 group-hover:border-purple-300 flex items-center justify-center text-neutral-500 group-hover:text-purple-600 transition-colors shadow-xs">
+                          <Play className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <p className="text-xs font-bold text-neutral-900 group-hover:text-purple-700 transition-colors">
+                          Upload Hover Video
+                        </p>
+                        <p className="text-[11px] text-neutral-500 font-mono">
+                          Plays when user hovers card
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {!videoSrc && (
+                    <div className="w-full pt-2 mt-2 border-t border-neutral-200/60">
+                      <input
+                        type="text"
+                        value={videoSrc}
+                        onChange={(e) => setVideoSrc(e.target.value)}
+                        placeholder="Or paste video/YouTube URL..."
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-neutral-200 text-[11px] font-mono text-neutral-900 placeholder:text-neutral-400 outline-none focus:border-purple-500 transition-colors shadow-xs"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. SEO ALT TEXT & SUBTITLE */}
+                <div className="md:col-span-4 rounded-2xl border border-neutral-200/90 bg-white p-5 flex flex-col justify-between shadow-xs min-h-[220px]">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 font-bold">
+                        SEO Alt Text &amp; Subtitle
+                      </label>
+                      <span className="text-[10px] font-mono text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded border border-brand-200">
+                        Required
+                      </span>
+                    </div>
+                    <textarea
+                      rows={4}
+                      value={subtitle}
+                      onChange={(e) => setSubtitle(e.target.value)}
+                      placeholder="Describe this article premise and image for SEO and accessibility (min 3 words)..."
+                      className="w-full p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs font-sans text-neutral-800 placeholder:text-neutral-400 outline-none focus:bg-white focus:border-brand-500 resize-none transition-colors"
+                    />
+                  </div>
+                  <span className="text-[10px] text-neutral-400 font-mono mt-2 block">
+                    Displays as the article narrative premise &amp; SEO meta
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
-      </div>
+      </main>
     </div>
   );
 }

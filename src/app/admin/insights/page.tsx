@@ -151,36 +151,6 @@ export default function AdminInsightsPage() {
         </Link>
       </div>
 
-      {/* ─── PENDING REVIEW NOTICE CALLOUT (IF ANY) ─── */}
-      {pendingCount > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
-              <Send className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-sm font-display font-bold text-amber-950 flex items-center gap-2">
-                <span>{pendingCount} Article{pendingCount > 1 ? 's' : ''} Awaiting Admin Review</span>
-                <span className="px-2 py-0.5 rounded-full bg-amber-200/70 text-amber-800 font-mono text-[10px] uppercase font-bold">
-                  Action Needed
-                </span>
-              </div>
-              <p className="text-xs text-amber-800/80 mt-0.5">
-                Team authors have submitted new engineering articles. Review and approve them before they appear on the public site.
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setStatusFilter('PENDING_REVIEW')}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-mono text-xs font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer shadow-xs"
-          >
-            Filter Pending Reviews
-          </button>
-        </div>
-      )}
-
       {/* ─── SEARCH & STATUS TABS ─── */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         {/* Status Filter Tabs */}
@@ -205,17 +175,6 @@ export default function AdminInsightsPage() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span>Published ({publishedCount})</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setStatusFilter('PENDING_REVIEW')}
-            className={cn(
-              'px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
-              statusFilter === 'PENDING_REVIEW' ? 'bg-white text-amber-700 font-bold shadow-xs' : 'text-neutral-600 hover:text-neutral-950'
-            )}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-            <span>Pending Review ({pendingCount})</span>
           </button>
           <button
             type="button"
@@ -275,13 +234,17 @@ export default function AdminInsightsPage() {
                     {/* Title & Thumbnail */}
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3.5">
-                        <div className="w-14 h-14 rounded-xl overflow-hidden relative bg-neutral-100 border border-neutral-200 shrink-0">
-                          <Image
-                            src={item.image || '/assets/images/service/SERVICE01.png'}
-                            alt={item.title}
-                            fill
-                            className="object-cover"
-                          />
+                        <div className="w-14 h-14 rounded-xl overflow-hidden relative bg-neutral-100 border border-neutral-200 shrink-0 flex items-center justify-center">
+                          {item.image && !item.image.includes('SERVICE01.png') ? (
+                            <Image
+                              src={item.image}
+                              alt={item.title}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <BookOpen className="w-5 h-5 text-neutral-400" />
+                          )}
                         </div>
                         <div className="min-w-0 max-w-sm">
                           <Link

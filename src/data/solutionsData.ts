@@ -769,7 +769,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     executiveSummary:
       'KAIROTRIX designs and engineers custom software, web platforms, and digital products built around real operational workflows, reliable architecture, and clear user experiences.',
     image: '/assets/images/solutions/sub_hero/s2.png',
-    gridImage: '/assets/images/solutions/grid/grid-software-engineering.png',
+    gridImage: '/assets/images/solutions/grid/grid-software-engineering.jpg',
     systemFocusImage: '/assets/images/solutions/software/software-system-focus.png',
     heroVideo: '/assets/videos/software-service.mp4',
     statusBadge: 'Production Grade',
@@ -1274,7 +1274,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     executiveSummary:
       'KAIROTRIX builds dependable business process automations, workflow orchestration engines, document processing, and operational monitoring to reduce repetitive manual work.',
     image: '/assets/images/solutions/sub_hero/s3.png',
-    gridImage: '/assets/images/solutions/grid/grid-automation-operations.png',
+    gridImage: '/assets/images/solutions/grid/grid-automation-operations.jpg',
     systemFocusImage: '/assets/images/solutions/automation/automation-system-focus.png',
     statusBadge: 'Automated Operations',
     engineeringFocus: [
@@ -1758,7 +1758,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     executiveSummary:
       'KAIROTRIX modernizes legacy digital experiences, converts manual processes into structured digital systems, and refines interfaces for performance and ease of use.',
     image: '/assets/images/solutions/sub_hero/s4.png',
-    gridImage: '/assets/images/solutions/grid/grid-digital-transformation.png',
+    gridImage: '/assets/images/solutions/grid/grid-digital-transformation.jpg',
     systemFocusImage: '/assets/images/solutions/digital/digital-system-focus.png',
     statusBadge: 'Modern Web Architecture',
     engineeringFocus: [
@@ -2242,8 +2242,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     subtitle: 'Turn business data into useful insights through analytics, KPI dashboards, interactive reports, and natural-language tools for exploring information.',
     executiveSummary:
       'KAIROTRIX centralizes scattered business data, builds analytical storage and reporting dashboards, and implements forecasting and natural-language query tools for clearer decisions.',
+    gridImage: '/assets/images/solutions/grid/grid-data-bi.jpg',
     image: '/assets/images/solutions/sub_hero/s5.png',
-    gridImage: '/assets/images/solutions/grid/grid-data-bi.png',
     systemFocusImage: '/assets/images/solutions/data/data-system-focus.png',
     statusBadge: 'Operational Intelligence',
     engineeringFocus: [
@@ -2715,7 +2715,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     number: '06',
     title: 'Technology Integration',
     displayHeadline: {
-      prefix: 'WHERE ARCHITECTURE MEETS',
+      prefix: 'WHERE ARCHITECTURE MEETS', 
       accent: 'SYSTEM',
       suffix: 'HARMONY.',
     },
@@ -2724,8 +2724,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     subtitle: 'Connect the software your business already uses through APIs, CRM and ERP integrations, payment services, and reliable data synchronization between systems.',
     executiveSummary:
       'KAIROTRIX connects isolated software platforms, synchronizes commercial and operational records, and integrates payment and data workflows into a coordinated ecosystem.',
+    gridImage: '/assets/images/solutions/grid/grid-technology-integration.jpg',
     image: '/assets/images/solutions/sub_hero/s6.png',
-    gridImage: '/assets/images/solutions/grid/grid-technology-integration.png',
     systemFocusImage: '/assets/images/solutions/integration/integration-system-focus.png',
     statusBadge: 'Connected Systems',
     engineeringFocus: [

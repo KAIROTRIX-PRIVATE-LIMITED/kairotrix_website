@@ -246,16 +246,44 @@ export function AIAssistant() {
     return () => window.removeEventListener('kairotrix:open-ai-widget', handleOpenEvent);
   }, []);
 
-  // Show invitation callout badge after initial delay if user hasn't opened yet
+  const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Show invitation callout badge after initial delay if user hasn't opened yet, and auto-dismiss after 6 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (hasInteracted || isOpen) {
+      setShowCallout(false);
+      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+      return;
+    }
+
+    const showTimer = setTimeout(() => {
       if (!hasInteracted && !isOpen) {
         setShowCallout(true);
+        dismissTimerRef.current = setTimeout(() => {
+          setShowCallout(false);
+        }, 6000);
       }
     }, 2800);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(showTimer);
+      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    };
   }, [hasInteracted, isOpen]);
+
+  const handleCalloutMouseEnter = () => {
+    if (dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current);
+    }
+  };
+
+  const handleCalloutMouseLeave = () => {
+    if (showCallout) {
+      dismissTimerRef.current = setTimeout(() => {
+        setShowCallout(false);
+      }, 3000);
+    }
+  };
 
   // Auto-scroll chat to latest message (smoothly during typing)
   useEffect(() => {
@@ -424,31 +452,29 @@ export function AIAssistant() {
         <AnimatePresence>
           {showCallout && !isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: 12, scale: 0.94 }}
+              initial={{ opacity: 0, y: 10, scale: 0.94 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.94 }}
+              exit={{ opacity: 0, y: 6, scale: 0.94 }}
               transition={{ duration: 0.25 }}
-              className="pointer-events-auto mb-3 max-w-[280px] bg-white border border-neutral-200/90 rounded-2xl shadow-xl p-3.5 flex items-start gap-3 relative cursor-pointer group hover:border-brand-400 hover:shadow-2xl transition-all"
+              onMouseEnter={handleCalloutMouseEnter}
+              onMouseLeave={handleCalloutMouseLeave}
+              className="pointer-events-auto mb-2.5 bg-white border border-neutral-200/90 rounded-2xl shadow-xl hover:shadow-2xl pl-3 pr-2 py-2 flex items-center gap-2.5 relative cursor-pointer group hover:border-brand-400 transition-all select-none"
               onClick={handleOpenToggle}
             >
-              <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 ring-2 ring-brand-500/20">
+              <div className="relative w-6 h-6 rounded-full overflow-hidden shrink-0 ring-1.5 ring-brand-500/25">
                 <Image
                   src="/assets/images/404/chat_icon.png"
                   alt="KIRO Avatar"
                   fill
-                  sizes="32px"
+                  sizes="24px"
                   className="object-cover"
                 />
               </div>
-              <div className="flex-1 min-w-0 pr-4">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="font-display font-bold text-xs text-neutral-900">KIRO</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-tech text-[10px] text-neutral-500 uppercase">Assistant</span>
-                </div>
-                <p className="text-xs text-neutral-600 leading-snug">
-                  Have questions about our solutions or engineering approach?
-                </p>
+              <div className="flex items-center gap-1.5">
+                <span className="font-display font-medium text-xs sm:text-sm text-neutral-900 tracking-tight">
+                  Need help?
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
               </div>
 
               {/* Dismiss Callout Button */}
@@ -459,11 +485,14 @@ export function AIAssistant() {
                   setShowCallout(false);
                   setHasInteracted(true);
                 }}
-                className="absolute top-2 right-2 text-neutral-400 hover:text-neutral-700 p-1 cursor-pointer transition-colors"
-                aria-label="Dismiss message"
+                className="text-neutral-400 hover:text-neutral-700 p-1 rounded-md hover:bg-neutral-100 cursor-pointer transition-colors ml-0.5"
+                aria-label="Dismiss notification"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
+
+              {/* Speech bubble pointer notch */}
+              <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-white border-r border-b border-neutral-200/90 rotate-45 group-hover:border-brand-400 transition-colors" />
             </motion.div>
           )}
         </AnimatePresence>
