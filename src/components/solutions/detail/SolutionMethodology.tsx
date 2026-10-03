@@ -81,35 +81,35 @@ export function SolutionMethodology({ solution }: SolutionMethodologyProps) {
                 className="rounded-3xl bg-white border border-neutral-200 p-5 flex flex-col justify-between hover:border-brand-400 hover:shadow-lg transition-all duration-300 group"
               >
                 <div>
-                  {/* Visual Canvas with Top-Right Icon Badge (Matching 00:18 - 00:19) */}
-                  <div className="relative aspect-[4/3] rounded-2xl bg-neutral-900 overflow-hidden mb-5 flex items-center justify-center p-4">
-                    {/* Subtle ambient light */}
+                  {/* Visual Canvas with Top-Right Icon Badge (Full Bleed Prominent 3D Render) */}
+                  <div className="relative aspect-[16/11] rounded-2xl bg-[#090910] overflow-hidden mb-5 flex items-center justify-center">
+                    {/* Subtle ambient violet stage light */}
                     <div
-                      className="absolute inset-0 bg-gradient-to-tr from-brand-900/40 via-neutral-900 to-black"
+                      className="absolute inset-0 bg-gradient-to-tr from-brand-950/60 via-[#0B0B14] to-black pointer-events-none"
                       aria-hidden="true"
                     />
                     <div
-                      className="absolute w-28 h-28 rounded-full bg-brand-500/20 blur-xl group-hover:scale-125 transition-transform duration-500"
+                      className="absolute w-36 h-36 rounded-full bg-brand-500/25 blur-2xl group-hover:scale-130 transition-transform duration-700 pointer-events-none"
                       aria-hidden="true"
                     />
 
-                    {/* 3D Illustration watermark */}
+                    {/* 3D Illustration - Full Canvas Prominent Display */}
                     <Image
                       src={step.image || `/assets/images/solutions/methodology/methodology-${step.step}-${step.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`}
                       alt={step.name}
-                      width={110}
-                      height={110}
-                      className="relative z-10 max-h-full w-auto object-contain opacity-75 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                      fill
+                      className="relative z-10 object-contain p-1.5 transform group-hover:scale-110 transition-transform duration-700 ease-out drop-shadow-xl"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
 
-                    {/* Top-Right Circular Floating Icon Badge (Matching reference video) */}
-                    <div className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200 shadow-sm flex items-center justify-center">
+                    {/* Top-Right Circular Floating Icon Badge */}
+                    <div className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200/80 shadow-sm flex items-center justify-center">
                       {getIcon(step.iconType)}
                     </div>
 
-                    {/* Bottom Step Label */}
-                    <div className="absolute bottom-3 left-3 z-20 font-tech text-[10px] font-bold text-white/70 uppercase tracking-widest px-2 py-0.5 rounded bg-black/40 backdrop-blur-sm">
-                      DELIVERY PHASE
+                    {/* Top-Left Step Label */}
+                    <div className="absolute top-3 left-3 z-20 font-tech text-[10px] font-bold text-white/90 uppercase tracking-widest px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
+                      PHASE 0{idx + 1}
                     </div>
                   </div>
 

@@ -20,39 +20,54 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
         {/* ─── EDITORIAL 3-COLUMN SPREAD ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-16">
           {/* Left Column: Visual Artwork Card with Highlight */}
-          <div className="lg:col-span-4 max-w-sm mx-auto lg:max-w-none w-full">
+          <div className="lg:col-span-5 max-w-md mx-auto lg:max-w-none w-full">
             <motion.div
               variants={cardFromLeft}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.6, ease: EASE_CINEMATIC }}
-              className="relative aspect-[4/3] sm:aspect-[4/5] rounded-3xl bg-neutral-100 border border-neutral-200 p-6 flex flex-col justify-between overflow-hidden group shadow-sm"
+              className="relative min-h-[460px] sm:min-h-[520px] rounded-3xl bg-gradient-to-b from-white via-brand-50/25 to-neutral-50/70 border border-neutral-200/90 p-6 sm:p-7 flex flex-col justify-between overflow-hidden group shadow-lg shadow-brand-500/5"
             >
+              {/* Subtle architectural grid pattern */}
+              <div 
+                className="absolute inset-0 bg-[linear-gradient(to_right,#00000007_1px,transparent_1px),linear-gradient(to_bottom,#00000007_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" 
+                aria-hidden="true" 
+              />
+              {/* Ambient radial violet illumination behind 3D render */}
+              <div 
+                className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-500/15 via-brand-500/4 to-transparent blur-2xl pointer-events-none" 
+                aria-hidden="true" 
+              />
+
               <div className="relative z-10 flex items-center justify-between">
-                <span className="text-[11px] font-tech text-brand-600 font-semibold uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200/80 text-[11px] font-tech text-brand-700 font-semibold uppercase tracking-wider shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
                   SYSTEM FOCUS
                 </span>
-                <span className="w-2 h-2 rounded-full bg-brand-500" />
+                <span className="text-[10px] font-tech text-neutral-400 uppercase tracking-widest">
+                  SPECS 01
+                </span>
               </div>
 
-              {/* Centered Visual */}
-              <div className="relative my-auto w-full h-36 sm:h-44 flex items-center justify-center">
+              {/* Centered Visual - Prominent Studio Scale */}
+              <div className="relative flex-1 w-full my-3 min-h-[300px] sm:min-h-[350px] flex items-center justify-center">
                 <Image
                   src={solution.systemFocusImage || solution.image}
                   alt={`${solution.title} system focus`}
-                  width={220}
-                  height={220}
-                  className="max-h-full w-auto object-contain transform group-hover:scale-105 transition-transform duration-500 drop-shadow-lg"
+                  fill
+                  className="object-contain transform group-hover:scale-108 transition-transform duration-700 ease-out drop-shadow-[0_20px_40px_rgba(147,51,234,0.22)]"
+                  sizes="(max-width: 1024px) 100vw, 540px"
+                  priority
                 />
               </div>
 
               {/* Bottom Highlight Card */}
-              <div className="relative z-10 p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-neutral-200">
-                <div className="text-xl sm:text-2xl font-bold font-tech text-neutral-900 tracking-tight">
+              <div className="relative z-10 p-4 sm:p-5 rounded-2xl bg-white/95 backdrop-blur-md border border-neutral-200 shadow-md shadow-neutral-900/5">
+                <div className="text-xl sm:text-2xl font-bold font-tech text-neutral-950 tracking-tight">
                   {editorialSplit.editorialHighlight.lead}
                 </div>
-                <div className="text-xs text-neutral-600 font-medium leading-snug mt-1">
+                <div className="text-xs sm:text-sm text-neutral-600 font-medium leading-relaxed mt-1">
                   {editorialSplit.editorialHighlight.detail}
                 </div>
               </div>
@@ -60,7 +75,7 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
           </div>
 
           {/* Center/Right: Editorial Headline & Narrative */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-7 space-y-6">
             <motion.div
               variants={revealMeta}
               initial="hidden"

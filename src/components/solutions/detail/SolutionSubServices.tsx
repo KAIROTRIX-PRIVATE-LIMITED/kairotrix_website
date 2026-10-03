@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
@@ -27,8 +28,8 @@ interface SolutionSubServicesProps {
 export function SolutionSubServices({ solution }: SolutionSubServicesProps) {
   const shouldReduceMotion = useReducedMotion();
 
-  // Track which service row is currently expanded (defaults to null: all closed by default)
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  // Track which service row is currently expanded (defaults to first subservice open by default)
+  const [expandedId, setExpandedId] = useState<string | null>(solution.subCategories[0]?.id || null);
 
   // Track which service rows have their secondary technical approach expanded
   const [techOpenMap, setTechOpenMap] = useState<Record<string, boolean>>({});
@@ -233,15 +234,7 @@ export function SolutionSubServices({ solution }: SolutionSubServicesProps) {
                 >
                   <div className="flex items-start sm:items-center gap-4 sm:gap-6 min-w-0">
                     
-                    {/* Status Dot */}
-                    <div
-                      className={cn(
-                        'w-2.5 h-2.5 rounded-full transition-all duration-300 shrink-0 mt-2 sm:mt-0',
-                        isExpanded
-                          ? 'bg-brand-600 scale-125 shadow-[0_0_12px_rgba(147,51,234,0.55)]'
-                          : 'bg-neutral-300 group-hover:bg-brand-500'
-                      )}
-                    />
+                    
 
                     {/* Service Index, Title & Plain-English Description */}
                     <div className="min-w-0">
@@ -308,46 +301,62 @@ export function SolutionSubServices({ solution }: SolutionSubServicesProps) {
                     >
                       <div className="p-5 sm:p-6 lg:p-8 bg-neutral-50/40 space-y-6">
                         
-                        {/* 1. SERVICE HEADER */}
+                        {/* 1. SERVICE HEADER WITH DEDICATED 3D VISUAL SHOWCASE */}
                         <motion.div
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: 0.05 }}
-                          className="p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3"
+                          className="p-6 sm:p-8 rounded-2xl bg-white border border-neutral-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
                         >
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <span className="font-tech text-xs font-bold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded border border-brand-200 uppercase tracking-wider">
-                              SERVICE {formattedIndex}
-                            </span>
-                            <span className="text-[11px] font-tech text-neutral-500 font-medium">
-                              Built bespoke to project requirements
-                            </span>
+                          <div className="space-y-3 flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="font-tech text-xs font-bold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded border border-brand-200 uppercase tracking-wider">
+                                SERVICE {formattedIndex}
+                              </span>
+                              <span className="text-[11px] font-tech text-neutral-500 font-medium">
+                                Built bespoke to project requirements
+                              </span>
+                            </div>
+
+                            <h4 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900">
+                              {subCat.title}
+                            </h4>
+
+                            <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal max-w-3xl">
+                              {subCat.summary}
+                            </p>
+
+                            {/* Contextual Row: Best Suited For */}
+                            {subCat.bestSuitedFor && subCat.bestSuitedFor.length > 0 && (
+                              <div className="pt-2 border-t border-neutral-100 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs">
+                                <span className="font-tech font-bold text-neutral-500 uppercase tracking-wider text-[11px]">
+                                  BEST SUITED FOR:
+                                </span>
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  {subCat.bestSuitedFor.map((item, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="inline-flex items-center px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 text-xs font-normal"
+                                    >
+                                      {item}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                           </div>
 
-                          <h4 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900">
-                            {subCat.title}
-                          </h4>
-
-                          <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal max-w-3xl">
-                            {subCat.summary}
-                          </p>
-
-                          {/* Contextual Row: Best Suited For */}
-                          {subCat.bestSuitedFor && subCat.bestSuitedFor.length > 0 && (
-                            <div className="pt-2 border-t border-neutral-100 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs">
-                              <span className="font-tech font-bold text-neutral-500 uppercase tracking-wider text-[11px]">
-                                BEST SUITED FOR:
-                              </span>
-                              <div className="flex flex-wrap items-center gap-1.5">
-                                {subCat.bestSuitedFor.map((item, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="inline-flex items-center px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 text-xs font-normal"
-                                  >
-                                    {item}
-                                  </span>
-                                ))}
-                              </div>
+                          {/* Dedicated Large 3D Subservice Visual Showcase */}
+                          {subCat.image && (
+                            <div className="relative w-full md:w-72 lg:w-80 h-56 sm:h-64 rounded-2xl bg-gradient-to-br from-brand-50/50 via-neutral-50 to-white border border-neutral-200/90 p-4 shrink-0 flex items-center justify-center overflow-hidden shadow-sm group/img">
+                              <div className="absolute inset-0 bg-brand-500/10 blur-xl pointer-events-none" />
+                              <Image
+                                src={subCat.image}
+                                alt={subCat.title}
+                                fill
+                                className="object-contain p-2 drop-shadow-xl group-hover/img:scale-108 transition-transform duration-500"
+                                sizes="(max-width: 768px) 100vw, 320px"
+                              />
                             </div>
                           )}
                         </motion.div>
