@@ -45,6 +45,7 @@ export function WorkCard({ specimen, index }: WorkCardProps) {
               src={specimen.image}
               alt={specimen.title}
               fill
+              unoptimized
               sizes="100vw"
               priority={index === 0}
               className="object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out"

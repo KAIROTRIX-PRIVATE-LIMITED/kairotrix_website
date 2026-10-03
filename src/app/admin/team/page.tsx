@@ -385,6 +385,7 @@ export default function AdminTeamPage() {
                     src={member.image}
                     alt={member.name}
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover object-top"
                   />

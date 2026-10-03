@@ -123,6 +123,7 @@ function InsightCard({
             src={article.image}
             alt={article.title}
             fill
+            unoptimized
             className="object-cover scale-100 group-hover:scale-105 transition-transform duration-500 ease-out opacity-90 group-hover:opacity-100"
           />
         ) : null}

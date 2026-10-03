@@ -240,6 +240,7 @@ export default function AdminInsightsPage() {
                               src={item.image}
                               alt={item.title}
                               fill
+                              unoptimized
                               className="object-cover"
                             />
                           ) : (
