@@ -130,19 +130,19 @@ export function SolutionsLifecycle() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {/* ── Section Header ── */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
+        <div className="max-w-3xl mb-12 sm:mb-16 text-center sm:text-left mx-auto sm:mx-0">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
             variants={revealMeta}
-            className="flex items-center gap-3 mb-3 sm:mb-4"
+            className="flex items-center justify-center sm:justify-start gap-3 mb-3 sm:mb-4"
           >
             <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
             <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
               HOW WE BUILD
             </span>
-            <DrawLine className="h-px w-10 sm:w-16 bg-neutral-300" delay={0.2} />
+            <DrawLine className="hidden sm:block h-px w-10 sm:w-16 bg-neutral-300" delay={0.2} />
           </motion.div>
 
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
@@ -157,7 +157,7 @@ export function SolutionsLifecycle() {
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
             variants={revealBody}
-            className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 font-normal leading-relaxed"
+            className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 font-normal leading-relaxed mx-auto sm:mx-0"
           >
             Our projects follow a clear path: understand the problem, design the right approach, build and test the system, then launch and improve it over time.
           </motion.p>

@@ -66,7 +66,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="flex items-center mb-4 sm:mb-6"
+          className="flex items-center justify-center lg:justify-start mb-4 sm:mb-6"
         >
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center space-x-2 text-[11px] font-tech font-semibold text-neutral-500 uppercase tracking-wider">
@@ -93,26 +93,26 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center">
           
           {/* Left Column: Command & Narrative (7 Columns) */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5">
+          <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 text-center lg:text-left items-center lg:items-start">
             
             {/* Eyebrow Badge */}
             <motion.div
               variants={revealMeta}
               initial="hidden"
               animate="visible"
-              className="flex items-center gap-3"
+              className="flex items-center justify-center lg:justify-start gap-3"
             >
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
                 KAIROTRIX // SOLUTION ARCHITECTURE
               </span>
-              <DrawLine className="w-10 sm:w-16 bg-neutral-200" delay={0.2} />
+              <DrawLine className="hidden sm:block w-10 sm:w-16 bg-neutral-200" delay={0.2} />
             </motion.div>
 
             {/* Master Headline */}
             <div>
               <MaskedReveal delay={0.06}>
-                <h1 className="max-w-2xl">
+                <h1 className="max-w-2xl mx-auto lg:mx-0">
                   <span className="block font-tech text-xs sm:text-sm font-bold tracking-[0.2em] text-brand-600 uppercase mb-2 sm:mb-2.5">
                     {solution.title}
                   </span>
@@ -131,7 +131,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
               initial="hidden"
               animate="visible"
               transition={{ delay: 0.16 }}
-              className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal max-w-xl"
+              className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal max-w-xl mx-auto lg:mx-0"
             >
               {solution.executiveSummary}
             </motion.p>
@@ -141,11 +141,11 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.24, ease: EASE_CINEMATIC }}
-              className="pt-1 flex flex-wrap items-center gap-3.5"
+              className="pt-1 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 w-full sm:w-auto"
             >
               <Link
                 href={`/contact?solution=${solution.slug}`}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-tech font-semibold text-xs uppercase tracking-wider transition-all shadow-lg shadow-brand-500/25 active:scale-[0.98]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-tech font-semibold text-xs uppercase tracking-wider transition-all shadow-lg shadow-brand-500/25 active:scale-[0.98]"
               >
                 <span>Start a Conversation</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -153,7 +153,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
 
               <a
                 href="#core-services"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-300/80 text-neutral-900 font-tech font-semibold text-xs uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-300/80 text-neutral-900 font-tech font-semibold text-xs uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer"
               >
                 <span>Explore Core Services</span>
                 <ChevronDown className="w-3.5 h-3.5" />
@@ -165,7 +165,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.32, ease: EASE_CINEMATIC }}
-              className="pt-3 border-t border-neutral-200 flex flex-wrap items-center gap-4 sm:gap-6 text-[11px] sm:text-xs font-tech text-neutral-500"
+              className="pt-3 border-t border-neutral-200 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-[11px] sm:text-xs font-tech text-neutral-500 w-full"
             >
               <div className="flex items-center gap-1.5" title="Clear source-code handover for the custom software we build.">
                 <ShieldCheck className="w-3.5 h-3.5 text-brand-600 shrink-0" />
@@ -230,7 +230,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
               initial="hidden"
               animate="visible"
               transition={{ duration: 0.6, delay: 0.28, ease: EASE_CINEMATIC }}
-              className="absolute -bottom-5 right-0 sm:bottom-1 sm:right-2 lg:-bottom-5 lg:right-0 z-20 rounded-2xl bg-white/90 backdrop-blur-xl border border-neutral-200/90 p-3.5 sm:p-4 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08),0_4px_16px_-4px_rgba(0,0,0,0.04),0_0_20px_rgba(147,51,234,0.08)] text-neutral-900 min-w-[210px] sm:min-w-[240px]"
+              className="absolute -bottom-5 right-2 sm:bottom-1 sm:right-2 lg:-bottom-5 lg:right-0 z-20 rounded-2xl bg-white/90 backdrop-blur-xl border border-neutral-200/90 p-3.5 sm:p-4 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08),0_4px_16px_-4px_rgba(0,0,0,0.04),0_0_20px_rgba(147,51,234,0.08)] text-neutral-900 max-w-[calc(100%-1rem)] sm:min-w-[240px]"
             >
               <div className="flex items-center justify-between gap-2 mb-1">
                 <span className="text-lg sm:text-xl font-bold font-tech text-neutral-900 tracking-tight">

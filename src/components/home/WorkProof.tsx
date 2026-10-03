@@ -251,7 +251,7 @@ export function WorkProof({ projects }: WorkProofProps = {}) {
       ref={containerRef}
       id="work-proof"
       aria-labelledby="work-proof-heading"
-      className="relative w-full bg-[#FAFAFC] h-[450vh] border-t border-neutral-200/80"
+      className="relative w-full bg-[#FAFAFC] h-auto lg:h-[450vh] border-t border-neutral-200/80 py-12 lg:py-0"
     >
       {/* Background Architectural Grid Lines */}
       <div
@@ -259,8 +259,159 @@ export function WorkProof({ projects }: WorkProofProps = {}) {
         aria-hidden="true"
       />
 
-      {/* ── Sticky Viewport (Full-Screen Frozen Gallery Stage) ───────────── */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden px-4 sm:px-8 lg:px-12 pb-4 sm:pb-6">
+      {/* ── DEDICATED MOBILE SPECIMEN DECK (Snap-Scroll Showcase for < lg) ── */}
+      <div className="lg:hidden px-4 sm:px-6 space-y-6">
+        {/* Mobile Section Header */}
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2.5 mb-2">
+            <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+            <span className="font-tech text-xs font-semibold text-brand-600 uppercase tracking-widest">
+              WORK & PROOF
+            </span>
+            <div className="h-px w-8 bg-neutral-200" />
+            <span className="font-mono text-xs text-neutral-400">Technical Demonstrations</span>
+          </div>
+
+          <MaskedReveal delay={0.06}>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-neutral-950 leading-tight">
+              PROVEN IN <span className="gradient-signature-text">EXECUTION.</span>
+            </h2>
+          </MaskedReveal>
+          <p className="mt-2 text-xs text-neutral-500 font-mono">
+            Real software systems, interactive demonstrations, and verified builds.
+          </p>
+        </div>
+
+        {/* Mobile Horizontal Snap-Scroll Card Deck */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2 no-scrollbar -mx-4 px-4">
+          {specimens.map((project) => (
+            <div
+              key={project.id}
+              className="snap-center shrink-0 w-[84vw] max-w-[340px] h-[450px] rounded-2xl overflow-hidden border border-neutral-300/80 bg-neutral-950 p-5 flex flex-col justify-between relative shadow-md"
+            >
+              {/* Card Media Background */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+                {project.image ? (
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    sizes="340px"
+                    className="object-cover scale-105 opacity-85"
+                  />
+                ) : project.video ? (
+                  <video
+                    src={project.video}
+                    muted
+                    playsInline
+                    loop
+                    autoPlay
+                    className="w-full h-full object-cover scale-105 opacity-85"
+                  />
+                ) : null}
+                <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-neutral-950/85 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-neutral-950/95 via-neutral-950/70 to-transparent" />
+              </div>
+
+              {/* Top Tag */}
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-950/60 backdrop-blur-md border border-white/20 text-white font-tech text-[10px] tracking-wider uppercase font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
+                  {project.number} // {project.badge}
+                </span>
+                <span className="font-mono text-[11px] text-neutral-300">
+                  {project.domain}
+                </span>
+              </div>
+
+              {/* Bottom Info */}
+              <div className="relative z-10 space-y-3">
+                <div>
+                  <h3 className="font-display text-xl font-bold tracking-tight text-white leading-snug">
+                    {project.title}
+                  </h3>
+                  <p className="mt-1 text-xs text-neutral-300 line-clamp-2 leading-relaxed">
+                    {project.description}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1">
+                  {project.tech.slice(0, 3).map((t) => (
+                    <span
+                      key={t}
+                      className="px-2 py-0.5 rounded bg-white/10 backdrop-blur-md text-white/90 font-mono text-[10px] border border-white/10"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <Link
+                  href={project.slug}
+                  className="inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-white text-neutral-950 font-semibold text-xs hover:bg-brand-500 hover:text-white transition-colors"
+                >
+                  <span>Explore Specimen</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          ))}
+
+          {/* Conclusion Archive Card at end of Snap Deck */}
+          <div className="snap-center shrink-0 w-[84vw] max-w-[340px] h-[450px] rounded-2xl overflow-hidden border border-neutral-200 bg-white p-6 flex flex-col justify-between text-center shadow-md">
+            <div className="my-auto space-y-3">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-soft border border-brand-500/20 text-brand-600 text-[10px] font-tech font-bold uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-brand-500" />
+                VERIFIED SOURCE CODE
+              </div>
+
+              <h3 className="font-display text-xl font-bold tracking-tight text-neutral-950 leading-tight">
+                Explore the complete technical portfolio.
+              </h3>
+
+              <p className="text-xs text-neutral-600 leading-relaxed">
+                Every project is backed by production source code and verifiable engineering architecture.
+              </p>
+
+              <div className="pt-2 flex flex-col gap-2">
+                <Link
+                  href="/work"
+                  className="inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-neutral-950 text-white font-semibold text-xs hover:bg-brand-600 transition-colors shadow-xs"
+                >
+                  <span>View All Projects</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-neutral-100 text-neutral-800 font-medium text-xs hover:bg-neutral-200 transition-colors"
+                >
+                  <span>Request Engineering Brief</span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-neutral-100 flex items-center justify-center gap-1.5 text-[10px] font-mono text-neutral-400">
+              <ShieldCheck className="w-3 h-3 text-brand-500" />
+              <span>100% Client Code Ownership</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Swipe Cue & Direct Link */}
+        <div className="flex items-center justify-between px-1 text-[11px] font-mono text-neutral-400 pt-1">
+          <span>← Swipe specimens ({specimens.length}) →</span>
+          <Link
+            href="/work"
+            className="text-brand-600 hover:text-brand-700 font-tech font-semibold uppercase tracking-wider flex items-center gap-1"
+          >
+            <span>All Work</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Sticky Viewport (Full-Screen Frozen Gallery Stage for Desktop >= lg) ── */}
+      <div className="hidden lg:flex sticky top-0 h-screen w-full flex-col justify-between overflow-hidden px-4 sm:px-8 lg:px-12 pb-4 sm:pb-6">
         {/* ── FROZEN TOP SECTION HEADER (Opaque bg-[#FAFAFC] z-50 Shield with Navbar Clearance) ── */}
         <div className="relative z-50 w-full bg-[#FAFAFC] pt-20 sm:pt-24 pb-4">
           <div className="mx-auto max-w-6xl flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-2">

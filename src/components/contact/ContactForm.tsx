@@ -102,7 +102,7 @@ export function ContactForm() {
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.6, ease: EASE_CINEMATIC }}
-      className="relative w-full bg-white rounded-3xl border border-neutral-200/90 p-8 sm:p-10 lg:p-12 shadow-[0_8px_32px_rgba(0,0,0,0.04)] overflow-hidden"
+      className="relative w-full bg-white rounded-2xl sm:rounded-3xl border border-neutral-200/90 p-5 sm:p-10 lg:p-12 shadow-[0_8px_32px_rgba(0,0,0,0.04)] overflow-hidden"
     >
       {/* Subtle brand glow accent */}
       <div
@@ -151,8 +151,8 @@ export function ContactForm() {
         ) : (
           <div className="space-y-6">
             {/* ── Form Header ── */}
-            <div className="border-b border-neutral-200 pb-6">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="border-b border-neutral-200 pb-6 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                 <span className="flex h-2 w-2 rounded-full bg-brand-500" />
                 <span className="font-tech text-xs tracking-[0.2em] font-semibold text-brand-600 uppercase">
                   GET IN TOUCH
@@ -161,7 +161,7 @@ export function ContactForm() {
               <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold uppercase tracking-tight text-neutral-950">
                 Send Us a Message
               </h2>
-              <p className="text-sm sm:text-base text-neutral-600 mt-2 font-normal leading-relaxed">
+              <p className="text-sm sm:text-base text-neutral-600 mt-2 font-normal leading-relaxed max-w-xl mx-auto sm:mx-0">
                 Tell us about your project, idea, or problem. Every note is reviewed directly by our engineering leads.
               </p>
             </div>
@@ -296,7 +296,7 @@ export function ContactForm() {
                   )}
                 </button>
 
-                <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm text-neutral-600 font-medium font-sans">
+                <div className="mt-5 flex flex-wrap items-center justify-center sm:justify-between gap-3 text-xs sm:text-sm text-neutral-600 font-medium font-sans text-center sm:text-left">
                   <span className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                     Every inquiry is reviewed

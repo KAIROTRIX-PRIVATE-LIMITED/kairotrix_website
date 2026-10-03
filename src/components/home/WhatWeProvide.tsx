@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { EASE_CINEMATIC, EASE_PRECISE, MaskedReveal } from '@/lib/animations';
@@ -181,6 +181,14 @@ export function WhatWeProvide() {
     }, 700);
   };
 
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev > 0 ? prev - 1 : SERVICES.length - 1));
+  };
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev < SERVICES.length - 1 ? prev + 1 : 0));
+  };
+
   const currentService = SERVICES[activeIndex];
   const cx = ARC_CONFIG.apexX - ARC_CONFIG.radius;
 
@@ -188,8 +196,7 @@ export function WhatWeProvide() {
     <section
       id="what-we-build"
       ref={containerRef}
-      className="relative w-full bg-[#FAFAFC] border-t border-neutral-200/80"
-      style={{ height: '380vh' }}
+      className="relative w-full bg-[#FAFAFC] border-t border-neutral-200/80 h-auto lg:h-[380vh]"
       aria-label="Section 03: What We Build"
     >
       {/* Background Architectural Grid Lines */}
@@ -200,9 +207,9 @@ export function WhatWeProvide() {
 
       {/* ── 1. FROZEN BIG SECTION HEADER (Sticky at top-16 md:top-20) ──────── */}
       <div className="sticky top-16 md:top-20 z-30 w-full bg-[#FAFAFC]/95 backdrop-blur-md border-b border-neutral-200/80 py-4.5 px-4 sm:px-6 lg:px-8 shadow-2xs">
-        <div className="mx-auto max-w-7xl flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row md:items-end justify-between gap-4 text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start">
+            <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <motion.span
                 initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
@@ -248,8 +255,121 @@ export function WhatWeProvide() {
         </div>
       </div>
 
-      {/* ── 2. STICKY PRESERVED SCROLL STAGE (Rotating Orbital Dial) ───────── */}
-      <div className="sticky top-[135px] md:top-[160px] z-20 h-[calc(100vh-9.5rem)] md:h-[calc(100vh-11rem)] flex items-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* ── 2. DEDICATED MOBILE TOUCH CARD SHOWCASE (< lg) ────────────────── */}
+      <div className="lg:hidden px-4 sm:px-6 py-6 space-y-5">
+        {/* Mobile Stepper Controls: Index Indicator & Next/Prev */}
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs font-semibold text-brand-600">
+              {currentService.number}
+            </span>
+            <span className="text-neutral-300">/</span>
+            <span className="font-mono text-xs text-neutral-400">
+              06
+            </span>
+            <span className="mx-1 h-3 w-px bg-neutral-200" />
+            <span className="text-xs font-medium text-neutral-500 truncate max-w-[170px]">
+              {currentService.architectureBadge}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="p-2 rounded-lg bg-white border border-neutral-200/80 text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 shadow-2xs cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+              aria-label="Previous service"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="p-2 rounded-lg bg-white border border-neutral-200/80 text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 shadow-2xs cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+              aria-label="Next service"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Active Service Card */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentService.number}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+            className="bg-white border border-neutral-200/90 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4"
+          >
+            {/* 3D Illustration Container */}
+            <div className="relative w-full aspect-[16/10] rounded-xl bg-gradient-to-b from-neutral-50 to-neutral-100/70 border border-neutral-100 flex items-center justify-center overflow-hidden p-3 sm:p-4">
+              <img
+                src={currentService.image}
+                alt={currentService.title}
+                className="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(147,51,234,0.14)]"
+                draggable={false}
+              />
+
+              {/* Frosted Telemetry Badge */}
+              <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200/80 text-neutral-800 text-[10px] font-mono shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-semibold">{currentService.telemetry.topBadge}</span>
+              </div>
+
+              {/* Obsidian Telemetry Tag */}
+              <div className="absolute bottom-2 left-2 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-950/90 backdrop-blur-md border border-white/10 text-[10px] font-mono shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+                <span className="text-brand-200 font-semibold">{currentService.telemetry.bottomTag}</span>
+              </div>
+            </div>
+
+            {/* Title & Description */}
+            <div className="text-center sm:text-left">
+              <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 leading-snug">
+                {currentService.title}
+              </h3>
+              <p className="mt-2 text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal">
+                {currentService.description}
+              </p>
+            </div>
+
+            {/* Capability Pills */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 pt-1">
+              {currentService.pills.map((pill) => (
+                <span
+                  key={pill}
+                  className="px-2.5 py-1 rounded-full bg-neutral-100/90 border border-neutral-200 text-[11px] font-medium text-neutral-700"
+                >
+                  {pill}
+                </span>
+              ))}
+            </div>
+
+            {/* Commercial Action Links */}
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              <Link
+                href={currentService.slug}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-neutral-950 hover:bg-brand-600 text-white text-xs font-semibold tracking-wide transition-all shadow-xs"
+              >
+                <span>Explore Solutions</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+              <Link
+                href="/solutions"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200/90 text-neutral-700 text-xs font-medium transition-colors shadow-2xs"
+              >
+                <span>Solutions Hub</span>
+                <ArrowRight className="h-3 w-3 text-neutral-400" />
+              </Link>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* ── 3. STICKY PRESERVED SCROLL STAGE (Rotating Orbital Dial for Desktop) ─ */}
+      <div className="hidden lg:flex sticky top-[135px] md:top-[160px] z-20 h-[calc(100vh-9.5rem)] md:h-[calc(100vh-11rem)] items-center px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="mx-auto max-w-7xl w-full h-full flex items-center">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-10 items-center w-full">
 
@@ -352,24 +472,6 @@ export function WhatWeProvide() {
 
             {/* ── CENTER: STREAMLINED SERVICE SPECIFICATION (Maintains Bold Single-Line Title) ── */}
             <div className="lg:col-span-5 flex flex-col justify-center min-w-0">
-              {/* Mobile Quick Stepper Pills (visible only on < lg) */}
-              <div className="flex lg:hidden items-center gap-2 pb-3 overflow-x-auto no-scrollbar">
-                {SERVICES.map((srv, idx) => (
-                  <button
-                    key={srv.number}
-                    onClick={() => handleSelect(idx)}
-                    className={clsx(
-                      'px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all whitespace-nowrap cursor-pointer shrink-0',
-                      activeIndex === idx
-                        ? 'bg-neutral-900 text-white shadow-xs'
-                        : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-900'
-                    )}
-                  >
-                    {srv.shortLabel}
-                  </button>
-                ))}
-              </div>
-
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentService.number}
@@ -382,8 +484,8 @@ export function WhatWeProvide() {
                   {/* Category Header: CORE SOLUTION • Architecture Badge */}
                   
 
-                  {/* Title: Big display typography strictly on ONE line */}
-                  <h3 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-[1.7rem] xl:text-[2rem] 2xl:text-[2.25rem] font-bold tracking-tight text-neutral-950 leading-tight whitespace-nowrap">
+                  {/* Title: Big display typography with clean line breaking */}
+                  <h3 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-[1.7rem] xl:text-[2rem] 2xl:text-[2.25rem] font-bold tracking-tight text-neutral-950 leading-tight">
                     {currentService.title}
                   </h3>
 

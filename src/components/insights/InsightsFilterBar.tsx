@@ -40,28 +40,14 @@ export function InsightsFilterBar({
   return (
     <div className="w-full border-y border-neutral-200/80 bg-white">
       <div className="grid grid-cols-1 lg:grid-cols-12">
-        {/* Left Section: Tech Category Dropdown (Mobile) & Pills (Desktop) */}
-        <div className="lg:col-span-8 p-4 sm:p-5 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-neutral-200/80">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            {/* Mobile Dropdown */}
-            <div className="relative flex-1 min-w-[220px] lg:hidden">
-              <select
-                value={activeCategory}
-                onChange={(e) => onSelectCategory(e.target.value)}
-                aria-label="Filter by Tech Category"
-                className="w-full appearance-none bg-transparent font-mono text-xs text-neutral-900 font-bold tracking-wider uppercase cursor-pointer focus:outline-none pr-8 py-1.5"
-              >
-                <option value="all">ALL ARTICLES ({totalCount})</option>
-                {allCategories.map((cat) => {
-                  const match = categories.find((c) => c.id === cat.id);
-                  return (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.label.toUpperCase()} {match ? `(${match.count})` : ''}
-                    </option>
-                  );
-                })}
-              </select>
-              <ChevronDown className="absolute right-1 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 pointer-events-none" />
+        {/* Left Section: Tech Category Pills (with smooth horizontal scroll on mobile) */}
+        <div className="lg:col-span-8 p-3.5 sm:p-5 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-neutral-200/80">
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+              <span className="font-mono text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Filter by Topic ({totalCount})
+              </span>
             </div>
 
             {isFiltered && (
@@ -76,13 +62,13 @@ export function InsightsFilterBar({
           </div>
 
           {/* Tech Category Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pt-2 pb-1 scrollbar-none no-scrollbar">
+          <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
             <motion.button
               initial="hidden"
               animate="visible"
               variants={revealTag}
               onClick={() => onSelectCategory('all')}
-              className={`text-[11px] font-mono uppercase tracking-wider px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer ${
+              className={`text-xs font-mono uppercase tracking-wider px-3.5 py-2 rounded-full transition-all shrink-0 cursor-pointer min-h-[38px] flex items-center justify-center ${
                 activeCategory === 'all'
                   ? 'bg-neutral-950 text-white font-semibold shadow-xs'
                   : 'bg-neutral-100 text-neutral-600 hover:text-neutral-950 hover:bg-neutral-200'
@@ -99,7 +85,7 @@ export function InsightsFilterBar({
                 variants={revealTag}
                 transition={{ delay: (cIdx + 1) * 0.04 }}
                 onClick={() => onSelectCategory(cat.id)}
-                className={`text-[11px] font-mono uppercase tracking-wider px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer ${
+                className={`text-xs font-mono uppercase tracking-wider px-3.5 py-2 rounded-full transition-all shrink-0 cursor-pointer min-h-[38px] flex items-center justify-center ${
                   activeCategory === cat.id
                     ? 'bg-neutral-950 text-white font-semibold shadow-xs'
                     : 'bg-neutral-100 text-neutral-600 hover:text-neutral-950 hover:bg-neutral-200'
@@ -112,18 +98,18 @@ export function InsightsFilterBar({
         </div>
 
         {/* Right Section: Search */}
-        <div className="lg:col-span-4 p-4 sm:p-5 flex items-center justify-between relative bg-white">
+        <div className="lg:col-span-4 p-3.5 sm:p-5 flex items-center justify-between relative bg-white min-h-[52px]">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search articles, topics, or technologies..."
-            className="w-full pr-8 font-mono text-xs sm:text-sm text-neutral-900 tracking-wider bg-transparent placeholder:text-neutral-400 focus:outline-none"
+            placeholder="Search articles, topics, tech..."
+            className="w-full pr-8 font-mono text-xs sm:text-sm text-neutral-900 tracking-wider bg-transparent placeholder:text-neutral-400 focus:outline-none min-h-[44px]"
           />
           {searchQuery ? (
             <button
               onClick={() => onSearchChange('')}
-              className="p-1 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
+              className="p-2 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
               aria-label="Clear search"
             >
               <X className="w-4 h-4" />

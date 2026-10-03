@@ -130,7 +130,7 @@ export default function NotFound() {
           initial={prefersReduced ? {} : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.55 }}
-          className="pt-6 border-t border-neutral-200/80 flex items-center gap-2 text-xs text-neutral-500 font-tech"
+          className="pt-6 border-t border-neutral-200/80 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 text-xs text-neutral-500 font-tech text-center"
         >
           <span>Need help finding something specific?</span>
           <Link

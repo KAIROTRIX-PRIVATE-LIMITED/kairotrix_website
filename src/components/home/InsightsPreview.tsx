@@ -367,9 +367,9 @@ export function InsightsPreview({ insights }: InsightsPreviewProps = {}) {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <div>
+            <div className="text-center lg:text-left">
               {/* Eyebrow Pill */}
-              <div className="flex items-center gap-3 mb-5">
+              <div className="flex items-center justify-center lg:justify-start gap-3 mb-5">
                 <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
                 <motion.span
                   initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
@@ -380,7 +380,7 @@ export function InsightsPreview({ insights }: InsightsPreviewProps = {}) {
                 >
                   ARTICLES &amp; BLOG
                 </motion.span>
-                <div className="h-px w-10 sm:w-16 bg-neutral-200" />
+                <div className="hidden sm:block h-px w-10 sm:w-16 bg-neutral-200" />
               </div>
 
               {/* Main Headline with Masked Reveal */}
@@ -400,13 +400,13 @@ export function InsightsPreview({ insights }: InsightsPreviewProps = {}) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.65, delay: 0.12, ease: EASE_CINEMATIC }}
-                className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal"
+                className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal mx-auto lg:mx-0 max-w-xl"
               >
                 Technical articles, architectural breakdowns, and engineering guides. We write about how we build real software systems, automate complex workflows, and solve production bottlenecks.
               </motion.p>
 
               {/* Topic Filters / Discipline Tags */}
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-6 flex flex-wrap justify-center lg:justify-start gap-2">
                 {TOPIC_TAGS.map((tag, tIdx) => (
                   <motion.span
                     key={tag}
@@ -505,14 +505,14 @@ export function InsightsPreview({ insights }: InsightsPreviewProps = {}) {
               className="relative w-full overflow-hidden"
               style={{
                 maskImage:
-                  'linear-gradient(to right, transparent 0%, black 40px, black calc(100% - 120px), transparent 100%)',
+                  'linear-gradient(to right, transparent 0%, black 16px, black calc(100% - 40px), transparent 100%)',
                 WebkitMaskImage:
-                  'linear-gradient(to right, transparent 0%, black 40px, black calc(100% - 120px), transparent 100%)',
+                  'linear-gradient(to right, transparent 0%, black 16px, black calc(100% - 40px), transparent 100%)',
               }}
             >
               <div
                 ref={carouselRef}
-                className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-4 pl-12 sm:pl-16 lg:pl-20 scroll-pl-12 sm:scroll-pl-16 lg:scroll-pl-20 pr-6 sm:pr-8 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-4 pl-4 sm:pl-16 lg:pl-20 scroll-pl-4 sm:scroll-pl-16 lg:scroll-pl-20 pr-4 sm:pr-8 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               >
                 {articles.map((article, idx) => {
                   const isActive = currentIndex === idx;

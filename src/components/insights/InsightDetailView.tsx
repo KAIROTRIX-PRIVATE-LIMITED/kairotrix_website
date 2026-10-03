@@ -12,6 +12,7 @@ import {
   List,
   Check,
   Link2,
+  ChevronDown,
 } from 'lucide-react';
 import type { InsightSpecimen } from '@/data/insightsData';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -132,13 +133,13 @@ export function InsightDetailView({
       )}
 
       {/* ─── Full-Page Width Main Container ─── */}
-      <article className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-20">
+      <article className="relative z-10 w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-16 sm:pb-20">
         
         {/* ─── Top Breadcrumb Navigation & Meta Bar ─── */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-6 flex flex-col sm:flex-row items-center sm:items-center justify-between gap-3 sm:gap-4">
           <Link
             href="/insights"
-            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-500 hover:text-neutral-950 transition-colors group cursor-pointer"
+            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-500 hover:text-neutral-950 transition-colors group cursor-pointer py-1"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-brand-600" />
             <span>Back to Insights &amp; Engineering Blog</span>
@@ -154,7 +155,7 @@ export function InsightDetailView({
               type="button"
               onClick={handleCopyLink}
               title="Copy article link"
-              className="px-3 py-1 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-700 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              className="px-3.5 py-1.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-700 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs min-h-[36px]"
             >
               {copied ? (
                 <>
@@ -176,11 +177,11 @@ export function InsightDetailView({
           initial={prefersReduced ? {} : { opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full p-6 sm:p-10 md:p-14 lg:p-16 rounded-3xl border border-neutral-200/90 bg-white shadow-xl space-y-8"
+          className="w-full p-4 sm:p-8 md:p-12 lg:p-16 rounded-2xl sm:rounded-3xl border border-neutral-200/90 bg-white shadow-xl space-y-6 sm:space-y-8 overflow-hidden"
         >
           {/* 1. TOP COVER MEDIA: ONLY THUMBNAIL IMAGE OR HOVER VIDEO */}
           {hasDirectCoverVideo ? (
-            <div className="aspect-video w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-950 shadow-md">
+            <div className="aspect-video w-full rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden bg-neutral-950 shadow-md">
               <video
                 src={specimen.videoSrc}
                 poster={hasThumbnailImage ? specimen.image : undefined}
@@ -190,7 +191,7 @@ export function InsightDetailView({
               />
             </div>
           ) : hasThumbnailImage ? (
-            <div className="relative aspect-[16/9] w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-100 border border-neutral-200 shadow-sm">
+            <div className="relative aspect-[16/9] w-full rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden bg-neutral-100 border border-neutral-200 shadow-sm">
               <Image
                 src={specimen.image}
                 alt={specimen.title}
@@ -205,7 +206,7 @@ export function InsightDetailView({
 
           {/* 2. CATEGORY PILL, DATE & READING TIME */}
           <div className="space-y-4 pt-1">
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-2.5">
               <span className="px-3.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 font-mono text-xs uppercase tracking-wider font-semibold shadow-xs">
                 {specimen.techCategoryLabel || (specimen.category ? specimen.category.toUpperCase().replace('-', ' ') : 'TECHNICAL ARTICLE')}
               </span>
@@ -226,31 +227,39 @@ export function InsightDetailView({
             </div>
 
             {/* 3. MAIN TITLE (H1 HOOK) */}
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-neutral-950 tracking-tight leading-[1.12]">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-neutral-950 tracking-tight leading-[1.12] text-center sm:text-left">
               {specimen.title}
             </h1>
 
             {/* 4. SUBTITLE / EXCERPT */}
             {specimen.subtitle && (
-              <p className="text-lg sm:text-xl md:text-2xl text-neutral-600 font-sans leading-relaxed max-w-4xl">
+              <p className="text-base sm:text-lg md:text-xl text-neutral-600 font-sans leading-relaxed max-w-4xl text-center sm:text-left mx-auto sm:mx-0">
                 {specimen.subtitle}
               </p>
             )}
           </div>
 
           {/* 5. AUTHOR BYLINE & TAGS ROW */}
-          <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-neutral-100 text-xs font-mono text-neutral-600">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 border-y border-neutral-100 text-xs font-mono text-neutral-600">
+            <div className="flex items-center gap-3.5 w-full sm:w-auto">
               <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
                 {specimen.author ? specimen.author.charAt(0).toUpperCase() : 'K'}
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-neutral-900 text-sm">{specimen.author || 'KAIROTRIX Engineering'}</span>
-                  <span className="text-neutral-300">•</span>
-                  <span className="text-brand-600 font-medium">{specimen.authorRole || 'Engineering Team'}</span>
+              <div className="text-left min-w-0 flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                  <span className="font-semibold text-neutral-900 text-sm">
+                    {specimen.author || 'KAIROTRIX Engineering'}
+                  </span>
+                  {specimen.authorRole && (
+                    <>
+                      <span className="hidden sm:inline text-neutral-300">•</span>
+                      <span className="text-brand-600 font-medium text-xs sm:text-sm mt-0.5 sm:mt-0">
+                        {specimen.authorRole}
+                      </span>
+                    </>
+                  )}
                 </div>
-                <span className="text-[11px] text-neutral-400 block sm:hidden mt-0.5">
+                <span className="text-[11px] text-neutral-400 block mt-1">
                   Published on {specimen.date}
                 </span>
               </div>
@@ -258,7 +267,7 @@ export function InsightDetailView({
 
             {/* Tags Ribbon */}
             {specimen.tags && specimen.tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
                 {specimen.tags.map((tag) => (
                   <span
                     key={tag}
@@ -271,20 +280,23 @@ export function InsightDetailView({
             )}
           </div>
 
-          {/* ─── Table of Contents (Wix Blog Format Guideline #3) ─── */}
+          {/* ─── Table of Contents (Wix Blog Format Guideline #3 - Collapsible on Mobile) ─── */}
           {headings.length >= 2 && (
-            <nav
-              aria-label="Table of Contents"
-              className="p-5 sm:p-7 rounded-2xl bg-neutral-50/90 border border-neutral-200/90 shadow-xs space-y-3"
+            <details
+              className="group p-4 sm:p-6 rounded-2xl bg-neutral-50/90 border border-neutral-200/90 shadow-xs"
+              open
             >
-              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-neutral-800">
-                <List className="w-4 h-4 text-brand-600" />
-                <span>Table of Contents</span>
-                <span className="text-[10px] text-neutral-400 font-normal font-mono">
-                  ({headings.length} sections)
-                </span>
-              </div>
-              <ul className="space-y-2 text-sm font-sans pt-1">
+              <summary className="flex items-center justify-between cursor-pointer list-none select-none text-xs font-mono font-bold uppercase tracking-wider text-neutral-800">
+                <div className="flex items-center gap-2">
+                  <List className="w-4 h-4 text-brand-600" />
+                  <span>Table of Contents</span>
+                  <span className="text-[10px] text-neutral-400 font-normal font-mono">
+                    ({headings.length} sections)
+                  </span>
+                </div>
+                <ChevronDown className="w-4 h-4 text-neutral-500 group-open:rotate-180 transition-transform" />
+              </summary>
+              <ul className="space-y-2 text-sm font-sans pt-3 mt-2 border-t border-neutral-200/60">
                 {headings.map((h) => (
                   <li key={h.id} className={h.level === 3 ? 'pl-5 text-xs' : 'font-medium'}>
                     <a
@@ -309,11 +321,11 @@ export function InsightDetailView({
                   </li>
                 ))}
               </ul>
-            </nav>
+            </details>
           )}
 
           {/* 6. RICH PROSE CONTENT BODY (Where attached images, YouTube embeds & videos appear in-place) */}
-          <div className="article-prose-content max-w-none pt-2">
+          <div className="article-prose-content max-w-none pt-2 overflow-x-clip">
             {processedContent ? (
               <div dangerouslySetInnerHTML={{ __html: processedContent }} />
             ) : (
@@ -327,12 +339,12 @@ export function InsightDetailView({
         </motion.div>
 
         {/* ─── 7. AUTHOR BIO & CREDENTIALS CARD ─── */}
-        <div className="mt-10 sm:mt-12 p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200/90 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <div className="mt-10 sm:mt-12 p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200/90 shadow-sm flex flex-col sm:flex-row items-center sm:items-center gap-6 text-center sm:text-left">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-display font-bold text-2xl shrink-0 shadow-xs">
             {specimen.author ? specimen.author.charAt(0).toUpperCase() : 'K'}
           </div>
-          <div className="flex-1">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
+          <div className="flex-1 w-full">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
               <h3 className="text-lg font-display font-bold text-neutral-950">
                 {specimen.author || 'KAIROTRIX Engineering'}
               </h3>
@@ -346,7 +358,7 @@ export function InsightDetailView({
           </div>
           <Link
             href="/about"
-            className="shrink-0 px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 border border-neutral-200 text-neutral-800 font-mono text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer shadow-xs"
+            className="w-full sm:w-auto text-center shrink-0 px-5 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 border border-neutral-200 text-neutral-800 font-mono text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer shadow-xs"
           >
             Meet the Team
           </Link>
@@ -355,7 +367,7 @@ export function InsightDetailView({
         {/* ─── 8. RELATED ENGINEERING ARTICLES ─── */}
         {relatedInsights.length > 0 && (
           <div className="mt-12 sm:mt-16 pt-10 border-t border-neutral-200/80">
-            <div className="flex items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 mb-8 text-center sm:text-left">
               <div>
                 <span className="font-mono text-xs uppercase tracking-wider text-brand-600 font-semibold block mb-1">
                   CONTINUE READING
@@ -367,7 +379,7 @@ export function InsightDetailView({
 
               <Link
                 href="/insights"
-                className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-neutral-500 hover:text-neutral-900 transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-neutral-500 hover:text-neutral-900 transition-colors py-1"
               >
                 <span>View All</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -379,7 +391,7 @@ export function InsightDetailView({
                 <Link
                   key={rel.id}
                   href={`/insights/${rel.slug}`}
-                  className="group block p-6 sm:p-8 rounded-2xl bg-white hover:bg-brand-50/20 border border-neutral-200/80 hover:border-brand-300 shadow-xs hover:shadow-md transition-all duration-300 h-full"
+                  className="group block p-5 sm:p-8 rounded-2xl bg-white hover:bg-brand-50/20 border border-neutral-200/80 hover:border-brand-300 shadow-xs hover:shadow-md transition-all duration-300 h-full"
                 >
                   <div className="flex items-center justify-between gap-2 text-xs font-mono text-neutral-500 mb-3">
                     <span className="text-brand-600 font-semibold">{rel.techCategoryLabel}</span>

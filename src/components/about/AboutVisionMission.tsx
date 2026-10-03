@@ -19,17 +19,17 @@ export function AboutVisionMission() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="flex items-center gap-3 mb-3 sm:mb-4"
+          className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-3 sm:mb-4 text-center lg:text-left"
         >
           <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
           <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
             OUR PURPOSE // VISION & MISSION
           </span>
-          <DrawLine className="w-10 sm:w-16 bg-neutral-200" delay={0.2} />
+          <DrawLine className="hidden sm:block w-10 sm:w-16 bg-neutral-200" delay={0.2} />
         </motion.div>
 
         {/* Section Title with signature gradient text */}
-        <div className="mb-8 sm:mb-12 max-w-4xl">
+        <div className="mb-8 sm:mb-12 max-w-4xl text-center lg:text-left mx-auto lg:mx-0">
           <MaskedReveal delay={0.06}>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
               PURPOSE ROOTED IN{' '}
@@ -46,16 +46,16 @@ export function AboutVisionMission() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.65, delay: 0.1, ease: EASE_CINEMATIC }}
-          className="relative rounded-[2rem] bg-white border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_32px_rgba(147,51,234,0.06)] transition-shadow duration-300 p-6 sm:p-8 lg:p-10"
+          className="relative rounded-2xl sm:rounded-[2rem] bg-white border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_32px_rgba(147,51,234,0.06)] transition-shadow duration-300 p-5 sm:p-8 lg:p-10"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
             {/* Left Content Column: Vision & Mission Duo */}
-            <div className="lg:col-span-7 flex flex-col justify-between">
+            <div className="lg:col-span-7 flex flex-col justify-between text-center sm:text-left">
               
               {/* OUR VISION */}
               <div>
-                <div className="flex items-center justify-between gap-3 mb-3">
+                <div className="flex flex-wrap items-center justify-center sm:justify-between gap-2.5 mb-3">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
                     <span className="font-tech text-xs tracking-[0.2em] font-semibold text-brand-600 uppercase">
@@ -77,11 +77,11 @@ export function AboutVisionMission() {
                   Technology as an accessible bridge, not a barrier.
                 </motion.h3>
 
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal mb-3.5 max-w-xl">
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal mb-3.5 max-w-xl mx-auto sm:mx-0">
                   KAIROTRIX envisions a world where technology is never an expensive barrier, an inflated buzzword, or a rigid vendor trap, but an accessible bridge enabling every business to operate with sovereign intelligence.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                   {VISION_TAGS.map((tag, idx) => (
                     <motion.span
                       key={idx}
@@ -104,7 +104,7 @@ export function AboutVisionMission() {
 
               {/* OUR MISSION */}
               <div>
-                <div className="flex items-center justify-between gap-3 mb-3">
+                <div className="flex flex-wrap items-center justify-center sm:justify-between gap-2.5 mb-3">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
                     <span className="font-tech text-xs tracking-[0.2em] font-semibold text-brand-600 uppercase">
@@ -126,11 +126,11 @@ export function AboutVisionMission() {
                   Solving real problems with precision engineering.
                 </motion.h3>
 
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal mb-3.5 max-w-xl">
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal mb-3.5 max-w-xl mx-auto sm:mx-0">
                   To identify what technology can genuinely improve, build it with precision, and make it accessible to businesses that need it — without overpromising, overcomplicating, or pushing pre-packaged hype.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                   {MISSION_TAGS.map((tag, idx) => (
                     <motion.span
                       key={idx}

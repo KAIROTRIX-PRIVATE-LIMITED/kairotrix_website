@@ -20,14 +20,14 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
         {/* ─── EDITORIAL 3-COLUMN SPREAD ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-16">
           {/* Left Column: Visual Artwork Card with Highlight */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-4 max-w-sm mx-auto lg:max-w-none w-full">
             <motion.div
               variants={cardFromLeft}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.6, ease: EASE_CINEMATIC }}
-              className="relative aspect-[4/5] rounded-3xl bg-neutral-100 border border-neutral-200 p-6 flex flex-col justify-between overflow-hidden group shadow-sm"
+              className="relative aspect-[4/3] sm:aspect-[4/5] rounded-3xl bg-neutral-100 border border-neutral-200 p-6 flex flex-col justify-between overflow-hidden group shadow-sm"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <span className="text-[11px] font-tech text-brand-600 font-semibold uppercase tracking-wider">
@@ -37,7 +37,7 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
               </div>
 
               {/* Centered Visual */}
-              <div className="relative my-auto w-full h-44 flex items-center justify-center">
+              <div className="relative my-auto w-full h-36 sm:h-44 flex items-center justify-center">
                 <Image
                   src={solution.systemFocusImage || solution.image}
                   alt={`${solution.title} system focus`}
@@ -66,16 +66,16 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: '-40px' }}
-              className="flex items-center gap-3"
+              className="flex items-center justify-center lg:justify-start gap-3"
             >
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
                 {editorialSplit.badge}
               </span>
-              <DrawLine className="w-10 sm:w-16 bg-neutral-200" delay={0.2} />
+              <DrawLine className="hidden sm:block w-10 sm:w-16 bg-neutral-200" delay={0.2} />
             </motion.div>
 
-            <div>
+            <div className="text-center lg:text-left">
               <MaskedReveal delay={0.06}>
                 <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 leading-[1.12]">
                   {editorialSplit.headline}
@@ -89,7 +89,7 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
               whileInView="visible"
               viewport={{ once: true, margin: '-40px' }}
               transition={{ delay: 0.16 }}
-              className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal"
+              className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal text-center lg:text-left mx-auto lg:mx-0"
             >
               {editorialSplit.lead}
             </motion.p>

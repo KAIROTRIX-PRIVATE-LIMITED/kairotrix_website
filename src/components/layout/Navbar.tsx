@@ -318,6 +318,17 @@ export function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Prevent background page scrolling when mobile menu drawer is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [mobileMenuOpen]);
+
   // Smooth hover intent with debounce
   const handleMouseEnter = (menu: 'solutions') => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -361,7 +372,9 @@ export function Navbar() {
       <div
         className={cn(
           'absolute inset-0 -z-10 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none',
-          isScrolled
+          mobileMenuOpen
+            ? 'opacity-100 bg-white/98 backdrop-blur-2xl border-b border-black/[0.08] shadow-md'
+            : isScrolled
             ? 'opacity-100 bg-white/85 backdrop-blur-2xl border-b border-black/[0.08] shadow-[0_8px_32px_rgba(147,51,234,0.12),0_4px_16px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)]'
             : 'opacity-0 bg-transparent backdrop-blur-none border-b border-transparent shadow-none'
         )}
@@ -382,7 +395,7 @@ export function Navbar() {
                 alt="KAIROTRIX"
                 width={200}
                 height={46}
-                className="h-8 sm:h-9 md:h-10 w-auto object-contain transition-all duration-300"
+                className="h-7 sm:h-9 md:h-10 w-auto object-contain transition-all duration-300"
                 priority
               />
             </Link>
@@ -827,18 +840,18 @@ export function Navbar() {
           </nav>
 
           {/* === PERSISTENT PRIMARY CTA & MOBILE TOGGLE (RIGHT CORNER) === */}
-          <div className="flex-1 flex items-center justify-end gap-2.5 sm:gap-3">
+          <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 shrink-0">
             {/* Primary CTA: Unique Luminous Pill with Subtle Ambient Glow & Glass Arrow Badge */}
             <Link
               href="/contact"
-              className="relative group p-[1px] rounded-full transition-all duration-300 active:scale-[0.97]"
+              className="relative group p-[1px] rounded-full transition-all duration-300 active:scale-[0.97] shrink-0"
               aria-label="Let's Talk - Contact KAIROTRIX"
             >
               {/* Subtle Ambient Backlight Glow (Expands on Hover) */}
               <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-brand-500 via-purple-500 to-indigo-500 opacity-45 blur-sm group-hover:opacity-85 group-hover:blur-md transition-all duration-500 pointer-events-none" />
 
               {/* Main Button Body */}
-              <span className="relative flex items-center gap-2.5 px-4 sm:px-4.5 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 text-white text-xs sm:text-sm font-medium tracking-wide border border-white/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_12px_rgba(147,51,234,0.3)] overflow-hidden transition-all duration-300">
+              <span className="relative flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4.5 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 text-white text-xs sm:text-sm font-medium tracking-wide border border-white/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_12px_rgba(147,51,234,0.3)] overflow-hidden transition-all duration-300">
                 {/* Light Sweep Shimmer on Hover */}
                 <span className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent transform -skew-x-12 group-hover:left-[120%] transition-all duration-700 ease-out pointer-events-none" />
 
@@ -848,7 +861,7 @@ export function Navbar() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                 </span>
 
-                <span className="leading-none">Let&apos;s Talk</span>
+                <span className="leading-none whitespace-nowrap">Let&apos;s Talk</span>
 
                 {/* Interactive Glass Disc Arrow Badge */}
                 <span className="w-5 sm:w-5.5 h-5 sm:h-5.5 rounded-full bg-white/15 border border-white/25 flex items-center justify-center transition-all duration-300 group-hover:bg-white/30 group-hover:scale-105 group-hover:translate-x-0.5 shrink-0">
@@ -862,7 +875,7 @@ export function Navbar() {
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className={cn(
-                "lg:hidden p-2.5 rounded-xl border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
+                "lg:hidden p-2 sm:p-2.5 rounded-xl border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 shrink-0",
                 isDark
                   ? "border-white/15 bg-white/10 text-white hover:bg-white/20"
                   : "border-black/[0.08] bg-black/[0.04] text-neutral-700 hover:text-black hover:bg-black/[0.08]"
@@ -885,13 +898,13 @@ export function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className={cn(
-              'lg:hidden overflow-hidden backdrop-blur-2xl border-b',
+              'lg:hidden overflow-hidden backdrop-blur-2xl border-b shadow-xl',
               isDark
                 ? 'bg-[#08080C]/98 border-white/[0.09]'
                 : 'bg-white/98 border-black/[0.09]'
             )}
           >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-6 space-y-3 sm:space-y-4 max-h-[calc(100dvh-5rem)] overflow-y-auto pb-safe overscroll-contain">
               
               {/* Solutions Accordion */}
               <div className={cn('border rounded-xl overflow-hidden', isDark ? 'border-white/[0.06] bg-white/[0.02]' : 'border-black/[0.06] bg-black/[0.01]')}>
@@ -902,7 +915,7 @@ export function Navbar() {
                       mobileExpandedSection === 'solutions' ? null : 'solutions'
                     )
                   }
-                  className={cn('w-full flex items-center justify-between p-4 text-left font-medium', isDark ? 'text-neutral-100' : 'text-neutral-800')}
+                  className={cn('w-full flex items-center justify-between p-4 text-left font-medium min-h-[44px]', isDark ? 'text-neutral-100' : 'text-neutral-800')}
                 >
                   <span className="flex items-center gap-2.5">
                     <Bot className="w-4 h-4 text-brand-500" />
@@ -927,9 +940,10 @@ export function Navbar() {
                           key={category.id}
                           className={cn('border rounded-lg overflow-hidden', isDark ? 'border-white/[0.04] bg-white/[0.02]' : 'border-black/[0.04] bg-black/[0.02]')}
                         >
-                          <div className={cn('flex items-center justify-between p-2.5 text-xs font-medium', isDark ? 'text-neutral-200 hover:bg-white/[0.04]' : 'text-neutral-700 hover:bg-black/[0.04]')}>
+                          <div className={cn('flex items-center justify-between p-2.5 text-xs font-medium min-h-[44px]', isDark ? 'text-neutral-200 hover:bg-white/[0.04]' : 'text-neutral-700 hover:bg-black/[0.04]')}>
                             <Link
                               href={category.href}
+                              onClick={() => setMobileMenuOpen(false)}
                               className="flex items-center gap-2 flex-1"
                             >
                               <CategoryIcon className="w-3.5 h-3.5 text-brand-500" />
@@ -1050,7 +1064,8 @@ export function Navbar() {
               <div className="pt-2">
                 <Link
                   href="/contact"
-                  className="w-full py-3 rounded-full gradient-brand-core text-white font-medium text-sm flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(147,51,234,0.4)]"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-3.5 rounded-full gradient-brand-core text-white font-medium text-sm flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(147,51,234,0.4)] min-h-[48px]"
                   aria-label="Let's Talk - Contact KAIROTRIX"
                 >
                   <span className="relative flex h-2 w-2 shrink-0">

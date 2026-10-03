@@ -39,25 +39,25 @@ export function ContactHero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* ── Left Column: Editorial Content (6 cols) ── */}
-          <div className="lg:col-span-6 flex flex-col items-start z-10">
+          <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left z-10">
             {/* Standardized Eyebrow aligned with Insights/About heroes */}
             <motion.div
               variants={revealMeta}
               initial="hidden"
               animate="visible"
-              className="flex flex-wrap items-center gap-3 mb-6"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-6 text-center lg:text-left"
             >
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
                 CONTACT // KAIROTRIX
               </span>
-              <DrawLine className="w-8 sm:w-12 bg-neutral-200" delay={0.2} />
+              <DrawLine className="hidden sm:block w-8 sm:w-12 bg-neutral-200" delay={0.2} />
             </motion.div>
 
             {/* Monumental Headline */}
             <div className="mb-6">
               <MaskedReveal delay={0.06}>
-                <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06]">
+                <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06] text-center lg:text-left">
                   START A <br />
                   <span className="gradient-signature-text">CONVERSATION.</span>
                 </h1>
@@ -70,7 +70,7 @@ export function ContactHero() {
               initial="hidden"
               animate="visible"
               transition={{ delay: 0.16 }}
-              className="text-base sm:text-lg lg:text-xl text-neutral-600 leading-relaxed font-normal max-w-xl mb-8"
+              className="text-base sm:text-lg lg:text-xl text-neutral-600 leading-relaxed font-normal max-w-xl mb-8 text-center lg:text-left mx-auto lg:mx-0"
             >
               Tell us briefly what you&apos;re looking to build, improve, or solve. Every inquiry is reviewed directly by our engineering team, and we aim to follow up within one business day.
             </motion.p>
@@ -80,7 +80,7 @@ export function ContactHero() {
               initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.24, ease: EASE_CINEMATIC }}
-              className="flex flex-wrap items-center gap-3 sm:gap-4 mb-10 w-full sm:w-auto"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-10 w-full sm:w-auto"
             >
               <button
                 type="button"
@@ -108,19 +108,19 @@ export function ContactHero() {
               transition={{ duration: 0.45, delay: 0.32, ease: EASE_CINEMATIC }}
               className="w-full pt-8 border-t border-neutral-200/90 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-neutral-600 font-mono"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center sm:justify-start gap-2">
                 <div className="p-1 rounded-md bg-brand-50 text-brand-600">
                   <Clock className="w-3.5 h-3.5" />
                 </div>
                 <span>fast respond in 1 day</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center sm:justify-start gap-2">
                 <div className="p-1 rounded-md bg-brand-50 text-brand-600">
                   <Sparkles className="w-3.5 h-3.5" />
                 </div>
                 <span>Talk to the people who build</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center sm:justify-start gap-2">
                 <div className="p-1 rounded-md bg-brand-50 text-brand-600">
                   <ShieldCheck className="w-3.5 h-3.5" />
                 </div>

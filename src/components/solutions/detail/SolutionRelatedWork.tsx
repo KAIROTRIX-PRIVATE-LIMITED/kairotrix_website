@@ -144,7 +144,7 @@ export function SolutionRelatedWork({ solution, projects }: SolutionRelatedWorkP
         <div className="text-center">
           <Link
             href={`/work?area=${solution.slug}#selected-work`}
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-900 font-tech font-semibold text-xs uppercase tracking-wider transition-colors shadow-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-900 font-tech font-semibold text-xs uppercase tracking-wider transition-colors shadow-sm"
           >
             <span>Explore All {solution.title} Builds</span>
             <ArrowRight className="w-3.5 h-3.5" />

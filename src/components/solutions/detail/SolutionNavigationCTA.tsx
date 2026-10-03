@@ -62,7 +62,7 @@ export function SolutionNavigationCTA({ solution }: SolutionNavigationCTAProps) 
             >
               <Link
                 href="/solutions"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200 text-xs font-semibold font-tech text-neutral-700 uppercase tracking-wider transition-colors shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200 text-xs font-semibold font-tech text-neutral-700 uppercase tracking-wider transition-colors shadow-sm"
               >
                 <Compass className="w-4 h-4 text-brand-600" />
                 <span>All Solutions</span>

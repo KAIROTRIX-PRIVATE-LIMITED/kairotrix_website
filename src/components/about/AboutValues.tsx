@@ -20,7 +20,7 @@ function SocialPills({
   github?: string | null;
 }) {
   return (
-    <div className="flex items-center gap-2 pt-1">
+    <div className="flex items-center justify-center sm:justify-start gap-2 pt-1">
       {twitter ? (
         <a
           href={twitter}
@@ -109,17 +109,17 @@ export function AboutValues({ members }: AboutValuesProps) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="flex items-center justify-center gap-3 mb-3 sm:mb-4"
+          className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mb-3 sm:mb-4 text-center"
         >
           <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
           <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
             TEAM // LEADERSHIP
           </span>
-          <DrawLine className="w-10 sm:w-16 bg-neutral-200" delay={0.2} />
+          <DrawLine className="hidden sm:block w-10 sm:w-16 bg-neutral-200" delay={0.2} />
         </motion.div>
 
         {/* Section Heading: People behind the work with signature gradient */}
-        <div className="text-center mb-12 sm:mb-16">
+        <div className="text-center mb-8 sm:mb-16">
           <MaskedReveal delay={0.06}>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase">
               PEOPLE BEHIND THE{' '}
@@ -136,7 +136,7 @@ export function AboutValues({ members }: AboutValuesProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.6, delay: 0.1, ease: EASE_CINEMATIC }}
-          className="rounded-[2.25rem] bg-neutral-100/70 border border-neutral-200/80 p-6 sm:p-8 lg:p-10"
+          className="rounded-2xl sm:rounded-[2.25rem] bg-neutral-100/70 border border-neutral-200/80 p-4 sm:p-8 lg:p-10"
         >
           {/* Dynamic Grid: adapts to 1, 2, 3, or more members */}
           <div
@@ -191,7 +191,7 @@ export function AboutValues({ members }: AboutValuesProps) {
                   </div>
 
                   {/* Card Details Base */}
-                  <div className="p-5 sm:p-6 bg-white border-t border-neutral-100 flex flex-col justify-between flex-1">
+                  <div className="p-5 sm:p-6 bg-white border-t border-neutral-100 flex flex-col justify-between flex-1 text-center sm:text-left">
                     <div>
                       <h3 className="font-display font-semibold text-base sm:text-lg text-neutral-950 mb-1 leading-snug group-hover:text-brand-600 transition-colors">
                         {member.name}

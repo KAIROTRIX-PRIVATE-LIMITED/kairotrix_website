@@ -117,12 +117,12 @@ export function Footer() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 pb-24 sm:pb-14 pb-safe">
         {/* Main Grid: Left Brand Block + 4 Taxonomy Columns */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-8 border-b border-neutral-800/70">
           
           {/* Brand Col (lg:col-span-4) */}
-          <div className="lg:col-span-4 flex flex-col justify-between">
+          <div className="lg:col-span-4 flex flex-col justify-between text-center lg:text-left items-center lg:items-start">
             <div>
               {/* Logo with transparent vector background */}
               <Link href="/" className="inline-block transition-opacity hover:opacity-90" aria-label="KAIROTRIX Home">
@@ -137,13 +137,13 @@ export function Footer() {
               <p className="mt-2.5 font-mono text-[11px] uppercase tracking-widest text-brand-400 font-medium">
                 Built to evolve. Made to solve.
               </p>
-              <p className="mt-2.5 text-xs text-neutral-400 leading-relaxed max-w-sm">
+              <p className="mt-2.5 text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto lg:mx-0">
                 Built for the problem in front of you. Designed for the business you&apos;re becoming. Technology that evolves with you.
               </p>
             </div>
 
             {/* Compact Direct Contact with One-Click Copy */}
-            <div className="mt-6 pt-4 border-t border-neutral-800/60 flex flex-wrap items-center gap-3">
+            <div className="mt-6 pt-4 border-t border-neutral-800/60 flex flex-wrap items-center justify-center lg:justify-start gap-3 w-full">
               <button
                 type="button"
                 onClick={handleCopyEmail}

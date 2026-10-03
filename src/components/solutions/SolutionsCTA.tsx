@@ -74,20 +74,20 @@ export function SolutionsCTA() {
 
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 lg:gap-12">
             {/* Left Column: Heading, Narrative, and Actions */}
-            <div className="max-w-xl">
+            <div className="max-w-xl text-center lg:text-left mx-auto lg:mx-0">
               {/* Eyebrow */}
               <motion.div
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: '-40px' }}
                 variants={revealMeta}
-                className="flex items-center gap-3 mb-5"
+                className="flex items-center justify-center lg:justify-start gap-3 mb-5"
               >
                 <span className="flex h-2 w-2 rounded-full bg-brand-400 animate-pulse" />
                 <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-300 uppercase">
                   WORK WITH US
                 </span>
-                <DrawLine className="h-px w-10 sm:w-16 bg-neutral-800" delay={0.2} />
+                <DrawLine className="hidden sm:block h-px w-10 sm:w-16 bg-neutral-800" delay={0.2} />
               </motion.div>
 
               {/* Main Display Headline */}
@@ -104,7 +104,7 @@ export function SolutionsCTA() {
                 whileInView="visible"
                 viewport={{ once: true, margin: '-40px' }}
                 variants={revealBody}
-                className="text-sm sm:text-base text-neutral-300 font-sans leading-relaxed mb-8 max-w-lg"
+                className="text-sm sm:text-base text-neutral-300 font-sans leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0"
               >
                 Tell us what&apos;s slowing your business down. We&apos;ll help you understand the problem, find the right approach, and turn it into technology that works for your business.
               </motion.p>
@@ -115,11 +115,11 @@ export function SolutionsCTA() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.5, delay: 0.2, ease: EASE_CINEMATIC }}
-                className="flex flex-wrap items-center gap-3"
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 w-full sm:w-auto"
               >
                 <Link
                   href="/contact?source=solutions-hub"
-                  className="inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-medium text-sm transition-all duration-200 shadow-md hover:shadow-brand cursor-pointer group"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-medium text-sm transition-all duration-200 shadow-md hover:shadow-brand cursor-pointer group"
                 >
                   <span>Start a Conversation</span>
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
@@ -127,7 +127,7 @@ export function SolutionsCTA() {
 
                 <Link
                   href="/work"
-                  className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-medium text-sm transition-all duration-200 cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-medium text-sm transition-all duration-200 cursor-pointer"
                 >
                   <span>See Our Work</span>
                   <ArrowUpRight className="w-4 h-4 ml-1.5 text-neutral-400" />
@@ -141,7 +141,7 @@ export function SolutionsCTA() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.6, delay: 0.15, ease: EASE_CINEMATIC }}
-              className="w-full sm:w-auto shrink-0 flex justify-center lg:justify-end"
+              className="w-full max-w-sm mx-auto lg:max-w-none lg:w-auto shrink-0 flex justify-center lg:justify-end"
             >
               <div className="w-full sm:w-[320px] rounded-2xl bg-white p-6 shadow-2xl border border-white/90 flex flex-col">
                 {/* Availability Pill */}

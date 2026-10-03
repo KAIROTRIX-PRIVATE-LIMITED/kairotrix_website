@@ -15,6 +15,7 @@ import {
   Copy,
   Check,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
   KIRO_INITIAL_GREETING,
   QUICK_STARTER_PROMPTS,
@@ -192,6 +193,7 @@ export function AIAssistant() {
   if (pathname?.startsWith('/admin')) {
     return null;
   }
+  const isSolutionDetailPage = Boolean(pathname?.startsWith('/solutions/') && pathname !== '/solutions');
   const prefersReduced = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(false);
@@ -201,6 +203,17 @@ export function AIAssistant() {
   const [sessionId, setSessionId] = useState<string>('');
   const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
   const [currentlyStreamingId, setCurrentlyStreamingId] = useState<string | null>(null);
+
+  // Prevent background page scrolling on mobile when chat sheet is open
+  useEffect(() => {
+    if (isOpen && typeof window !== 'undefined' && window.innerWidth < 640) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
 
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
@@ -446,7 +459,14 @@ export function AIAssistant() {
   return (
     <>
       {/* 1. FLOATING LAUNCHER & INVITATION CALLOUT */}
-      <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end pointer-events-none">
+      <div
+        className={cn(
+          "fixed z-50 flex flex-col items-end pointer-events-none transition-all duration-300",
+          isSolutionDetailPage
+            ? "bottom-20 right-4 sm:bottom-6 sm:right-6"
+            : "bottom-5 right-4 sm:bottom-6 sm:right-6"
+        )}
+      >
         
         {/* Entrance Invitation Callout */}
         <AnimatePresence>
@@ -533,18 +553,35 @@ export function AIAssistant() {
         </motion.button>
       </div>
 
-      {/* 2. CHAT WINDOW (PROFESSIONAL LIGHT THEME) */}
+      {/* 2. CHAT WINDOW (PROFESSIONAL LIGHT THEME - MOBILE BOTTOM SHEET) */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.96 }}
-            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-x-3 bottom-22 sm:bottom-24 sm:right-6 sm:left-auto z-50 w-auto sm:w-[410px] h-[580px] max-h-[82vh] bg-white border border-neutral-200/90 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.14)] flex flex-col overflow-hidden text-neutral-900"
-          >
-            {/* 2.1 CLEAN LIGHT HEADER (WITH LIVE STATUS BAR) */}
-            <div className="px-4 py-3.5 bg-white border-b border-neutral-200/80 flex items-center justify-between">
+          <>
+            {/* Mobile Backdrop Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsOpen(false)}
+              className="sm:hidden fixed inset-0 bg-neutral-950/40 z-50 backdrop-blur-xs"
+              aria-hidden="true"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.98 }}
+              transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-x-0 bottom-0 sm:bottom-24 sm:right-6 sm:left-auto z-50 w-full sm:w-[410px] h-[90dvh] sm:h-[580px] sm:max-h-[82vh] bg-white border-t sm:border border-neutral-200/90 rounded-t-3xl sm:rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.18)] flex flex-col overflow-hidden text-neutral-900 pb-safe"
+            >
+              {/* Mobile Grab Handle Indicator */}
+              <div className="sm:hidden w-full flex justify-center pt-2.5 pb-1 shrink-0">
+                <span className="w-10 h-1 rounded-full bg-neutral-300" />
+              </div>
+
+              {/* 2.1 CLEAN LIGHT HEADER (WITH LIVE STATUS BAR) */}
+              <div className="px-4 py-3.5 bg-white border-b border-neutral-200/80 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-brand-500/20 shrink-0 bg-neutral-100">
                   <Image
@@ -768,7 +805,7 @@ export function AIAssistant() {
             )}
 
             {/* 2.4 INPUT BAR */}
-            <div className="p-3.5 bg-white border-t border-neutral-200/80">
+            <div className="p-3 sm:p-3.5 bg-white border-t border-neutral-200/80 shrink-0">
               <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
                 <input
                   ref={inputRef}
@@ -800,8 +837,9 @@ export function AIAssistant() {
               </div>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </>
+      )}
+    </AnimatePresence>
     </>
   );
 }

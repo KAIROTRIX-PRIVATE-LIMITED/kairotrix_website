@@ -42,7 +42,7 @@ export function ContactSidebar() {
         whileInView="visible"
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.55, delay: 0.1, ease: EASE_CINEMATIC }}
-        className="rounded-3xl p-6 sm:p-8 bg-white border border-neutral-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)]"
+        className="rounded-2xl sm:rounded-3xl p-5 sm:p-8 bg-white border border-neutral-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)]"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -63,17 +63,17 @@ export function ContactSidebar() {
           Have an existing technical brief, RFPs, or prefer direct communication? Reach us directly anytime.
         </p>
 
-        <div className="flex items-center justify-between p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-200 hover:border-brand-500/40 transition-colors">
+        <div className="flex items-center justify-between p-3 sm:p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-200 hover:border-brand-500/40 transition-colors min-h-[48px]">
           <a
             href="mailto:connect@kairotrix.com"
-            className="font-mono text-sm font-bold text-neutral-950 hover:text-brand-600 transition-colors truncate pr-2"
+            className="font-mono text-xs sm:text-sm font-bold text-neutral-950 hover:text-brand-600 transition-colors truncate pr-2"
           >
             connect@kairotrix.com
           </a>
           <button
             type="button"
             onClick={handleCopyEmail}
-            className="p-2 rounded-lg hover:bg-neutral-200/80 text-neutral-600 hover:text-neutral-950 transition-colors cursor-pointer shrink-0"
+            className="p-2 rounded-lg hover:bg-neutral-200/80 text-neutral-600 hover:text-neutral-950 transition-colors cursor-pointer shrink-0 min-h-[36px]"
             aria-label="Copy email address"
             title="Copy email to clipboard"
           >
@@ -95,7 +95,7 @@ export function ContactSidebar() {
         whileInView="visible"
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.55, delay: 0.2, ease: EASE_CINEMATIC }}
-        className="rounded-3xl p-6 sm:p-8 bg-white border border-neutral-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)]"
+        className="rounded-2xl sm:rounded-3xl p-5 sm:p-8 bg-white border border-neutral-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)]"
       >
         <div className="flex items-center justify-between mb-5">
           <span className="font-tech text-xs tracking-[0.2em] font-semibold uppercase text-brand-600">
@@ -140,7 +140,7 @@ export function ContactSidebar() {
       >
         <Link
           href="/work"
-          className="group rounded-3xl p-6 bg-gradient-to-r from-neutral-900 to-neutral-950 text-white border border-neutral-800 shadow-md flex items-center justify-between hover:border-brand-500/60 transition-all duration-300 block"
+          className="group rounded-2xl sm:rounded-3xl p-5 sm:p-6 bg-gradient-to-r from-neutral-900 to-neutral-950 text-white border border-neutral-800 shadow-md flex items-center justify-between hover:border-brand-500/60 transition-all duration-300 block"
         >
           <div>
             <span className="font-mono text-[10px] text-brand-400 uppercase tracking-wider block mb-1">

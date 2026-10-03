@@ -83,7 +83,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
       <Link
         href={`/solutions/${discipline.slug}`}
         onMouseEnter={onHover}
-        className="group relative flex items-center justify-between py-6 sm:py-7 lg:py-8 px-4 sm:px-8 transition-all duration-500 rounded-2xl overflow-hidden hover:bg-white border border-transparent hover:border-brand-500/25 hover:shadow-[0_16px_48px_rgba(147,51,234,0.12)] min-h-[120px] sm:min-h-[140px]"
+        className="group relative flex items-center justify-between py-6 sm:py-7 lg:py-8 px-4 sm:px-8 transition-all duration-500 rounded-2xl overflow-hidden bg-white/70 lg:bg-transparent hover:bg-white border border-neutral-200/80 lg:border-transparent hover:border-brand-500/25 hover:shadow-[0_16px_48px_rgba(147,51,234,0.12)] min-h-[120px] sm:min-h-[140px] my-1 lg:my-0 shadow-2xs lg:shadow-none"
       >
         {/* Specular sheen sweep on hover */}
         <div
@@ -91,11 +91,27 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
           aria-hidden="true"
         />
 
-        {/* ── Full-Bleed Background Image on Hover ── */}
+        {/* ── Full-Bleed Background Image (Always visible on mobile, hover-activated on desktop) ── */}
         <div
           className="pointer-events-none absolute inset-0 w-full h-full overflow-hidden z-0"
           aria-hidden="true"
         >
+          {/* Mobile View (< lg): Always visible with protective scrim */}
+          <div className="relative w-full h-full block lg:hidden">
+            <Image
+              src={discipline.gridImage || discipline.image}
+              alt={discipline.title}
+              fill
+              className="object-cover object-right opacity-80"
+              sizes="100vw"
+              priority={index < 2}
+            />
+            {/* Scrim Overlay protecting mobile typography */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/30" />
+            <div className="absolute inset-0 bg-brand-500/[0.03] mix-blend-multiply" />
+          </div>
+
+          {/* Desktop View (lg+): Precision hover reveal */}
           <motion.div
             initial={false}
             animate={{
@@ -106,7 +122,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
               duration: shouldReduceMotion ? 0 : 0.45,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="relative w-full h-full"
+            className="relative w-full h-full hidden lg:block"
           >
             <Image
               src={discipline.gridImage || discipline.image}
@@ -115,7 +131,6 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
               className="object-cover object-right"
               sizes="(max-width: 1200px) 100vw, 1200px"
               priority={index < 2}
-              
             />
 
             {/* Editorial Scrim Overlay: Gradient from opaque card background on the left protecting typography, smoothly revealing the full 3D artwork on the right */}
@@ -248,19 +263,19 @@ export function SolutionsGrid() {
         </div>
         
         {/* Section Header */}
-        <div className="mb-8 sm:mb-12 max-w-5xl mx-auto">
+        <div className="mb-8 sm:mb-12 max-w-5xl mx-auto text-center sm:text-left">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
             variants={revealMeta}
-            className="flex items-center gap-3 mb-3 sm:mb-4"
+            className="flex items-center justify-center sm:justify-start gap-3 mb-3 sm:mb-4"
           >
             <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_8px_rgba(147,51,234,0.6)]" />
             <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
               EXPLORE SOLUTIONS
             </span>
-            <DrawLine className="h-px w-10 sm:w-16 bg-neutral-300" delay={0.2} />
+            <DrawLine className="hidden sm:block h-px w-10 sm:w-16 bg-neutral-300" delay={0.2} />
           </motion.div>
 
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
@@ -275,7 +290,7 @@ export function SolutionsGrid() {
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
             variants={revealBody}
-            className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-2xl font-normal leading-relaxed"
+            className="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 max-w-2xl font-normal leading-relaxed mx-auto sm:mx-0"
           >
             From AI and custom software to automation, digital experiences, data, and integration—explore the technology we design and build around real business needs.
           </motion.p>

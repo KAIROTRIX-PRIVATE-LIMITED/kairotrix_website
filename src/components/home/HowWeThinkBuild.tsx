@@ -804,10 +804,10 @@ function StepRow({
 
   if (isMobile) {
     return (
-      <div ref={stepRef} data-step-row="true" className="relative pl-10 pr-2 py-10">
+      <div ref={stepRef} data-step-row="true" className="relative pl-7 sm:pl-10 pr-2 py-8 sm:py-10">
         {/* Mobile vertical line */}
         <div
-          className="absolute top-0 bottom-0 left-3.5 w-[3px] bg-neutral-200 rounded-full"
+          className="absolute top-0 bottom-0 left-2.5 sm:left-3.5 w-[3px] bg-neutral-200 rounded-full"
           aria-hidden="true"
         />
         <motion.div
@@ -815,52 +815,55 @@ function StepRow({
             height,
             boxShadow: '0 0 8px rgba(147, 51, 234, 0.45)',
           }}
-          className="absolute top-0 left-3.5 w-[3px] bg-brand-500 rounded-full"
+          className="absolute top-0 left-2.5 sm:left-3.5 w-[3px] bg-brand-500 rounded-full"
           aria-hidden="true"
         />
 
         {/* Mobile Dot */}
-        <div className="absolute top-12 left-2 w-6 h-6 rounded-full bg-white border-2 border-brand-500 flex items-center justify-center shadow-md z-10">
+        <div className="absolute top-10 sm:top-12 left-1 sm:left-2 w-6 h-6 rounded-full bg-white border-2 border-brand-500 flex items-center justify-center shadow-md z-10">
           <span className="w-2 h-2 rounded-full bg-brand-500" />
         </div>
 
-        {/* Visual Component */}
-        <div className="mb-6">
-          <StageVisual
-            stageIndex={index}
-            stageNumber={stage.number}
-            stageName={stage.stageName}
-            isMobile={true}
-            stepScrollProgress={scrollYProgress}
-          />
+        {/* Structured Mobile Stage Card */}
+        <div className="rounded-2xl bg-white border border-neutral-200/90 p-5 sm:p-7 shadow-xs">
+          {/* Visual Component */}
+          <div className="mb-6 overflow-hidden rounded-xl">
+            <StageVisual
+              stageIndex={index}
+              stageNumber={stage.number}
+              stageName={stage.stageName}
+              isMobile={true}
+              stepScrollProgress={scrollYProgress}
+            />
+          </div>
+
+          {/* Clean Stage Header */}
+          <div className="flex items-center justify-center sm:justify-start gap-3 mb-3">
+            <span className="font-tech text-2xl font-bold text-brand-600">
+              {stage.number}
+            </span>
+            <div className="h-4 w-px bg-neutral-300" />
+            <span className="font-tech text-xs tracking-widest font-bold text-brand-600 uppercase">
+              STAGE // {stage.stageName}
+            </span>
+          </div>
+
+          <h3 className="font-display text-xl sm:text-2xl font-bold text-neutral-950 leading-snug text-center sm:text-left">
+            {stage.headline}
+          </h3>
+          <p className="mt-2 text-sm text-neutral-600 leading-relaxed text-center sm:text-left">
+            {stage.description}
+          </p>
+
+          <ul className="mt-4 space-y-2 border-t border-neutral-100 pt-4 flex flex-col items-center sm:items-start">
+            {stage.deliverables.map((item) => (
+              <li key={item} className="flex items-center gap-2 text-xs text-neutral-700 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-500 flex-shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-
-        {/* Clean Stage Header */}
-        <div className="flex items-center gap-3 mb-3">
-          <span className="font-tech text-2xl font-bold text-brand-600">
-            {stage.number}
-          </span>
-          <div className="h-4 w-px bg-neutral-300" />
-          <span className="font-tech text-xs tracking-widest font-bold text-brand-600 uppercase">
-            STAGE // {stage.stageName}
-          </span>
-        </div>
-
-        <h3 className="font-display text-xl font-bold text-neutral-950 leading-snug">
-          {stage.headline}
-        </h3>
-        <p className="mt-2 text-sm text-neutral-600 leading-relaxed">
-          {stage.description}
-        </p>
-
-        <ul className="mt-4 space-y-2 border-t border-neutral-100 pt-4">
-          {stage.deliverables.map((item) => (
-            <li key={item} className="flex items-center gap-2 text-xs text-neutral-700 font-medium">
-              <CheckCircle2 className="w-3.5 h-3.5 text-brand-500 flex-shrink-0" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }
@@ -1320,9 +1323,9 @@ export function HowWeThinkBuild() {
 
       <div ref={containerRef} className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ── Section Header ─────────────────────────────────────────── */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 lg:mb-24">
-          <div>
-            <div className="flex flex-wrap items-center gap-3 mb-5">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 lg:mb-24 text-center lg:text-left">
+          <div className="flex flex-col items-center lg:items-start">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-5">
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <motion.span
                 initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
@@ -1362,7 +1365,7 @@ export function HowWeThinkBuild() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.65, delay: 0.12, ease: EASE_CINEMATIC }}
-            className="max-w-md"
+            className="max-w-md mx-auto lg:mx-0"
           >
             <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
               A disciplined engineering journey—from understanding the real business problem to building, connecting, and continuously improving your software.
@@ -1418,8 +1421,8 @@ export function HowWeThinkBuild() {
         </div>
 
         {/* ── Bottom Routing Banner ──────────────────────────────────── */}
-        <div className="mt-20 lg:mt-28 rounded-2xl bg-white border border-neutral-200/80 p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
+        <div className="mt-20 lg:mt-28 rounded-2xl bg-white border border-neutral-200/80 p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col md:flex-row md:items-center justify-between gap-6 text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start">
             <span className="font-tech text-[10px] tracking-[0.2em] font-bold text-brand-600 uppercase">
               NEXT STEP // DIRECT CONSULTATION
             </span>
@@ -1433,7 +1436,7 @@ export function HowWeThinkBuild() {
 
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white text-sm font-semibold hover:bg-brand-600 transition-all group whitespace-nowrap self-start md:self-center shadow-sm"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white text-sm font-semibold hover:bg-brand-600 transition-all group whitespace-nowrap self-stretch sm:self-start md:self-center shadow-sm w-full sm:w-auto"
           >
             <span>Start a Conversation</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

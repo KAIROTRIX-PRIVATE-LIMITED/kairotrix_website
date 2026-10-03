@@ -24,17 +24,17 @@ export function AboutPhilosophy() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="flex items-center gap-3 mb-3 sm:mb-4"
+          className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-3 sm:mb-4 text-center lg:text-left"
         >
           <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
           <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-600 uppercase">
             OUR PHILOSOPHY // CORE VALUES
           </span>
-          <DrawLine className="w-10 sm:w-16 bg-neutral-200" delay={0.2} />
+          <DrawLine className="hidden sm:block w-10 sm:w-16 bg-neutral-200" delay={0.2} />
         </motion.div>
 
         {/* Section Title with signature gradient text */}
-        <div className="mb-8 sm:mb-12 max-w-4xl">
+        <div className="mb-8 sm:mb-12 max-w-4xl text-center lg:text-left mx-auto lg:mx-0">
           <MaskedReveal delay={0.06}>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-neutral-950 uppercase leading-[1.12]">
               BUILT ON UNCOMPROMISING{' '}
@@ -51,7 +51,7 @@ export function AboutPhilosophy() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.65, delay: 0.1, ease: EASE_CINEMATIC }}
-          className="relative rounded-[2rem] overflow-hidden border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_32px_rgba(147,51,234,0.06)] transition-shadow duration-300 min-h-[440px] sm:min-h-[480px] flex items-center justify-end p-6 sm:p-8 lg:p-12 group"
+          className="relative rounded-2xl sm:rounded-[2rem] overflow-hidden border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_32px_rgba(147,51,234,0.06)] transition-shadow duration-300 min-h-[440px] sm:min-h-[480px] flex items-center justify-center lg:justify-end p-4 sm:p-8 lg:p-12 group"
         >
           {/* Full-Bleed Background Image */}
           <Image
@@ -62,13 +62,16 @@ export function AboutPhilosophy() {
             className="object-cover object-left sm:object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />
 
+          {/* Protective Mobile Scrim */}
+          <div className="absolute inset-0 bg-neutral-950/30 lg:bg-transparent pointer-events-none" />
+
           {/* Floating White Core Philosophy Card */}
           <motion.div
             initial={{ opacity: 0, x: 24, scale: 0.96 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.22, ease: EASE_CINEMATIC }}
-            className="relative z-10 w-full max-w-xs sm:max-w-sm rounded-2xl bg-white/95 backdrop-blur-md p-6 sm:p-8 border border-neutral-200/80 shadow-2xl"
+            className="relative z-10 w-full max-w-full sm:max-w-sm rounded-2xl bg-white/95 backdrop-blur-md p-5 sm:p-8 border border-neutral-200/80 shadow-2xl"
           >
             <div className="flex items-center justify-between gap-2 mb-5">
               <h3 className="text-lg sm:text-xl font-display font-semibold text-neutral-950 tracking-tight">

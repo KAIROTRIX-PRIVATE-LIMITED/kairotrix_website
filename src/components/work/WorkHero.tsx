@@ -126,10 +126,10 @@ export function WorkHero() {
       <motion.div
         style={isMounted ? { y: contentY, opacity: contentOpacity, scale: contentScale } : undefined}
         suppressHydrationWarning
-        className="relative z-10 flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 sm:pt-36 lg:pt-40 pb-8 sm:pb-10"
+        className="relative z-10 flex-1 flex flex-col items-center lg:items-start max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-36 lg:pt-40 pb-8 sm:pb-10 text-center lg:text-left"
       >
         {/* 1. Eyebrow: Precision Technical Horizon Reveal */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-5 sm:mb-6 mx-auto lg:mx-0">
           <motion.span
             initial={shouldReduceMotion ? {} : { scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -151,7 +151,7 @@ export function WorkHero() {
             animate={{ scaleX: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.28, ease: FILM_EASE }}
             style={{ originX: 0 }}
-            className="h-px w-10 sm:w-16 bg-neutral-200"
+            className="h-px w-10 sm:w-16 bg-neutral-200 hidden sm:block"
           />
 
           <motion.span
@@ -175,9 +175,9 @@ export function WorkHero() {
         </div>
 
         {/* Headline & Body Container */}
-        <div className="max-w-5xl">
+        <div className="max-w-5xl mx-auto lg:mx-0">
           {/* 2. Monumental Headline: Spector Masked Line-by-Line Rise */}
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06] mb-6">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.08] sm:leading-[1.06] mb-5 sm:mb-6 text-center lg:text-left">
             <div className="overflow-hidden">
               <motion.span
                 initial={shouldReduceMotion ? {} : { opacity: 0, y: '100%' }}
@@ -205,20 +205,20 @@ export function WorkHero() {
             initial={shouldReduceMotion ? {} : { opacity: 0, filter: 'blur(8px)' }}
             animate={{ opacity: 1, filter: 'blur(0px)' }}
             transition={{ duration: 0.85, delay: 0.5, ease: FILM_EASE }}
-            className="text-base sm:text-lg text-neutral-600 font-sans leading-relaxed font-normal max-w-3xl mb-8"
+            className="text-sm sm:text-lg text-neutral-600 font-sans leading-relaxed font-normal max-w-3xl mb-7 sm:mb-8 text-center lg:text-left mx-auto lg:mx-0"
           >
             Software, AI, automation, data, and connected systems—shown through real projects,
             experiments, and working technical demonstrations.
           </motion.p>
 
           {/* 4. Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3.5 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4 w-full sm:w-auto mx-auto lg:mx-0">
             <motion.a
               initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.94, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.65, ease: FILM_EASE }}
               href="#selected-work"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white font-bold text-sm tracking-wide hover:bg-brand-600 transition-all duration-200 shadow-md cursor-pointer group"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white font-bold text-sm tracking-wide hover:bg-brand-600 transition-all duration-200 shadow-md cursor-pointer group w-full sm:w-auto text-center"
             >
               <span>Explore Work</span>
               <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
@@ -228,10 +228,11 @@ export function WorkHero() {
               initial={shouldReduceMotion ? {} : { opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.55, delay: 0.75, ease: FILM_EASE }}
+              className="w-full sm:w-auto text-center"
             >
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-600 hover:text-brand-600 transition-colors py-2 px-1 group cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-neutral-600 hover:text-brand-600 transition-colors py-2 px-1 group cursor-pointer w-full sm:w-auto"
               >
                 <span>Start a Project</span>
                 <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-brand-600 group-hover:translate-x-0.5 transition-all" />

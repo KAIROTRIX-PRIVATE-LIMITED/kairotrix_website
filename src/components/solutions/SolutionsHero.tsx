@@ -62,7 +62,7 @@ export function SolutionsHero() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setIsHovered(false)}
-      className="sticky top-0 w-full h-[100dvh] bg-[#FAFAFC] text-neutral-900 flex flex-col overflow-hidden z-0 border-b border-neutral-200/90"
+      className="relative lg:sticky lg:top-0 w-full min-h-[100dvh] lg:h-[100dvh] bg-[#FAFAFC] text-neutral-900 flex flex-col overflow-hidden z-0 border-b border-neutral-200/90"
     >
       {/* ── Spector Floating Interactive Crosshair HUD ── */}
       {isMounted && !shouldReduceMotion && (
@@ -134,10 +134,10 @@ export function SolutionsHero() {
       <motion.div
         style={isMounted ? { y: contentY, opacity: contentOpacity, scale: contentScale } : undefined}
         suppressHydrationWarning
-        className="relative z-10 flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 sm:pt-36 lg:pt-40 pb-8 sm:pb-10"
+        className="relative z-10 flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-40 pb-8 sm:pb-10"
       >
         {/* 1. Eyebrow: Precision Technical Horizon Reveal */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-6">
           <motion.span
             initial={shouldReduceMotion ? {} : { scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -159,7 +159,7 @@ export function SolutionsHero() {
             animate={{ scaleX: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.28, ease: FILM_EASE }}
             style={{ originX: 0 }}
-            className="h-px w-10 sm:w-16 bg-neutral-200"
+            className="hidden sm:block h-px w-10 sm:w-16 bg-neutral-200"
           />
 
           <motion.span
@@ -183,7 +183,7 @@ export function SolutionsHero() {
         </div>
 
         {/* Headline & Body Container */}
-        <div className="max-w-5xl">
+        <div className="max-w-5xl mx-auto lg:mx-0 text-center lg:text-left">
           {/* 2. Monumental Headline: Spector Masked Line-by-Line Rise */}
           <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase tracking-[-0.03em] text-neutral-950 leading-[1.06] mb-6">
             <div className="overflow-hidden">
@@ -213,20 +213,20 @@ export function SolutionsHero() {
             initial={shouldReduceMotion ? {} : { opacity: 0, filter: 'blur(8px)' }}
             animate={{ opacity: 1, filter: 'blur(0px)' }}
             transition={{ duration: 0.85, delay: 0.5, ease: FILM_EASE }}
-            className="text-base sm:text-lg text-neutral-600 font-sans leading-relaxed font-normal max-w-3xl mb-8"
+            className="text-base sm:text-lg text-neutral-600 font-sans leading-relaxed font-normal max-w-3xl mb-8 mx-auto lg:mx-0 text-center lg:text-left"
           >
             We start by understanding what your business needs, then design and build the right
             solution—from software and AI to automation, websites, data systems, and integrations.
           </motion.p>
 
           {/* 4. Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3.5 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4 w-full sm:w-auto">
             <motion.a
               initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.94, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.65, ease: FILM_EASE }}
               href="#solutions-directory"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white font-bold text-sm tracking-wide hover:bg-brand-600 transition-all duration-200 shadow-md cursor-pointer group"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900 text-white font-bold text-sm tracking-wide hover:bg-brand-600 transition-all duration-200 shadow-md cursor-pointer group"
             >
               <span>Explore Solutions</span>
               <Compass className="w-4 h-4 text-white group-hover:rotate-45 transition-transform duration-300" />
@@ -236,10 +236,11 @@ export function SolutionsHero() {
               initial={shouldReduceMotion ? {} : { opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.75, ease: 'easeOut' }}
+              className="w-full sm:w-auto"
             >
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-neutral-50 border border-neutral-200 text-neutral-800 text-sm font-semibold tracking-wide transition-all shadow-xs cursor-pointer group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-neutral-50 border border-neutral-200 text-neutral-800 text-sm font-semibold tracking-wide transition-all shadow-xs cursor-pointer group"
               >
                 <span>Discuss Your Project</span>
                 <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-brand-600 group-hover:translate-x-0.5 transition-all" />
@@ -259,7 +260,7 @@ export function SolutionsHero() {
             className="absolute top-0 left-0 right-0 h-px bg-neutral-200/80"
           />
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center sm:text-left">
             <motion.div
               initial={shouldReduceMotion ? {} : { opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}

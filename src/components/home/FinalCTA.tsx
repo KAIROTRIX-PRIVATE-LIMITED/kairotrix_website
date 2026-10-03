@@ -297,7 +297,7 @@ export function FinalCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.22, ease: EASE_CINEMATIC }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-mono text-neutral-500 bg-white/70 backdrop-blur-xs px-6 py-2.5 rounded-full border border-neutral-200/70 shadow-xs"
+            className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-mono text-neutral-500 bg-white/70 backdrop-blur-xs px-5 sm:px-6 py-2.5 rounded-2xl sm:rounded-full border border-neutral-200/70 shadow-xs text-center"
           >
             {/* Interactive One-Click Email Copy */}
             <button
@@ -348,7 +348,7 @@ export function FinalCTA() {
           <DrawLine className="mt-16 sm:mt-20 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-neutral-300/80 to-transparent" origin="center" />
 
           {/* ── 4 Grounded Business & Engineering Assurances with Directional Entrance ── */}
-          <div className="mt-12 sm:mt-16 w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+          <div className="mt-12 sm:mt-16 w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center sm:text-left">
             {ASSURANCES.map((item, idx) => {
               const Icon = item.icon;
               // Directional spatial entrance based on position
@@ -369,8 +369,8 @@ export function FinalCTA() {
                   transition={{ duration: 0.65, delay: prefersReduced ? 0 : idx * 0.08, ease: EASE_CINEMATIC }}
                   className="group relative flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200/80 hover:border-brand-500/40 transition-all duration-300 shadow-sm hover:shadow-[0_8px_28px_rgba(147,51,234,0.08)] hover:-translate-y-1"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col items-center sm:items-start">
+                    <div className="flex items-center justify-between w-full mb-4">
                       <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-brand-soft/50 text-brand-600 border border-brand-200/60 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300 shadow-xs">
                         <Icon className="w-4 h-4" />
                       </div>
@@ -389,7 +389,7 @@ export function FinalCTA() {
                   </div>
 
                   {/* Concrete Deliverable / Standard Footprint */}
-                  <div className="mt-5 pt-3.5 border-t border-neutral-100 flex items-center gap-1.5 text-[10px] font-mono text-neutral-400 group-hover:text-brand-600 transition-colors">
+                  <div className="mt-5 pt-3.5 border-t border-neutral-100 flex items-center justify-center sm:justify-start gap-1.5 text-[10px] font-mono text-neutral-400 group-hover:text-brand-600 transition-colors">
                     <span className="w-1 h-1 rounded-full bg-brand-500" />
                     <span className="truncate">{item.badge}</span>
                   </div>

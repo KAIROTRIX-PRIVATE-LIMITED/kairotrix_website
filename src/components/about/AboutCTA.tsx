@@ -48,16 +48,16 @@ export function AboutCTA() {
             </svg>
           </div>
 
-          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 lg:gap-12">
+          <div className="relative z-10 flex flex-col lg:flex-row items-center lg:items-center justify-between gap-10 lg:gap-12">
             {/* Left Column: Heading, Narrative, and Actions */}
-            <div className="max-w-xl">
+            <div className="max-w-xl text-center lg:text-left mx-auto lg:mx-0 w-full">
               {/* Eyebrow */}
               <motion.div
                 variants={revealMeta}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="flex items-center gap-3 mb-5"
+                className="flex items-center justify-center lg:justify-start gap-3 mb-5"
               >
                 <span className="flex h-2 w-2 rounded-full bg-brand-400 animate-pulse" />
                 <span className="font-tech text-xs tracking-[0.25em] font-semibold text-brand-300 uppercase">
@@ -69,7 +69,7 @@ export function AboutCTA() {
               {/* Main Display Headline */}
               <div className="mb-4">
                 <MaskedReveal delay={0.06}>
-                  <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-white uppercase leading-[1.12]">
+                  <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-white uppercase leading-[1.12] text-center lg:text-left">
                     HAVE SOMETHING WORTH{' '}
                     <span className="gradient-signature-text">
                       BUILDING?
@@ -85,7 +85,7 @@ export function AboutCTA() {
                 whileInView="visible"
                 viewport={{ once: true }}
                 transition={{ delay: 0.14 }}
-                className="text-sm sm:text-base text-neutral-300 font-sans leading-relaxed mb-8 max-w-lg"
+                className="text-sm sm:text-base text-neutral-300 font-sans leading-relaxed mb-8 max-w-lg text-center lg:text-left mx-auto lg:mx-0"
               >
                 Tell us what you&apos;re trying to improve, create, or solve. We&apos;ll help you understand the need, explore the right direction, and turn it into technology that works for your business.
               </motion.p>
@@ -96,11 +96,11 @@ export function AboutCTA() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.45, delay: 0.22, ease: EASE_CINEMATIC }}
-                className="flex flex-wrap items-center gap-3"
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-3 w-full"
               >
                 <Link
                   href="/contact?source=about"
-                  className="inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-medium text-sm transition-all duration-200 shadow-md hover:shadow-brand cursor-pointer group"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-medium text-sm transition-all duration-200 shadow-md hover:shadow-brand cursor-pointer group"
                 >
                   <span>Start a Conversation</span>
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
@@ -108,7 +108,7 @@ export function AboutCTA() {
 
                 <Link
                   href="/solutions"
-                  className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-medium text-sm transition-all duration-200 cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-medium text-sm transition-all duration-200 cursor-pointer"
                 >
                   <span>Explore Our Solutions</span>
                   <ArrowUpRight className="w-4 h-4 ml-1.5 text-neutral-400" />

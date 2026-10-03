@@ -549,7 +549,7 @@ export function SolutionSubServices({ solution }: SolutionSubServicesProps) {
         </div>
 
         {/* ─── 03. COMPACT SCOPING CALLOUT ─── */}
-        <div className="mt-10 sm:mt-12 p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-xs">
+        <div className="mt-10 sm:mt-12 p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200 flex flex-col lg:flex-row items-center lg:items-center justify-between gap-4 shadow-xs text-center lg:text-left">
           <div className="space-y-0.5">
             <div className="text-[11px] font-tech font-bold uppercase tracking-wider text-brand-600">
               CUSTOM SCOPE
@@ -564,7 +564,7 @@ export function SolutionSubServices({ solution }: SolutionSubServicesProps) {
 
           <Link
             href={`/contact?solution=${solution.slug}&service=custom-scope`}
-            className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-neutral-900 hover:bg-brand-600 text-white text-xs font-semibold font-tech tracking-wider uppercase transition-colors"
+            className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-neutral-900 hover:bg-brand-600 text-white text-xs font-semibold font-tech tracking-wider uppercase transition-colors"
           >
             <span>Discuss Custom Scope</span>
             <ArrowUpRight className="w-3.5 h-3.5" />

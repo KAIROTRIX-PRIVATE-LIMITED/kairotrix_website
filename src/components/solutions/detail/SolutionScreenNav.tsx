@@ -107,15 +107,15 @@ export function SolutionScreenNav({ solution }: SolutionScreenNavProps) {
 
       {/* ─── MOBILE ONLY: FLOATING DOCKED BOTTOM SOLUTION SWITCHER ─── */}
       <div
-        className={`md:hidden fixed bottom-4 inset-x-4 z-40 transition-all duration-300 ${
+        className={`md:hidden fixed bottom-4 pb-safe inset-x-4 z-40 transition-all duration-300 ${
           isNearBottom ? 'opacity-0 translate-y-4 pointer-events-none' : 'opacity-100 translate-y-0'
         }`}
       >
-        <div className="flex items-center justify-between gap-2 p-2 rounded-2xl bg-white/95 backdrop-blur-xl border border-brand-200 shadow-[0_8px_30px_rgba(147,51,234,0.12)]">
+        <div className="flex items-center justify-between gap-2 p-1.5 sm:p-2 rounded-2xl bg-white/95 backdrop-blur-xl border border-brand-200 shadow-[0_8px_30px_rgba(147,51,234,0.12)]">
           {prevSolution ? (
             <Link
               href={`/solutions/${prevSolution.slug}`}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-50/80 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-tech font-semibold transition-colors truncate max-w-[45%]"
+              className="flex items-center gap-1.5 px-3 py-2.5 min-h-[44px] rounded-xl bg-brand-50/80 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-tech font-semibold transition-colors truncate max-w-[45%]"
             >
               <ChevronLeft className="w-4 h-4 shrink-0 text-brand-600 group-hover:text-white" />
               <span className="truncate">{prevSolution.title}</span>
@@ -131,7 +131,7 @@ export function SolutionScreenNav({ solution }: SolutionScreenNavProps) {
           {nextSolution ? (
             <Link
               href={`/solutions/${nextSolution.slug}`}
-              className="flex items-center justify-end gap-1.5 px-3 py-2 rounded-xl bg-brand-50/80 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-tech font-semibold transition-colors truncate max-w-[45%]"
+              className="flex items-center justify-end gap-1.5 px-3 py-2.5 min-h-[44px] rounded-xl bg-brand-50/80 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-tech font-semibold transition-colors truncate max-w-[45%]"
             >
               <span className="truncate">{nextSolution.title}</span>
               <ChevronRight className="w-4 h-4 shrink-0 text-brand-600 group-hover:text-white" />

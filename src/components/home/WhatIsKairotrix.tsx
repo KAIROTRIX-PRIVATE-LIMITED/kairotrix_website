@@ -230,11 +230,11 @@ function PrincipleCard({
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onHoverEnd}
-      className={`group relative flex flex-col justify-between p-8 sm:p-10 lg:p-11 rounded-2xl bg-white border transition-all duration-500 ${
+      className={`group relative flex flex-col justify-between p-5 sm:p-8 lg:p-11 rounded-2xl bg-white border transition-all duration-500 ${
         isHovered
           ? 'border-brand-500/50 shadow-[0_16px_40px_rgba(147,51,234,0.09)] -translate-y-1'
           : isAnyHovered
-          ? 'border-neutral-200/50 opacity-35 filter blur-[0.3px]'
+          ? 'border-neutral-200/50 lg:opacity-35 lg:filter lg:blur-[0.3px]'
           : 'border-neutral-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.02)]'
       }`}
     >
@@ -383,9 +383,9 @@ export function WhatIsKairotrix() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6, ease: EASE_PRECISE }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 text-center sm:text-left"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center sm:justify-start gap-3">
               <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
               <motion.span
                 initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
@@ -396,13 +396,13 @@ export function WhatIsKairotrix() {
               >
                 Identity & Philosophy
               </motion.span>
-              <div className="h-px w-10 sm:w-16 bg-neutral-200" />
-              <span className="font-mono text-xs text-neutral-400">
+              <div className="h-px w-10 sm:w-16 bg-neutral-200 hidden sm:block" />
+              <span className="font-mono text-xs text-neutral-400 hidden sm:inline">
                 HOW WE THINK
               </span>
             </div>
 
-            <div className="font-mono text-xs text-neutral-500 flex items-center gap-4">
+            <div className="font-mono text-xs text-neutral-500 flex items-center justify-center sm:justify-start gap-4">
               <span>[KAIROTRIX // CORE APPROACH]</span>
               <span className="hidden md:inline text-neutral-300">•</span>
               <span className="hidden md:inline">PROBLEM_FIRST</span>
@@ -412,7 +412,7 @@ export function WhatIsKairotrix() {
         </div>
 
         {/* Section Title with Masked Reveal */}
-        <div className="mb-10 lg:mb-14 overflow-hidden">
+        <div className="mb-10 lg:mb-14 overflow-hidden text-center sm:text-left">
           <MaskedReveal delay={0.08}>
             <h2
               id="identity-philosophy-heading"
@@ -425,7 +425,7 @@ export function WhatIsKairotrix() {
         </div>
 
         {/* ── PART 1: EDITORIAL SCROLL-SCRUBBED KINETIC MANIFESTO ─────────── */}
-        <div ref={manifestoRef} className="max-w-5xl mb-24 lg:mb-32">
+        <div ref={manifestoRef} className="max-w-5xl mb-24 lg:mb-32 text-center sm:text-left">
           {/* Kinetic Headline with Word-by-Word Scroll Illumination */}
           <div className="font-display text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.14]">
             {MANIFESTO_WORDS.map((item, idx) => {
@@ -484,12 +484,12 @@ export function WhatIsKairotrix() {
           className="mb-24 lg:mb-32"
         >
           {/* Continuum Ribbon Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
-            <div className="flex items-center gap-2">
-              <span className="font-tech text-xs tracking-[0.2em] font-bold text-neutral-900 uppercase">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1.5 sm:gap-2.5">
+              <span className="font-tech text-xs tracking-wider sm:tracking-[0.2em] font-bold text-neutral-900 uppercase">
                 THE TRANSFORMATION PROCESS
               </span>
-              <span className="text-xs font-mono text-neutral-400">
+              <span className="text-[11px] sm:text-xs font-mono text-neutral-400">
                 [6_STAGES_OF_SYSTEM_EVOLUTION]
               </span>
             </div>
@@ -509,7 +509,7 @@ export function WhatIsKairotrix() {
                     type="button"
                     onClick={() => setActiveStageIndex(idx)}
                     onMouseEnter={() => setActiveStageIndex(idx)}
-                    className={`relative p-5 lg:p-6 text-left transition-all duration-300 focus:outline-none ${
+                    className={`relative p-3.5 sm:p-5 lg:p-6 text-left transition-all duration-300 focus:outline-none cursor-pointer ${
                       isActive
                         ? 'bg-neutral-50/90 text-neutral-950'
                         : 'bg-white hover:bg-neutral-50/50 text-neutral-600'
@@ -524,7 +524,7 @@ export function WhatIsKairotrix() {
                       />
                     )}
 
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
                       <span
                         className={`font-tech text-xs font-bold transition-colors ${
                           isActive ? 'text-brand-600' : 'text-neutral-400'
@@ -537,7 +537,7 @@ export function WhatIsKairotrix() {
                       </span>
                     </div>
 
-                    <div className="font-display text-sm font-bold tracking-tight">
+                    <div className="font-display text-xs sm:text-sm font-bold tracking-tight">
                       {stage.name}
                     </div>
                   </button>
@@ -546,18 +546,20 @@ export function WhatIsKairotrix() {
             </div>
 
             {/* Live Monospace Telemetry Readout */}
-            <div className="px-6 py-4 bg-neutral-950 text-neutral-300 border-t border-neutral-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
-              <div className="flex items-center gap-3">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-brand-400 animate-pulse" />
-                <span className="text-brand-400 font-semibold">
-                  STAGE_{CONTINUUM_STAGES[activeStageIndex].step} // {CONTINUUM_STAGES[activeStageIndex].name}
-                </span>
-                <span className="hidden md:inline text-neutral-600">|</span>
-                <span className="text-neutral-300">
+            <div className="p-4 sm:px-6 sm:py-4 bg-neutral-950 text-neutral-300 border-t border-neutral-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-left">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="flex h-1.5 w-1.5 rounded-full bg-brand-400 animate-pulse" />
+                  <span className="text-brand-400 font-semibold whitespace-nowrap">
+                    STAGE_{CONTINUUM_STAGES[activeStageIndex].step} // {CONTINUUM_STAGES[activeStageIndex].name}
+                  </span>
+                </div>
+                <span className="hidden sm:inline text-neutral-600">|</span>
+                <p className="text-neutral-300 leading-relaxed text-xs">
                   {CONTINUUM_STAGES[activeStageIndex].telemetry}
-                </span>
+                </p>
               </div>
-              <span className="text-[10px] text-neutral-400 tracking-wider shrink-0 uppercase">
+              <span className="text-[10px] text-neutral-400 tracking-wider shrink-0 uppercase pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-900 text-left sm:text-right">
                 KAIROTRIX STANDARD
               </span>
             </div>
@@ -573,10 +575,10 @@ export function WhatIsKairotrix() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.6, ease: EASE_PRECISE }}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 text-center sm:text-left"
             >
-              <div>
-                <div className="flex items-center gap-3 mb-2">
+              <div className="flex flex-col items-center sm:items-start">
+                <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
                   <span className="flex h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />
                   <motion.span
                     initial={{ opacity: prefersReduced ? 1 : 0, letterSpacing: prefersReduced ? '0.25em' : '0.35em' }}
@@ -588,12 +590,12 @@ export function WhatIsKairotrix() {
                     CORE PRINCIPLES
                   </motion.span>
                 </div>
-                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950">
+                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950 text-center sm:text-left">
                   How We Build Technology
                 </h3>
               </div>
-              <span className="font-mono text-xs text-neutral-400">
-                Hover to explore our engineering standards
+              <span className="font-mono text-xs text-neutral-400 text-center sm:text-right">
+                <span className="hidden sm:inline">Hover</span><span className="sm:hidden">Tap</span> to explore our engineering standards
               </span>
             </motion.div>
             <DrawLine className="mt-4 h-px w-full bg-neutral-200/80" />
