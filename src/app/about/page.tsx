@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'About KAIROTRIX — Technology & Innovation Company',
+  title: 'About',
   description:
     'KAIROTRIX is a technology and innovation company that identifies real business problems first, then designs and builds custom software, AI systems, automation, and connected digital infrastructure. Built to evolve.',
   keywords: [
@@ -22,11 +22,18 @@ export const metadata: Metadata = {
     'business automation',
     'software development company',
   ],
+  alternates: {
+    canonical: '/about',
+  },
   openGraph: {
-    title: 'About KAIROTRIX — Built to Evolve',
+    title: 'About | KAIROTRIX',
     description:
       'Learn why KAIROTRIX exists, the principles behind our work, and how we approach building useful, reliable technology around real business needs.',
-    type: 'website',
+  },
+  twitter: {
+    title: 'About | KAIROTRIX',
+    description:
+      'Learn why KAIROTRIX exists, the principles behind our work, and how we approach building useful, reliable technology around real business needs.',
   },
 };
 

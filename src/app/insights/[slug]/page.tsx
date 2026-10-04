@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${specimen.title} — KAIROTRIX Engineering`,
+    title: specimen.title,
     description: specimen.excerpt,
     keywords: [
       specimen.techCategoryLabel,
@@ -33,13 +33,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       'engineering blog',
       'system architecture',
     ],
+    alternates: {
+      canonical: `https://www.kairotrix.in/insights/${specimen.slug}`,
+    },
     openGraph: {
-      title: specimen.title,
+      title: `${specimen.title} | KAIROTRIX`,
       description: specimen.excerpt,
+      url: `https://www.kairotrix.in/insights/${specimen.slug}`,
       type: 'article',
       publishedTime: specimen.date,
       authors: [specimen.author],
       tags: specimen.tags,
+      images: specimen.image ? [{ url: specimen.image, alt: specimen.title }] : undefined,
+    },
+    twitter: {
+      title: `${specimen.title} | KAIROTRIX`,
+      description: specimen.excerpt,
+      images: specimen.image ? [specimen.image] : undefined,
     },
   };
 }

@@ -37,7 +37,14 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "KAIROTRIX — AI Technology & Software Solutions",
+  metadataBase: new URL("https://www.kairotrix.in"),
+  alternates: {
+    canonical: "/",
+  },
+  title: {
+    default: "KAIROTRIX — AI Technology & Software Solutions",
+    template: "%s | KAIROTRIX",
+  },
   description:
     "Practical, accessible technology partner. We build intelligent AI systems, custom software, workflow automation, and digital platforms designed to solve real business problems.",
   keywords: [
@@ -56,10 +63,28 @@ export const metadata: Metadata = {
     apple: "/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.svg",
   },
   openGraph: {
+    type: "website",
+    url: "https://www.kairotrix.in",
+    siteName: "KAIROTRIX",
+    locale: "en_IN",
     title: "KAIROTRIX — Built to evolve",
     description:
       "Technology that moves ideas into real-world solutions. AI systems, custom software, and automation built with digital craft.",
-    type: "website",
+    images: [
+      {
+        url: "/assets/images/og/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "KAIROTRIX",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KAIROTRIX — Built to evolve",
+    description:
+      "Technology that moves ideas into real-world solutions. AI systems, custom software, and automation built with digital craft.",
+    images: ["/assets/images/og/og-default.png"],
   },
 };
 

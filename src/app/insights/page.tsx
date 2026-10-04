@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Articles & Engineering Blog — KAIROTRIX',
+  title: 'Articles & Engineering Blog',
   description:
     'Technical articles, architecture breakdowns, and engineering perspectives from KAIROTRIX—documenting how we design, build, and evolve software systems.',
   keywords: [
@@ -20,11 +20,18 @@ export const metadata: Metadata = {
     'data systems',
     'system architecture',
   ],
+  alternates: {
+    canonical: '/insights',
+  },
   openGraph: {
-    title: 'Articles & Engineering Blog — KAIROTRIX',
+    title: 'Articles & Engineering Blog | KAIROTRIX',
     description:
       'Technical articles, architecture breakdowns, and engineering perspectives from KAIROTRIX—documenting how we design, build, and evolve software systems.',
-    type: 'website',
+  },
+  twitter: {
+    title: 'Articles & Engineering Blog | KAIROTRIX',
+    description:
+      'Technical articles, architecture breakdowns, and engineering perspectives from KAIROTRIX—documenting how we design, build, and evolve software systems.',
   },
 };
 

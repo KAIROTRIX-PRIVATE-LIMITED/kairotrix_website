@@ -106,7 +106,7 @@ export function Footer() {
             copyrightHolder: {
               '@type': 'Organization',
               name: 'KAIROTRIX PRIVATE LIMITED',
-              url: 'https://kairotrix.com',
+              url: 'https://www.kairotrix.in',
             },
           }),
         }}

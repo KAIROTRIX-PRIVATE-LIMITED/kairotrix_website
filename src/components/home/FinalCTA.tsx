@@ -124,7 +124,7 @@ export function FinalCTA() {
             '@context': 'https://schema.org',
             '@type': 'ProfessionalService',
             name: 'KAIROTRIX',
-            url: 'https://kairotrix.com',
+            url: 'https://www.kairotrix.in',
             description:
               'Software engineering and technology partner delivering custom business software, workflow automation, AI systems, and enterprise integrations with 100% client code ownership.',
             email: 'kairotrix.official@gmail.com',

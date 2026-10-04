@@ -338,7 +338,7 @@ export function InsightsPreview({ insights }: InsightsPreviewProps = {}) {
               headline: article.title,
               description: article.excerpt,
               datePublished: article.date,
-              url: `https://kairotrix.com${article.slug}`,
+              url: `https://www.kairotrix.in/insights/${article.slug}`,
             })),
           }),
         }}

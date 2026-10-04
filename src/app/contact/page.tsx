@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { ContactContainer } from '@/components/contact/ContactContainer';
 
 export const metadata: Metadata = {
-  title: 'Contact KAIROTRIX — Start a Conversation',
+  title: 'Contact',
   description:
     'Have a business challenge, product idea, or technology project to discuss? Start a conversation with KAIROTRIX about what you\'re looking to build, improve, or solve.',
   keywords: [
@@ -13,11 +13,18 @@ export const metadata: Metadata = {
     'Business automation',
     'Technology partner',
   ],
+  alternates: {
+    canonical: '/contact',
+  },
   openGraph: {
-    title: 'Contact KAIROTRIX — Start a Conversation',
+    title: 'Contact | KAIROTRIX',
     description:
       'Tell us what you\'re working on and what you\'re looking to build, improve, or solve. Start a conversation with KAIROTRIX.',
-    type: 'website',
+  },
+  twitter: {
+    title: 'Contact | KAIROTRIX',
+    description:
+      'Tell us what you\'re working on and what you\'re looking to build, improve, or solve. Start a conversation with KAIROTRIX.',
   },
 };
 

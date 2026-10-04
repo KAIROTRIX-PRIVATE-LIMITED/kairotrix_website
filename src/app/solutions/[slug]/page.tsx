@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: SolutionDetailPageProps): Pro
   const subServiceNames = solution.subCategories.flatMap((c) => c.services.map((s) => s.name));
 
   return {
-    title: `${solution.title} — Solutions | KAIROTRIX`,
+    title: solution.title,
     description: solution.executiveSummary,
     keywords: [
       solution.title,
@@ -48,14 +48,18 @@ export async function generateMetadata({ params }: SolutionDetailPageProps): Pro
       'technology partner',
     ],
     alternates: {
-      canonical: `https://kairotrix.com/solutions/${solution.slug}`,
+      canonical: `https://www.kairotrix.in/solutions/${solution.slug}`,
     },
     openGraph: {
-      title: `${solution.title} — Solutions | KAIROTRIX`,
+      title: `${solution.title} | KAIROTRIX`,
       description: solution.executiveSummary,
-      url: `https://kairotrix.com/solutions/${solution.slug}`,
+      url: `https://www.kairotrix.in/solutions/${solution.slug}`,
       siteName: 'KAIROTRIX',
       type: 'website',
+    },
+    twitter: {
+      title: `${solution.title} | KAIROTRIX`,
+      description: solution.executiveSummary,
     },
   };
 }
@@ -78,13 +82,13 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
     provider: {
       '@type': 'Organization',
       name: 'KAIROTRIX',
-      url: 'https://kairotrix.com',
+      url: 'https://www.kairotrix.in',
       description:
         'Technology and software solutions company that designs and builds custom software, AI systems, automation workflows, and data platforms.',
     },
     description: solution.executiveSummary,
     areaServed: 'Global',
-    url: `https://kairotrix.com/solutions/${solution.slug}`,
+    url: `https://www.kairotrix.in/solutions/${solution.slug}`,
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: `${solution.title} Services`,
@@ -94,7 +98,7 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
           '@type': 'Service',
           name: sub.title,
           description: sub.summary,
-          url: `https://kairotrix.com/solutions/${solution.slug}#${sub.anchorId}`,
+          url: `https://www.kairotrix.in/solutions/${solution.slug}#${sub.anchorId}`,
         },
         position: idx + 1,
       })),
@@ -109,19 +113,19 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://kairotrix.com',
+        item: 'https://www.kairotrix.in',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Solutions',
-        item: 'https://kairotrix.com/solutions',
+        item: 'https://www.kairotrix.in/solutions',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: solution.title,
-        item: `https://kairotrix.com/solutions/${solution.slug}`,
+        item: `https://www.kairotrix.in/solutions/${solution.slug}`,
       },
     ],
   };

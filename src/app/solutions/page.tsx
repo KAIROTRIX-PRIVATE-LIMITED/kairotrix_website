@@ -5,7 +5,7 @@ import { SolutionsLifecycle } from '@/components/solutions/SolutionsLifecycle';
 import { SolutionsCTA } from '@/components/solutions/SolutionsCTA';
 
 export const metadata: Metadata = {
-  title: 'Solutions & Technology Systems — KAIROTRIX',
+  title: 'Solutions & Technology Systems',
   description:
     'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
   keywords: [
@@ -17,11 +17,18 @@ export const metadata: Metadata = {
     'technology integration',
     'KAIROTRIX solutions',
   ],
+  alternates: {
+    canonical: '/solutions',
+  },
   openGraph: {
-    title: 'Solutions & Technology Systems — KAIROTRIX',
+    title: 'Solutions & Technology Systems | KAIROTRIX',
     description:
       'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
-    type: 'website',
+  },
+  twitter: {
+    title: 'Solutions & Technology Systems | KAIROTRIX',
+    description:
+      'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
   },
 };
 

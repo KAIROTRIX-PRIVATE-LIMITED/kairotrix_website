@@ -6,7 +6,7 @@ import { WorkCTA } from '@/components/work/WorkCTA';
 import { getActiveWorkSpecimens } from '@/lib/services/workService';
 
 export const metadata: Metadata = {
-  title: 'Projects & Work — KAIROTRIX',
+  title: 'Projects & Work',
   description:
     'A selection of projects, experiments, and technical demonstrations built by KAIROTRIX across software, AI, automation, digital systems, data, and integration.',
   keywords: [
@@ -19,11 +19,18 @@ export const metadata: Metadata = {
     'data systems',
     'integration',
   ],
+  alternates: {
+    canonical: '/work',
+  },
   openGraph: {
-    title: 'Projects & Work — KAIROTRIX',
+    title: 'Projects & Work | KAIROTRIX',
     description:
       'A selection of projects, experiments, and technical demonstrations built by KAIROTRIX across software, AI, automation, digital systems, data, and integration.',
-    type: 'website',
+  },
+  twitter: {
+    title: 'Projects & Work | KAIROTRIX',
+    description:
+      'A selection of projects, experiments, and technical demonstrations built by KAIROTRIX across software, AI, automation, digital systems, data, and integration.',
   },
 };
 
