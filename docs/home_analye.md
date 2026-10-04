@@ -219,7 +219,7 @@ _Typical Persona: A decision-maker with an approved budget and an urgent mandate
 - **Current Copy:**
   - Section Title: `**LET**'S **BUILD**.`
   - Narrative: `You have an idea, an operational bottleneck, or a mission-critical system to engineer. We provide the deep engineering rigor and architectural clarity to bring it to life.`
-  - Actions: Primary **CTA** `Start a Conversation` (/contact) + Secondary `Talk to **KAIROTRIX** AI` + Direct Email `[connect@kairotrix.com](mailto:connect@kairotrix.com)`.
+  - Actions: Primary **CTA** `Start a Conversation` (/contact) + Secondary `Talk to **KAIROTRIX** AI` + Direct Email `[kairotrix.official@gmail.com](mailto:kairotrix.official@gmail.com)`.
   - 4 Assurances: _Problem-First Diagnostic_, **\*100**% Code & Blueprint Ownership*, *Production-Grade Determinism*, *Direct Engineering Access\*.
 - **Positive Findings:**
   - Dignified, confident closing tone without aggressive marketing pop-ups or countdown timers.

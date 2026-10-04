@@ -95,11 +95,11 @@ export function ContactHero() {
               </button>
 
               <a
-                href="mailto:connect@kairotrix.com"
+                href="mailto:kairotrix.official@gmail.com"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white hover:bg-neutral-50 text-neutral-900 border border-neutral-200/90 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 shadow-2xs hover:border-brand-500/40"
               >
                 <Mail className="w-4 h-4 text-brand-500" />
-                <span>connect@kairotrix.com</span>
+                <span>kairotrix.official@gmail.com</span>
               </a>
             </motion.div>
 

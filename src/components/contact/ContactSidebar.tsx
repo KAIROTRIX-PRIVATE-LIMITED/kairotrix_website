@@ -28,7 +28,7 @@ export function ContactSidebar() {
   const [copied, setCopied] = useState(false);
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText('connect@kairotrix.com');
+    navigator.clipboard.writeText('kairotrix.official@gmail.com');
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
@@ -65,10 +65,10 @@ export function ContactSidebar() {
 
         <div className="flex items-center justify-between p-3 sm:p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-200 hover:border-brand-500/40 transition-colors min-h-[48px]">
           <a
-            href="mailto:connect@kairotrix.com"
+            href="mailto:kairotrix.official@gmail.com"
             className="font-mono text-xs sm:text-sm font-bold text-neutral-950 hover:text-brand-600 transition-colors truncate pr-2"
           >
-            connect@kairotrix.com
+            kairotrix.official@gmail.com
           </a>
           <button
             type="button"

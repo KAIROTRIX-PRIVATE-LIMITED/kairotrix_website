@@ -235,7 +235,7 @@ export const KNOWLEDGE_BASE: KnowledgeEntry[] = [
     keywords: ['contact', 'email', 'phone', 'call', 'talk', 'hire', 'meeting', 'touch', 'reach', 'connect', 'speak'],
     intents: ['contact_direct', 'hire'],
     response: {
-      text: "You can connect directly with our engineering team right away!\n\n• **Response SLA**: Under 24 hours\n• **Direct Access**: You speak with technical principals, not sales reps\n• **Direct Email**: `connect@kairotrix.com`\n\nSubmit your inquiry through our streamlined contact form or drop us an email:",
+      text: "You can connect directly with our engineering team right away!\n\n• **Response SLA**: Under 24 hours\n• **Direct Access**: You speak with technical principals, not sales reps\n• **Direct Email**: `kairotrix.official@gmail.com`\n\nSubmit your inquiry through our streamlined contact form or drop us an email:",
       actions: [
         { label: 'Open Contact Form', href: '/contact', variant: 'primary' },
       ],

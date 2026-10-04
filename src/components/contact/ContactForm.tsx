@@ -82,7 +82,7 @@ export function ContactForm() {
         setErrorMessage(err.message);
       } else {
         setErrorMessage(
-          'Something went wrong while sending your message. Please try again or email us directly at connect@kairotrix.com.'
+          'Something went wrong while sending your message. Please try again or email us directly at kairotrix.official@gmail.com.'
         );
       }
     } finally {

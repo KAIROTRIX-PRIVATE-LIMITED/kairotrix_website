@@ -76,7 +76,7 @@ export function Footer() {
 
   const handleCopyEmail = async () => {
     try {
-      await navigator.clipboard.writeText('connect@kairotrix.com');
+      await navigator.clipboard.writeText('kairotrix.official@gmail.com');
       setEmailCopied(true);
       setTimeout(() => setEmailCopied(false), 2200);
     } catch {
@@ -152,7 +152,7 @@ export function Footer() {
                 title="Click to copy email address"
               >
                 <Mail className="w-3.5 h-3.5 text-brand-400 group-hover:scale-110 transition-transform" />
-                <span>connect@kairotrix.com</span>
+                <span>kairotrix.official@gmail.com</span>
                 {emailCopied ? (
                   <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-800 animate-in fade-in duration-150">
                     <Check className="w-2.5 h-2.5" /> Copied!

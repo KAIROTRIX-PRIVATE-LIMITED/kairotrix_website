@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Contact form submission error:', error);
     return NextResponse.json(
-      { error: 'Something went wrong while sending your message. Please try again or email us directly at connect@kairotrix.com.' },
+      { error: 'Something went wrong while sending your message. Please try again or email us directly at kairotrix.official@gmail.com.' },
       { status: 500 }
     );
   }

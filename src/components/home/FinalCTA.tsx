@@ -81,7 +81,7 @@ export function FinalCTA() {
 
   const handleCopyEmail = async () => {
     try {
-      await navigator.clipboard.writeText('connect@kairotrix.com');
+      await navigator.clipboard.writeText('kairotrix.official@gmail.com');
       setEmailCopied(true);
       setTimeout(() => setEmailCopied(false), 2200);
     } catch {
@@ -127,11 +127,11 @@ export function FinalCTA() {
             url: 'https://kairotrix.com',
             description:
               'Software engineering and technology partner delivering custom business software, workflow automation, AI systems, and enterprise integrations with 100% client code ownership.',
-            email: 'connect@kairotrix.com',
+            email: 'kairotrix.official@gmail.com',
             contactPoint: {
               '@type': 'ContactPoint',
               contactType: 'Engineering Inquiries',
-              email: 'connect@kairotrix.com',
+              email: 'kairotrix.official@gmail.com',
               availableLanguage: ['English'],
             },
             hasOfferCatalog: {
@@ -308,7 +308,7 @@ export function FinalCTA() {
             >
               <span className="text-neutral-400">Direct:</span>
               <span className="font-semibold underline underline-offset-4 group-hover:text-brand-600">
-                connect@kairotrix.com
+                kairotrix.official@gmail.com
               </span>
               {emailCopied ? (
                 <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 animate-in fade-in duration-150">
