@@ -11,8 +11,24 @@ interface SolutionImpactProps {
   solution: SolutionDetail;
 }
 
+const SOLUTION_DEFINITIONS: Record<string, string> = {
+  'ai-intelligent-systems':
+    'AI & Intelligent Systems at KAIROTRIX covers software that uses artificial intelligence to assist, automate, retrieve, analyze, or act within real business workflows. This includes custom AI applications, autonomous agents with human oversight, contextual knowledge retrieval (RAG), and model adaptation. It is appropriate when manual information processing limits operational speed, enabling teams to automate complex tasks and query organizational knowledge with high accuracy.',
+  'software-product-engineering':
+    'Software & Product Engineering at KAIROTRIX covers purpose-built software, web applications, and digital products engineered around your proprietary business logic. This includes bespoke operational tools, multi-tenant web platforms, and modular design systems. It is appropriate when off-the-shelf software or spreadsheets no longer fit your workflow, providing reliable, client-owned systems built to evolve as your business grows.',
+  'automation-digital-operations':
+    'Automation & Digital Operations at KAIROTRIX covers automated workflows, background execution engines, and document processing systems that eliminate repetitive manual handoffs. This includes cross-tool process automations, queued task orchestration, and operational health monitoring. It is appropriate when teams spend excessive hours on routine data transfers, reducing administrative overhead and operational errors.',
+  'digital-transformation':
+    'Digital Transformation at KAIROTRIX covers modernizing outdated digital touchpoints, legacy websites, and paper- or spreadsheet-driven processes into structured web systems. This includes high-performance corporate platforms, internal workflow digitization, and UI/UX redesigns. It is appropriate when manual record-keeping or clunky interfaces slow operations down, creating clean digital systems that improve efficiency and user engagement.',
+  'data-business-intelligence':
+    'Data & Business Intelligence at KAIROTRIX covers centralizing fragmented business data, engineering analytical storage, and creating reporting dashboards and forecasting tools. This includes data pipeline modeling, executive KPI scorecards, predictive models, and plain-language database queries. It is appropriate when leadership lacks timely visibility into operations, transforming scattered numbers into clear, reliable intelligence.',
+  'technology-integration':
+    'Technology Integration at KAIROTRIX covers connecting isolated software platforms, third-party APIs, and commercial records into a coordinated, synchronized network. This includes custom API connectors, bi-directional CRM and ERP synchronization, payment workflows, and cross-system data pipelines. It is appropriate when data re-entry across disconnected tools causes delays, ensuring operational records remain accurate across platforms.',
+};
+
 export function SolutionImpact({ solution }: SolutionImpactProps) {
   const { editorialSplit } = solution;
+  const answerFirstDefinition = SOLUTION_DEFINITIONS[solution.slug] || editorialSplit.lead;
 
   return (
     <section id="system-focus" className="w-full bg-[#FAFAFC] py-20 lg:py-28 border-b border-neutral-200/80 scroll-mt-20">
@@ -98,16 +114,27 @@ export function SolutionImpact({ solution }: SolutionImpactProps) {
               </MaskedReveal>
             </div>
 
-            <motion.p
-              variants={revealBody}
-              initial="hidden"
-              whileInView="visible"
+            {/* Answer-First Solution Overview */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: 0.16 }}
-              className="text-base sm:text-lg text-neutral-600 leading-relaxed font-normal text-center lg:text-left mx-auto lg:mx-0"
+              transition={{ duration: 0.5, delay: 0.12, ease: EASE_CINEMATIC }}
+              className="p-6 sm:p-7 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs"
             >
-              {editorialSplit.lead}
-            </motion.p>
+              <div className="flex items-center gap-2 text-brand-600 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+                <span className="text-[11px] font-tech font-semibold uppercase tracking-wider text-brand-700">
+                  Solution Overview
+                </span>
+              </div>
+              <h3 className="font-display text-base sm:text-lg font-bold text-neutral-950 mb-2 tracking-tight">
+                What is {solution.title}?
+              </h3>
+              <p className="text-sm sm:text-base text-neutral-700 leading-relaxed font-normal">
+                {answerFirstDefinition}
+              </p>
+            </motion.div>
 
             {/* System Focus Cards Grid */}
             <div

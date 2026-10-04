@@ -78,20 +78,20 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
   const serviceJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    serviceType: solution.title,
+    '@id': `https://www.kairotrix.in/solutions/${solution.slug}#service`,
+    name: solution.title,
+    serviceType: solution.categoryTag || solution.title,
+    url: `https://www.kairotrix.in/solutions/${solution.slug}`,
+    description: solution.executiveSummary,
     provider: {
       '@type': 'Organization',
-      name: 'KAIROTRIX',
+      '@id': 'https://www.kairotrix.in/#organization',
+      name: 'KAIROTRIX PRIVATE LIMITED',
       url: 'https://www.kairotrix.in',
-      description:
-        'Technology and software solutions company that designs and builds custom software, AI systems, automation workflows, and data platforms.',
     },
-    description: solution.executiveSummary,
-    areaServed: 'Global',
-    url: `https://www.kairotrix.in/solutions/${solution.slug}`,
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: `${solution.title} Services`,
+      name: `${solution.title} Capabilities`,
       itemListElement: solution.subCategories.map((sub, idx) => ({
         '@type': 'Offer',
         itemOffered: {
@@ -108,6 +108,7 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    '@id': `https://www.kairotrix.in/solutions/${solution.slug}#breadcrumb`,
     itemListElement: [
       {
         '@type': 'ListItem',

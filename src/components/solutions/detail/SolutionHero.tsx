@@ -154,7 +154,7 @@ export function SolutionHero({ solution }: SolutionHeroProps) {
                 href="#core-services"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-300/80 text-neutral-900 font-tech font-semibold text-xs uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer"
               >
-                <span>Explore Core Services</span>
+                <span>Explore Solutions</span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </a>
             </motion.div>

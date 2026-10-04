@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { AboutHero } from '@/components/about/AboutHero';
+import { AboutOverview } from '@/components/about/AboutOverview';
 import { AboutPhilosophy } from '@/components/about/AboutPhilosophy';
 import { AboutVisionMission } from '@/components/about/AboutVisionMission';
 import { AboutValues } from '@/components/about/AboutValues';
@@ -51,6 +52,7 @@ export default async function AboutPage() {
       <AboutPhilosophy />
       <AboutVisionMission />
       {isTeamSectionVisible && members && members.length > 0 && <AboutValues members={members} />}
+      <AboutOverview />
       <AboutCTA />
     </main>
   );

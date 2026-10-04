@@ -118,8 +118,14 @@ const GLOBAL_JSON_LD = {
       },
       image: "https://www.kairotrix.in/assets/images/og/og-default.png",
       description:
-        "AI technology and software solutions company that designs and builds custom software, AI systems, workflow automation, and connected digital infrastructure.",
+        "Technology and software solutions company that designs and builds custom software, AI systems, workflow automation, and connected digital infrastructure around real business problems.",
       email: "kairotrix.official@gmail.com",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Chennai",
+        addressRegion: "Tamil Nadu",
+        addressCountry: "IN",
+      },
       sameAs: [
         "https://www.instagram.com/kairotrix",
       ],
@@ -131,6 +137,78 @@ const GLOBAL_JSON_LD = {
           availableLanguage: ["English"],
         },
       ],
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "KAIROTRIX Core Solutions",
+        itemListElement: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": "https://www.kairotrix.in/solutions/ai-intelligent-systems#service",
+              name: "AI & Intelligent Systems",
+              url: "https://www.kairotrix.in/solutions/ai-intelligent-systems",
+              description:
+                "Custom AI applications, intelligent agents, machine learning adaptation, and knowledge retrieval systems (RAG).",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": "https://www.kairotrix.in/solutions/software-product-engineering#service",
+              name: "Software & Product Engineering",
+              url: "https://www.kairotrix.in/solutions/software-product-engineering",
+              description:
+                "Purpose-built business software, responsive web applications, end-to-end product development, and design systems.",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": "https://www.kairotrix.in/solutions/automation-digital-operations#service",
+              name: "Automation & Digital Operations",
+              url: "https://www.kairotrix.in/solutions/automation-digital-operations",
+              description:
+                "Business process automation, background task orchestration, document workflows, and operational monitoring.",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": "https://www.kairotrix.in/solutions/digital-transformation#service",
+              name: "Digital Transformation",
+              url: "https://www.kairotrix.in/solutions/digital-transformation",
+              description:
+                "High-performance digital platforms, manual process digitization, and UI/UX modernization.",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": "https://www.kairotrix.in/solutions/data-business-intelligence#service",
+              name: "Data & Business Intelligence",
+              url: "https://www.kairotrix.in/solutions/data-business-intelligence",
+              description:
+                "Analytical data storage, executive KPI dashboards, predictive modeling, and natural-language data queries.",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": "https://www.kairotrix.in/solutions/technology-integration#service",
+              name: "Technology Integration",
+              url: "https://www.kairotrix.in/solutions/technology-integration",
+              description:
+                "Custom API connectors, CRM and ERP synchronization, payment gateway integrations, and cross-system data pipelines.",
+            },
+          },
+        ],
+      },
       knowsAbout: [
         "Artificial Intelligence",
         "AI Agents",
@@ -148,7 +226,7 @@ const GLOBAL_JSON_LD = {
       name: "KAIROTRIX",
       alternateName: "KAIROTRIX — Built to evolve",
       description:
-        "Technology that moves ideas into real-world solutions. AI systems, custom software, and automation built with digital craft.",
+        "Technology that moves ideas into real-world solutions. AI systems, custom software, and automation built around real business problems.",
       publisher: {
         "@id": "https://www.kairotrix.in/#organization",
       },
@@ -207,4 +285,3 @@ export default function RootLayout({
     </html>
   );
 }
-

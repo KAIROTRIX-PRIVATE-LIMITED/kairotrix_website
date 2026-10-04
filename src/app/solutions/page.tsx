@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { SolutionsHero } from '@/components/solutions/SolutionsHero';
 import { SolutionsGrid } from '@/components/solutions/SolutionsGrid';
+import { SolutionsOverview } from '@/components/solutions/SolutionsOverview';
 import { SolutionsLifecycle } from '@/components/solutions/SolutionsLifecycle';
 import { SolutionsCTA } from '@/components/solutions/SolutionsCTA';
 
@@ -32,14 +33,39 @@ export const metadata: Metadata = {
   },
 };
 
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': 'https://www.kairotrix.in/solutions#breadcrumb',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://www.kairotrix.in',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Solutions',
+      item: 'https://www.kairotrix.in/solutions',
+    },
+  ],
+};
+
 export default function SolutionsPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <SolutionsHero />
       {/* ─── OVERLAY CURTAIN: Sections slide UP OVER sticky Hero (Spector effect) ─── */}
       <div className="relative z-10 w-full bg-[#FAFAFC] shadow-[0_-30px_70px_rgba(0,0,0,0.06)] border-t border-neutral-200/80">
         <SolutionsGrid />
         <SolutionsLifecycle />
+        <SolutionsOverview />
         <SolutionsCTA />
       </div>
     </>
