@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Orbitron, Rajdhani, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Orbitron, Plus_Jakarta_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -11,29 +11,27 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
-
-const rajdhani = Rajdhani({
-  variable: "--font-rajdhani",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600", "700"],
+  display: "swap",
 });
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -58,9 +56,14 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "KAIROTRIX" }],
   icons: {
-    icon: "/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.svg",
-    shortcut: "/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.svg",
-    apple: "/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.svg",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   openGraph: {
     type: "website",
@@ -98,6 +101,61 @@ import { PreloaderProvider } from "@/context/PreloaderContext";
 import { Preloader } from "@/components/ui/Preloader";
 import { PageEntranceWrapper } from "@/components/ui/PageEntranceWrapper";
 
+const GLOBAL_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.kairotrix.in/#organization",
+      name: "KAIROTRIX PRIVATE LIMITED",
+      alternateName: ["KAIROTRIX", "Kairotrix"],
+      url: "https://www.kairotrix.in",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://www.kairotrix.in/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.png",
+        caption: "KAIROTRIX",
+      },
+      image: "https://www.kairotrix.in/assets/images/og/og-default.png",
+      description:
+        "AI technology and software solutions company that designs and builds custom software, AI systems, workflow automation, and connected digital infrastructure.",
+      email: "kairotrix.official@gmail.com",
+      sameAs: [
+        "https://www.instagram.com/kairotrix",
+      ],
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          contactType: "general inquiries",
+          email: "kairotrix.official@gmail.com",
+          availableLanguage: ["English"],
+        },
+      ],
+      knowsAbout: [
+        "Artificial Intelligence",
+        "AI Agents",
+        "Custom Software Development",
+        "Business Process Automation",
+        "Data and Business Intelligence",
+        "Technology Integration",
+        "Digital Transformation",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.kairotrix.in/#website",
+      url: "https://www.kairotrix.in",
+      name: "KAIROTRIX",
+      alternateName: "KAIROTRIX — Built to evolve",
+      description:
+        "Technology that moves ideas into real-world solutions. AI systems, custom software, and automation built with digital craft.",
+      publisher: {
+        "@id": "https://www.kairotrix.in/#organization",
+      },
+      inLanguage: "en-IN",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -106,14 +164,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${rajdhani.variable} ${plusJakarta.variable} light antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${plusJakarta.variable} light antialiased`}
       suppressHydrationWarning
     >
       <head>
-        <link
-          rel="icon"
-          href="/assets/brand/PRIMARY_LOGO_SQUARE/WHITE.svg"
-          type="image/svg+xml"
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(GLOBAL_JSON_LD),
+          }}
         />
       </head>
       <body className="bg-[#FAFAFC] text-neutral-900 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">

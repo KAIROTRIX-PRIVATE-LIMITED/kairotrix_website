@@ -45,7 +45,7 @@
   /* === FONTS === */
   --font-sans: var(--font-geist-sans), 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), 'JetBrains Mono', monospace;
-  --font-tech: var(--font-orbitron), var(--font-rajdhani), 'Orbitron', 'Rajdhani', sans-serif;
+  --font-tech: var(--font-orbitron), 'Orbitron', monospace, sans-serif;
   --font-display: var(--font-display), var(--font-geist-sans), 'Plus Jakarta Sans', sans-serif;
 
   /* === ANIMATION DURATIONS === */
