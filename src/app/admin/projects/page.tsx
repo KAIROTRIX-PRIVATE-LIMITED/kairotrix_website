@@ -210,6 +210,7 @@ export default function AdminProjectsPage() {
                               alt={project.title}
                               fill
                               unoptimized
+                              sizes="40px"
                               className="object-cover"
                             />
                           ) : (

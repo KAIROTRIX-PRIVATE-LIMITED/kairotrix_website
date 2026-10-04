@@ -175,7 +175,7 @@ export function AboutValues({ members }: AboutValuesProps) {
                         src={member.image}
                         alt={member.name}
                         fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 33vw, 420px"
                         className="object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
                       />
                     ) : (

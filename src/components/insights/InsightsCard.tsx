@@ -74,7 +74,7 @@ export function InsightsCard({
               alt={specimen.title}
               fill
               unoptimized
-              sizes="100vw"
+              sizes="(max-width: 1280px) 100vw, 1280px"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
               priority={false}
             />
@@ -187,7 +187,7 @@ export function InsightsCard({
             alt={specimen.title}
             fill
             unoptimized
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 640px"
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
             priority={index < 2}
           />

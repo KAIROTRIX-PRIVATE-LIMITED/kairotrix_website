@@ -477,6 +477,7 @@ function StageVisual({
           width={1774}
           height={887}
           priority={stageIndex < 2}
+          sizes="(max-width: 660px) 100vw, 660px"
           className="w-full h-full object-contain drop-shadow-[0_20px_35px_rgba(15,23,42,0.10)] drop-shadow-[0_6px_16px_rgba(147,51,234,0.08)]"
         />
       </motion.div>

@@ -155,6 +155,7 @@ export function ContactHero() {
                 width={1200}
                 height={960}
                 priority
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 580px, 700px"
                 className="w-full h-auto object-contain"
               />
             </motion.div>

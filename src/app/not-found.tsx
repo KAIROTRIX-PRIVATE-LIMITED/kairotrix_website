@@ -56,6 +56,7 @@ export default function NotFound() {
               width={400}
               height={440}
               priority
+              sizes="(max-width: 640px) 100vw, 360px"
               className="w-auto h-auto max-w-[260px] sm:max-w-[320px] md:max-w-[360px] object-contain drop-shadow-2xl select-none"
             />
           </motion.div>

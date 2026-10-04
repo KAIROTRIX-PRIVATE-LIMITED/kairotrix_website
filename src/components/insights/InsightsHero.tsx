@@ -91,6 +91,7 @@ export function InsightsHero({ totalArticles = 8 }: InsightsHeroProps) {
             src="/assets/images/insights/hero/hero_bg_2.png"
             alt="Insights hero background"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />

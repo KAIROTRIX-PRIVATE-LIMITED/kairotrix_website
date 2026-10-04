@@ -135,6 +135,7 @@ function RotatedCard({ project, index, totalCards, progress, prefersReduced }: R
             src={project.image}
             alt={project.title}
             fill
+            sizes="(max-width: 1280px) 100vw, 1152px"
             className="object-cover scale-105 opacity-85"
           />
         ) : null}

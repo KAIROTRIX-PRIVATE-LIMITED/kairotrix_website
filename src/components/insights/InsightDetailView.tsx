@@ -198,7 +198,7 @@ export function InsightDetailView({
                 fill
                 priority
                 unoptimized
-                sizes="(max-width: 1400px) 100vw, 1400px"
+                sizes="(max-width: 1280px) 100vw, 1280px"
                 className="object-cover"
               />
             </div>

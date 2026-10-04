@@ -103,7 +103,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
               alt={discipline.title}
               fill
               className="object-cover object-right opacity-80"
-              sizes="100vw"
+              sizes="(max-width: 1024px) 100vw, 1024px"
               priority={index < 2}
             />
             {/* Scrim Overlay protecting mobile typography */}
@@ -129,7 +129,7 @@ function DisciplineRow({ discipline, index, isHovered, onHover }: DisciplineRowP
               alt={discipline.title}
               fill
               className="object-cover object-right"
-              sizes="(max-width: 1200px) 100vw, 1200px"
+              sizes="(max-width: 1024px) 100vw, 1024px"
               priority={index < 2}
             />
 
