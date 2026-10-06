@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     template: "%s | KAIROTRIX",
   },
   description:
-    "Practical, accessible technology partner. We build intelligent AI systems, custom software, workflow automation, and digital platforms designed to solve real business problems.",
+    "KAIROTRIX builds custom AI systems, software, and automation designed to solve real business problems. Practical technology — problem-first, built to last.",
   keywords: [
     "AI solutions",
     "AI agent development",

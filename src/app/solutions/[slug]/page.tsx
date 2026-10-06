@@ -35,9 +35,11 @@ export async function generateMetadata({ params }: SolutionDetailPageProps): Pro
 
   const subServiceNames = solution.subCategories.flatMap((c) => c.services.map((s) => s.name));
 
+  const metaDesc = solution.metaDescription || solution.executiveSummary;
+
   return {
     title: solution.title,
-    description: solution.executiveSummary,
+    description: metaDesc,
     keywords: [
       solution.title,
       solution.categoryTag,
@@ -52,14 +54,14 @@ export async function generateMetadata({ params }: SolutionDetailPageProps): Pro
     },
     openGraph: {
       title: `${solution.title} | KAIROTRIX`,
-      description: solution.executiveSummary,
+      description: metaDesc,
       url: `https://www.kairotrix.in/solutions/${solution.slug}`,
       siteName: 'KAIROTRIX',
       type: 'website',
     },
     twitter: {
       title: `${solution.title} | KAIROTRIX`,
-      description: solution.executiveSummary,
+      description: metaDesc,
     },
   };
 }
@@ -82,7 +84,7 @@ export default async function SolutionDetailPage({ params }: SolutionDetailPageP
     name: solution.title,
     serviceType: solution.categoryTag || solution.title,
     url: `https://www.kairotrix.in/solutions/${solution.slug}`,
-    description: solution.executiveSummary,
+    description: solution.metaDescription || solution.executiveSummary,
     provider: {
       '@type': 'Organization',
       '@id': 'https://www.kairotrix.in/#organization',

@@ -8,7 +8,7 @@ import { SolutionsCTA } from '@/components/solutions/SolutionsCTA';
 export const metadata: Metadata = {
   title: 'Solutions & Technology Systems',
   description:
-    'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
+    'KAIROTRIX starts by understanding your business, then designs and builds the right solution—AI, software, automation, data, or integrations.',
   keywords: [
     'AI systems & agents',
     'custom software development',
@@ -24,12 +24,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Solutions & Technology Systems | KAIROTRIX',
     description:
-      'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
+      'KAIROTRIX starts by understanding your business, then designs and builds the right solution—AI, software, automation, data, or integrations.',
   },
   twitter: {
     title: 'Solutions & Technology Systems | KAIROTRIX',
     description:
-      'We start by understanding what your business needs, then design and build the right solution—from software and AI to automation, websites, data systems, and integrations.',
+      'KAIROTRIX starts by understanding your business, then designs and builds the right solution—AI, software, automation, data, or integrations.',
   },
 };
 

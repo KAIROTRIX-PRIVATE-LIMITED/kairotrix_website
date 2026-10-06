@@ -135,6 +135,7 @@ export interface SolutionDetail {
   categoryTag: string;
   subtitle: string;
   executiveSummary: string;
+  metaDescription?: string;
   image: string; // Subservice Hero 3D Artwork
   gridImage?: string; // Main Solutions Hub Directory Preview Image
   systemFocusImage?: string; // Dedicated System Focus Section Image
@@ -184,6 +185,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     categoryTag: 'Autonomous Systems & Machine Intelligence',
     subtitle: 'Build AI-powered applications, intelligent agents, machine learning systems, and knowledge tools that help businesses automate work, use information, and make better decisions.',
     executiveSummary:
+      'KAIROTRIX designs and builds AI applications, agents, knowledge systems, and machine-learning solutions around real business workflows, data, and decisions.',
+    metaDescription:
       'KAIROTRIX designs and builds AI applications, agents, knowledge systems, and machine-learning solutions around real business workflows, data, and decisions.',
     image: '/assets/images/solutions/sub_hero/s1.png',
     gridImage: '/assets/images/solutions/grid/M1.png',
@@ -768,6 +771,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     subtitle: 'Design and build custom business software, web applications, SaaS platforms, and digital products—from the first idea and MVP to ongoing development and improvement.',
     executiveSummary:
       'KAIROTRIX designs and engineers custom software, web platforms, and digital products built around real operational workflows, reliable architecture, and clear user experiences.',
+    metaDescription:
+      'KAIROTRIX designs and engineers custom software, web platforms, and digital products around real operational workflows and reliable architecture.',
     image: '/assets/images/solutions/sub_hero/s2.png',
     gridImage: '/assets/images/solutions/grid/grid-software-engineering.jpg',
     systemFocusImage: '/assets/images/solutions/software/software-system-focus.png',
@@ -1273,6 +1278,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     subtitle: 'Automate repetitive workflows, documents, approvals, communications, and administrative tasks so everyday operations require less manual work.',
     executiveSummary:
       'KAIROTRIX builds dependable business process automations, workflow orchestration engines, document processing, and operational monitoring to reduce repetitive manual work.',
+    metaDescription:
+      'KAIROTRIX builds dependable process automations, workflow orchestration engines, and operational monitoring to reduce repetitive manual work.',
     image: '/assets/images/solutions/sub_hero/s3.png',
     gridImage: '/assets/images/solutions/grid/grid-automation-operations.jpg',
     systemFocusImage: '/assets/images/solutions/automation/automation-system-focus.png',
@@ -1757,6 +1764,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     subtitle: 'Modernize how your business works and interacts online through websites, digital workflows, process digitization, and user-focused UI/UX design.',
     executiveSummary:
       'KAIROTRIX modernizes legacy digital experiences, converts manual processes into structured digital systems, and refines interfaces for performance and ease of use.',
+    metaDescription:
+      'KAIROTRIX modernizes legacy digital systems, converts manual processes into structured workflows, and refines interfaces for performance and usability.',
     image: '/assets/images/solutions/sub_hero/s4.png',
     gridImage: '/assets/images/solutions/grid/grid-digital-transformation.jpg',
     systemFocusImage: '/assets/images/solutions/digital/digital-system-focus.png',
@@ -2242,6 +2251,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     subtitle: 'Turn business data into useful insights through analytics, KPI dashboards, interactive reports, and natural-language tools for exploring information.',
     executiveSummary:
       'KAIROTRIX centralizes scattered business data, builds analytical storage and reporting dashboards, and implements forecasting and natural-language query tools for clearer decisions.',
+    metaDescription:
+      'KAIROTRIX centralizes business data, builds analytical storage and reporting dashboards, and implements tools for clearer, data-driven decisions.',
     gridImage: '/assets/images/solutions/grid/grid-data-bi.jpg',
     image: '/assets/images/solutions/sub_hero/s5.png',
     systemFocusImage: '/assets/images/solutions/data/data-system-focus.png',
@@ -2724,6 +2735,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionDetail> = {
     subtitle: 'Connect the software your business already uses through APIs, CRM and ERP integrations, payment services, and reliable data synchronization between systems.',
     executiveSummary:
       'KAIROTRIX connects isolated software platforms, synchronizes commercial and operational records, and integrates payment and data workflows into a coordinated ecosystem.',
+    metaDescription:
+      'KAIROTRIX connects isolated software platforms, synchronizes records, and integrates payment and data workflows into one coordinated ecosystem.',
     gridImage: '/assets/images/solutions/grid/grid-technology-integration.jpg',
     image: '/assets/images/solutions/sub_hero/s6.png',
     systemFocusImage: '/assets/images/solutions/integration/integration-system-focus.png',

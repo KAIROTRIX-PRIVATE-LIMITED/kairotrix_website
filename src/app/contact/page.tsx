@@ -5,7 +5,7 @@ import { ContactContainer } from '@/components/contact/ContactContainer';
 export const metadata: Metadata = {
   title: 'Contact',
   description:
-    'Have a business challenge, product idea, or technology project to discuss? Start a conversation with KAIROTRIX about what you\'re looking to build, improve, or solve.',
+    "Have a project, challenge, or idea? Start a conversation with KAIROTRIX about what you're looking to build, automate, or solve.",
   keywords: [
     'Contact KAIROTRIX',
     'Custom software development',
@@ -19,12 +19,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Contact | KAIROTRIX',
     description:
-      'Tell us what you\'re working on and what you\'re looking to build, improve, or solve. Start a conversation with KAIROTRIX.',
+      "Tell us what you're working on and what you're looking to build or solve. Start a conversation with KAIROTRIX.",
   },
   twitter: {
     title: 'Contact | KAIROTRIX',
     description:
-      'Tell us what you\'re working on and what you\'re looking to build, improve, or solve. Start a conversation with KAIROTRIX.',
+      "Tell us what you're working on and what you're looking to build or solve. Start a conversation with KAIROTRIX.",
   },
 };
 

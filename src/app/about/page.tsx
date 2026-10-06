@@ -14,7 +14,7 @@ export const revalidate = 0;
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'KAIROTRIX is a technology and innovation company that identifies real business problems first, then designs and builds custom software, AI systems, automation, and connected digital infrastructure. Built to evolve.',
+    'KAIROTRIX is a technology company that identifies real business problems first, then builds software, AI systems, automation, and connected digital systems.',
   keywords: [
     'About KAIROTRIX',
     'technology company',
