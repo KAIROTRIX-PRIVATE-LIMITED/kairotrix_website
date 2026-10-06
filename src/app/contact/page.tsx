@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { ContactHero } from '@/components/contact/ContactHero';
 import { ContactContainer } from '@/components/contact/ContactContainer';
 
 export const metadata: Metadata = {
@@ -30,18 +31,19 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="w-full min-h-screen bg-[#FAFAFC]">
+    <div className="w-full min-h-screen bg-[#FAFAFC]">
+      <ContactHero />
       <Suspense
         fallback={
-          <div className="w-full min-h-screen flex items-center justify-center bg-[#FAFAFC]">
+          <div className="w-full py-24 flex items-center justify-center bg-[#FAFAFC]">
             <span className="font-tech text-xs uppercase tracking-widest text-neutral-400">
-              Loading...
+              Loading form...
             </span>
           </div>
         }
       >
         <ContactContainer />
       </Suspense>
-    </main>
+    </div>
   );
 }
