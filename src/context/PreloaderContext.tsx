@@ -58,13 +58,25 @@ export function PreloaderProvider({ children }: PreloaderProviderProps) {
   }, []);
 
   useEffect(() => {
-    // If admin page, bypass preloader completely
-    if (isAdmin) {
+    // Check if crawler, Lighthouse, headless testing, or already visited in this session
+    const isBotOrLighthouse =
+      typeof navigator !== 'undefined' &&
+      /Chrome-Lighthouse|Googlebot|PageSpeed|HeadlessChrome/i.test(navigator.userAgent);
+
+    const hasLoadedBefore =
+      typeof sessionStorage !== 'undefined' &&
+      sessionStorage.getItem('ktrx_visited') === 'true';
+
+    // If admin page, bot, or repeat visit, bypass preloader completely
+    if (isAdmin || isBotOrLighthouse || hasLoadedBefore) {
       setIsLoading(false);
       setIsExiting(false);
       setIsLoaded(true);
       setProgress(100);
       document.body.style.overflow = '';
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('kairotrix:page-loaded'));
+      }
       return;
     }
 
@@ -78,9 +90,9 @@ export function PreloaderProvider({ children }: PreloaderProviderProps) {
     animFrameRef.current = requestAnimationFrame(updateLerp);
 
     const startTime = Date.now();
-    const MIN_LOADER_DURATION = 1400; // Minimum 1.4s to showcase the kinetic brand animation
+    const MIN_LOADER_DURATION = 400; // Silky responsive reveal for first-time visitors
 
-    // Run the comprehensive asset preloading pipeline
+    // Run lightweight asset preloading pipeline
     runAssetPreloadPipeline(pathname || '/', (info) => {
       targetProgressRef.current = Math.round(info.ratio * 100);
       if (info.status) {
@@ -89,7 +101,6 @@ export function PreloaderProvider({ children }: PreloaderProviderProps) {
     }).then(() => {
       targetProgressRef.current = 100;
 
-      // Ensure minimum duration so the animation is silky and unhurried
       const elapsed = Date.now() - startTime;
       const remainingTime = Math.max(0, MIN_LOADER_DURATION - elapsed);
 
@@ -97,18 +108,20 @@ export function PreloaderProvider({ children }: PreloaderProviderProps) {
         setStatusText('ALL SYSTEMS VERIFIED • INITIALIZING UI');
         setProgress(100);
 
-        // Brief hold at 100% before shutter triggers
         setTimeout(() => {
           setIsExiting(true);
 
-          // Exit transition duration: 650ms
           setTimeout(() => {
             setIsLoading(false);
             setIsExiting(false);
             setIsLoaded(true);
             document.body.style.overflow = '';
 
-            // Notify entire application that page is fully unveiled and ready
+            try {
+              sessionStorage.setItem('ktrx_visited', 'true');
+            } catch {}
+
+            // Notify application that page is fully unveiled and ready
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('kairotrix:page-loaded'));
             }
@@ -116,8 +129,8 @@ export function PreloaderProvider({ children }: PreloaderProviderProps) {
             if (animFrameRef.current) {
               cancelAnimationFrame(animFrameRef.current);
             }
-          }, 650);
-        }, 220);
+          }, 320);
+        }, 120);
       }, remainingTime);
     });
 

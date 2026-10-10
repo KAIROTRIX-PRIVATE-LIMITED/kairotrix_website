@@ -136,7 +136,7 @@ export function HeroSection() {
         src={VIDEO_URL}
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         onLoadedMetadata={() => {
           setVideoLoaded(true);
           const video = videoRef.current;
@@ -159,8 +159,8 @@ export function HeroSection() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 lg:pt-0 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <motion.div
           variants={containerVariants}
-          initial="hidden"
-          animate={isLoaded ? "visible" : "hidden"}
+          initial={isLoaded ? "visible" : (prefersReduced ? "visible" : "hidden")}
+          animate="visible"
           className="lg:col-span-7 xl:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left mx-auto lg:mx-0 w-full"
         >
           {/* Eyebrow: Precision Horizon Layout */}

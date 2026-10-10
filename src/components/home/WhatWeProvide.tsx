@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
@@ -48,7 +49,7 @@ const SERVICES: ServiceData[] = [
       topBadge: 'Verified Source Citations',
       bottomTag: 'Deterministic AI Architecture',
     },
-    image: '/assets/images/service/SERVICE01.png',
+    image: '/assets/images/service/SERVICE01.webp',
     slug: '/solutions/ai-intelligent-systems',
   },
   {
@@ -63,7 +64,7 @@ const SERVICES: ServiceData[] = [
       topBadge: 'Production-Grade Quality',
       bottomTag: 'Modern Web & API Systems',
     },
-    image: '/assets/images/service/SERVICE02.png',
+    image: '/assets/images/service/SERVICE02.webp',
     slug: '/solutions/software-product-engineering',
   },
   {
@@ -78,7 +79,7 @@ const SERVICES: ServiceData[] = [
       topBadge: 'Automated Event Triggers',
       bottomTag: 'Event-Driven Workflow Engine',
     },
-    image: '/assets/images/service/SERVICE03.png',
+    image: '/assets/images/service/SERVICE03.webp',
     slug: '/solutions/automation-digital-operations',
   },
   {
@@ -93,7 +94,7 @@ const SERVICES: ServiceData[] = [
       topBadge: 'Staged System Cutover',
       bottomTag: 'Pragmatic Cloud Modernization',
     },
-    image: '/assets/images/service/SERVICE04.png',
+    image: '/assets/images/service/SERVICE04.webp',
     slug: '/solutions/digital-transformation',
   },
   {
@@ -108,7 +109,7 @@ const SERVICES: ServiceData[] = [
       topBadge: 'Single Source of Truth',
       bottomTag: 'Unified Business Dashboards',
     },
-    image: '/assets/images/service/SERVICE05.png',
+    image: '/assets/images/service/SERVICE05.webp',
     slug: '/solutions/data-business-intelligence',
   },
   {
@@ -123,7 +124,7 @@ const SERVICES: ServiceData[] = [
       topBadge: 'Bi-Directional Sync',
       bottomTag: 'Multi-System Middleware',
     },
-    image: '/assets/images/service/SERVICE06.png',
+    image: '/assets/images/service/SERVICE06.webp',
     slug: '/solutions/technology-integration',
   },
 ];
@@ -553,12 +554,18 @@ export function WhatWeProvide() {
                     className="relative w-full max-w-[380px] sm:max-w-[420px] lg:max-w-[450px] xl:max-w-[475px] aspect-[4/3] flex items-center justify-center select-none"
                   >
                     {/* Glowing 3D Service Mockup Image (Balanced Visual Proportions) */}
-                    <img
-                      src={currentService.image}
-                      alt={currentService.title}
-                      className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(147,51,234,0.16)] drop-shadow-[0_6px_16px_rgba(0,0,0,0.06)] filter transition-transform duration-500 hover:scale-[1.02]"
-                      draggable={false}
-                    />
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <Image
+                        src={currentService.image}
+                        alt={currentService.title}
+                        width={475}
+                        height={356}
+                        sizes="(max-width: 640px) 380px, (max-width: 1024px) 450px, 475px"
+                        loading="lazy"
+                        className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(147,51,234,0.16)] drop-shadow-[0_6px_16px_rgba(0,0,0,0.06)] filter transition-transform duration-500 hover:scale-[1.02]"
+                        draggable={false}
+                      />
+                    </div>
 
                     {/* Floating Telemetry Metric Chip (Frosted Glass) */}
                     <motion.div
