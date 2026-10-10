@@ -59,6 +59,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
       { url: "/favicon.ico", sizes: "any" },
     ],
     shortcut: "/favicon.ico",
@@ -108,27 +109,26 @@ const GLOBAL_JSON_LD = {
     {
       "@type": "Organization",
       "@id": "https://www.kairotrix.in/#organization",
-      name: "KAIROTRIX PRIVATE LIMITED",
-      alternateName: ["KAIROTRIX", "Kairotrix"],
-      url: "https://www.kairotrix.in",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://www.kairotrix.in/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.png",
-        caption: "KAIROTRIX",
-      },
+      name: "KAIROTRIX",
+      alternateName: ["KAIROTRIX PRIVATE LIMITED", "Kairotrix"],
+      url: "https://www.kairotrix.in/",
+      logo: "https://www.kairotrix.in/assets/brand/PRIMARY_LOGO_SQUARE/BLACK.png",
       image: "https://www.kairotrix.in/assets/images/og/og-default.png",
       description:
-        "Technology and software solutions company that designs and builds custom software, AI systems, workflow automation, and connected digital infrastructure around real business problems.",
+        "KAIROTRIX is a technology company building custom software, AI systems, business automation, websites, data solutions, and technology integrations around real business problems.",
+      slogan: "Built to Evolve",
       email: "kairotrix.official@gmail.com",
+      sameAs: [
+        "https://www.instagram.com/kairotrix/",
+        "https://www.facebook.com/people/Kairotrix/61593750965365/",
+        "https://www.linkedin.com/company/kairotrix/",
+      ],
       address: {
         "@type": "PostalAddress",
         addressLocality: "Chennai",
         addressRegion: "Tamil Nadu",
         addressCountry: "IN",
       },
-      sameAs: [
-        "https://www.instagram.com/kairotrix",
-      ],
       contactPoint: [
         {
           "@type": "ContactPoint",
