@@ -815,7 +815,38 @@ export function Navbar() {
               )}
             </div>
 
-            {/* 4. About Direct Link */}
+
+            {/* 4. Internships Direct Link */}
+            <div
+              className="relative"
+              onMouseEnter={() => setHoveredNav('internships')}
+              onMouseLeave={() => setHoveredNav(null)}
+            >
+              <Link
+                href="/internships"
+                className={cn(
+                  'relative z-10 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 flex items-center gap-1.5',
+                  pathname === '/internships'
+                    ? isDark ? 'text-white font-medium' : 'text-neutral-900 font-medium'
+                    : isDark ? 'text-neutral-300 hover:text-white' : 'text-neutral-600 hover:text-neutral-900'
+                )}
+              >
+                <span>Internships</span>
+              </Link>
+              {hoveredNav === 'internships' && (
+                <motion.div
+                  layoutId="navHoverPill"
+                  transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                  className={cn(
+                    'absolute inset-0 rounded-xl pointer-events-none -z-0',
+                    isDark
+                      ? 'bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+                      : 'bg-black/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]'
+                  )}
+                />
+              )}
+            </div>
+            {/* 5. About Direct Link */}
             <div
               className="relative"
               onMouseEnter={() => setHoveredNav('about')}
@@ -846,36 +877,7 @@ export function Navbar() {
               )}
             </div>
 
-            {/* 5. Internships Direct Link */}
-            <div
-              className="relative"
-              onMouseEnter={() => setHoveredNav('internships')}
-              onMouseLeave={() => setHoveredNav(null)}
-            >
-              <Link
-                href="/internships"
-                className={cn(
-                  'relative z-10 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 flex items-center gap-1.5',
-                  pathname === '/internships'
-                    ? isDark ? 'text-white font-medium' : 'text-neutral-900 font-medium'
-                    : isDark ? 'text-neutral-300 hover:text-white' : 'text-neutral-600 hover:text-neutral-900'
-                )}
-              >
-                <span>Internships</span>
-              </Link>
-              {hoveredNav === 'internships' && (
-                <motion.div
-                  layoutId="navHoverPill"
-                  transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                  className={cn(
-                    'absolute inset-0 rounded-xl pointer-events-none -z-0',
-                    isDark
-                      ? 'bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-                      : 'bg-black/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]'
-                  )}
-                />
-              )}
-            </div>
+            
 
           </nav>
 
