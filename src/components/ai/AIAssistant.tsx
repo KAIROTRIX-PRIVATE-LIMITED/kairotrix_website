@@ -18,6 +18,12 @@ const ChatModal = dynamic(
 
 export function AIAssistant() {
   const pathname = usePathname();
+
+  // Hide AI widget on /internships and /admin pages
+  if (pathname === '/internships' || pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   const isSolutionDetailPage = Boolean(pathname?.startsWith('/solutions/') && pathname !== '/solutions');
   const prefersReduced = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);

@@ -38,6 +38,7 @@ import {
   Network,
   ArrowLeftRight,
   CreditCard,
+  GraduationCap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePreloader } from '@/context/PreloaderContext';
@@ -246,6 +247,11 @@ const SOLUTION_CATEGORIES: SolutionCategory[] = [
 
 export function Navbar() {
   const pathname = usePathname();
+
+  // On /admin, suppress global navigation
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
   const { isLoaded } = usePreloader();
   const [isScrolled, setIsScrolled] = useState(false);
   const isDark = false;
@@ -840,38 +846,88 @@ export function Navbar() {
               )}
             </div>
 
+            {/* 5. Internships Direct Link */}
+            <div
+              className="relative"
+              onMouseEnter={() => setHoveredNav('internships')}
+              onMouseLeave={() => setHoveredNav(null)}
+            >
+              <Link
+                href="/internships"
+                className={cn(
+                  'relative z-10 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 flex items-center gap-1.5',
+                  pathname === '/internships'
+                    ? isDark ? 'text-white font-medium' : 'text-neutral-900 font-medium'
+                    : isDark ? 'text-neutral-300 hover:text-white' : 'text-neutral-600 hover:text-neutral-900'
+                )}
+              >
+                <span>Internships</span>
+              </Link>
+              {hoveredNav === 'internships' && (
+                <motion.div
+                  layoutId="navHoverPill"
+                  transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                  className={cn(
+                    'absolute inset-0 rounded-xl pointer-events-none -z-0',
+                    isDark
+                      ? 'bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+                      : 'bg-black/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]'
+                  )}
+                />
+              )}
+            </div>
+
           </nav>
 
           {/* === PERSISTENT PRIMARY CTA & MOBILE TOGGLE (RIGHT CORNER) === */}
           <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 shrink-0">
-            {/* Primary CTA: Unique Luminous Pill with Subtle Ambient Glow & Glass Arrow Badge */}
-            <Link
-              href="/contact"
-              className="relative group p-[1px] rounded-full transition-all duration-300 active:scale-[0.97] shrink-0"
-              aria-label="Let's Talk - Contact KAIROTRIX"
-            >
-              {/* Subtle Ambient Backlight Glow (Expands on Hover) */}
-              <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-brand-500 via-purple-500 to-indigo-500 opacity-45 blur-sm group-hover:opacity-85 group-hover:blur-md transition-all duration-500 pointer-events-none" />
-
-              {/* Main Button Body */}
-              <span className="relative flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4.5 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 text-white text-xs sm:text-sm font-medium tracking-wide border border-white/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_12px_rgba(147,51,234,0.3)] overflow-hidden transition-all duration-300">
-                {/* Light Sweep Shimmer on Hover */}
-                <span className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent transform -skew-x-12 group-hover:left-[120%] transition-all duration-700 ease-out pointer-events-none" />
-
-                {/* Subtle Live Availability Pulse Dot */}
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            {/* Primary CTA: Adaptive for /internships ("Apply now") or Global ("Let's Talk") */}
+            {pathname === '/internships' ? (
+              <a
+                href="#apply-form-section"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const formEl = document.getElementById('apply-form-section');
+                  if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="relative group p-[1px] rounded-full transition-all duration-300 active:scale-[0.97] shrink-0"
+                aria-label="Apply now - KAIROTRIX Internship"
+              >
+                <span className="absolute -inset-0.5 rounded-full bg-brand-500 opacity-60 blur-xs group-hover:opacity-90 group-hover:blur-sm transition-all duration-300 pointer-events-none" />
+                <span className="relative flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full bg-brand-600 text-white text-xs sm:text-sm font-semibold tracking-wide border border-white/20 shadow-brand overflow-hidden transition-all duration-300">
+                  <span className="leading-none whitespace-nowrap">Apply now</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-white transform group-hover:translate-x-0.5 transition-transform" />
                 </span>
+              </a>
+            ) : (
+              <Link
+                href="/contact"
+                className="relative group p-[1px] rounded-full transition-all duration-300 active:scale-[0.97] shrink-0"
+                aria-label="Let's Talk - Contact KAIROTRIX"
+              >
+                {/* Subtle Ambient Backlight Glow (Expands on Hover) */}
+                <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-brand-500 via-purple-500 to-indigo-500 opacity-45 blur-sm group-hover:opacity-85 group-hover:blur-md transition-all duration-500 pointer-events-none" />
 
-                <span className="leading-none whitespace-nowrap">Let&apos;s Talk</span>
+                {/* Main Button Body */}
+                <span className="relative flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4.5 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 text-white text-xs sm:text-sm font-medium tracking-wide border border-white/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_12px_rgba(147,51,234,0.3)] overflow-hidden transition-all duration-300">
+                  {/* Light Sweep Shimmer on Hover */}
+                  <span className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent transform -skew-x-12 group-hover:left-[120%] transition-all duration-700 ease-out pointer-events-none" />
 
-                {/* Interactive Glass Disc Arrow Badge */}
-                <span className="w-5 sm:w-5.5 h-5 sm:h-5.5 rounded-full bg-white/15 border border-white/25 flex items-center justify-center transition-all duration-300 group-hover:bg-white/30 group-hover:scale-105 group-hover:translate-x-0.5 shrink-0">
-                  <ArrowRight className="w-3 h-3 text-white transform group-hover:translate-x-0.5 transition-transform duration-200" />
+                  {/* Subtle Live Availability Pulse Dot */}
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  </span>
+
+                  <span className="leading-none whitespace-nowrap">Let&apos;s Talk</span>
+
+                  {/* Interactive Glass Disc Arrow Badge */}
+                  <span className="w-5 sm:w-5.5 h-5 sm:h-5.5 rounded-full bg-white/15 border border-white/25 flex items-center justify-center transition-all duration-300 group-hover:bg-white/30 group-hover:scale-105 group-hover:translate-x-0.5 shrink-0">
+                    <ArrowRight className="w-3 h-3 text-white transform group-hover:translate-x-0.5 transition-transform duration-200" />
+                  </span>
                 </span>
-              </span>
-            </Link>
+              </Link>
+            )}
 
             {/* Mobile Menu Toggle Button */}
             <button
@@ -1061,6 +1117,28 @@ export function Navbar() {
                 className={cn('block p-4 border rounded-xl text-sm font-medium transition-colors', isDark ? 'border-white/[0.06] bg-white/[0.02] text-neutral-100 hover:bg-white/[0.04]' : 'border-black/[0.06] bg-black/[0.01] text-neutral-700 hover:bg-black/[0.04]')}
               >
                 About KAIROTRIX
+              </Link>
+
+              {/* Internships Direct Link */}
+              <Link
+                href="/internships"
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  'flex items-center justify-between p-4 border rounded-xl text-sm font-medium transition-colors',
+                  pathname.startsWith('/internships')
+                    ? 'border-brand-500/40 bg-brand-500/10 text-brand-600'
+                    : isDark
+                      ? 'border-white/[0.06] bg-white/[0.02] text-neutral-100 hover:bg-white/[0.04]'
+                      : 'border-black/[0.06] bg-black/[0.01] text-neutral-700 hover:bg-black/[0.04]'
+                )}
+              >
+                <span className="flex items-center gap-2.5">
+                  <GraduationCap className="w-4 h-4 text-brand-500" />
+                  <span>Internships</span>
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-brand-50 text-brand-700 border border-brand-200 uppercase">
+                  Hiring
+                </span>
               </Link>
 
               {/* Mobile CTA (Unified with Desktop "Let's Talk") */}

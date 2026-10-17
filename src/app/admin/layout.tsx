@@ -16,6 +16,7 @@ import {
   Sparkles,
   Bot,
   Users,
+  GraduationCap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -28,6 +29,11 @@ const NAV_ITEMS = [
     label: 'Dashboard',
     href: '/admin',
     icon: LayoutDashboard,
+  },
+  {
+    label: 'Internship Program',
+    href: '/admin/internships',
+    icon: GraduationCap,
   },
   {
     label: 'Projects & Work',

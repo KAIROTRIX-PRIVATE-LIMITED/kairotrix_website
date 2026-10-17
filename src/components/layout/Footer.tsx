@@ -61,6 +61,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     title: 'COMPANY',
     links: [
       { label: 'About KAIROTRIX', href: '/about' },
+      { label: 'Internships', href: '/internships', badge: 'Hiring' },
       { label: 'How We Build', href: '/#how-we-build' },
       { label: 'Contact Us', href: '/contact' },
       { label: 'Privacy Policy', href: '/privacy' },
@@ -85,7 +86,7 @@ export function Footer() {
     }
   };
 
-  if (pathname?.startsWith('/admin')) {
+  if (pathname?.startsWith('/admin') || pathname === '/internships') {
     return null;
   }
 

@@ -156,3 +156,106 @@ model CompanyDocument {
   updatedAt DateTime @updatedAt
 }
 
+// === INTERNSHIP PROGRAM & APPLICANT MANAGEMENT MODELS ===
+
+model InternshipProgramConfig {
+  id                      String   @id @default("default")
+  isAcceptingApplications Boolean  @default(true)
+  bannerAnnouncement      String?  @db.Text
+  complianceNotice        String?  @db.Text
+  termsAndConditions      String?  @db.Text
+  updatedAt               DateTime @updatedAt
+}
+
+model InternshipRole {
+  id                  String                @id @default(cuid())
+  title               String
+  slug                String                @unique
+  domain              String                // "Software Development" | "AI & Intelligent Systems" | "Automation & Technology Integration" | "Data Analytics & Business Intelligence" | "UI/UX Design"
+  responsibilities    String[]
+  requiredSkills      String[]
+  eligibility         String                @db.Text
+  projectScope        String                @db.Text
+  supervisor          String                // Mentor / Engineering Lead
+  duration            String                // e.g. "8-12 Weeks"
+  workingExpectations String                @db.Text // e.g. "Remote, 15-20 hrs/week, async with weekly engineering standups"
+  compensationTerms   String                @db.Text // e.g. "Performance-linked stipend upon milestone delivery / Stipend details"
+  completionCriteria  String                @db.Text // Documented criteria for certificate issuance
+  status              String                @default("PUBLISHED") // "DRAFT" | "PUBLISHED" | "CLOSED" | "ARCHIVED"
+  order               Int                   @default(0)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  assignedApplicants  InternshipApplicant[]
+}
+
+model InternshipApplicant {
+  id                  String                    @id @default(cuid())
+  fullName            String
+  email               String
+  phone               String?
+  institution         String                    // College / University
+  degree              String?                   @default("Undergraduate")
+  course              String?                   @default("Engineering / Tech")
+  yearOfStudy         String                    // e.g. "1st Year", "2nd Year", "3rd Year", "4th Year", "Postgraduate"
+  roleAppliedFor      String?                   // Domain / Role selected by applicant from admin-published roles
+  duration            String?                   @default("3 Months") // Selected internship period (e.g. "1 Month", "2 Months", "3 Months", "6 Months")
+  technicalSkills     String[]                  @default([])
+  projectExperience   String?                   @db.Text // Description of projects built
+  preferredDomains    String[]                  @default([]) // Optional preferences
+  githubUrl           String?
+  portfolioUrl        String?
+  linkedinUrl         String?
+  otherLinks          String?
+  resumeUrl           String
+  resumeName          String?
+  weeklyAvailability  String?                   @default("15-20 hrs/week")
+  potentialStartDate  String?                   @default("Immediate")
+  motivation          String?                   @db.Text
+  privacyConsent      Boolean                   @default(true) // Indian DPDP Act consent
+  complianceAck       Boolean                   @default(true) // Program terms acknowledgment
+  
+  // Centralized Evaluation & Selection Pipeline
+  status              String                    @default("REVIEW")
+  // "REVIEW" | "SHORTLISTED" | "INTERVIEW" | "DECISION" | "OFFERED" | "ACCEPTED" | "DECLINED" | "REJECTED" | "ONBOARDING" | "ACTIVE" | "COMPLETED"
+  
+  internalRating      Int?                      // 1-5 rating
+  interviewFeedback   String?                   @db.Text
+  assessmentNotes     String?                   @db.Text
+  internalNotes       String?                   @db.Text
+  
+  // Final Administrative Role Assignment (Independent of domain preferences)
+  assignedRoleId      String?
+  assignedRole        InternshipRole?           @relation(fields: [assignedRoleId], references: [id], onDelete: SetNull)
+  assignedRoleTitle   String?                   // Historical snapshot preserving assignment title
+  assignmentReason    String?                   @db.Text // Explicit administrative justification
+  assignedAt          DateTime?
+
+  // Written Internship Offer & Terms
+  offerDetails        Json?                     // { role, duration, stipend, supervisor, expectations, startDate, endDate, completionCriteria }
+  offerStatus         String?                   // "PENDING" | "ACCEPTED" | "DECLINED"
+  offerIssuedAt       DateTime?
+  offerAcceptedAt     DateTime?
+
+  // Completion Criteria & Certificate Management
+  certificateIssued       Boolean               @default(false)
+  certificateId           String?               @unique // e.g. "KTRX-CERT-2026-XXXX"
+  certificateIssuedAt     DateTime?
+  certificateCriteriaMet  Boolean               @default(false)
+  completionFeedback      String?               @db.Text
+
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  timeline            InternshipTimelineEvent[]
+}
+
+model InternshipTimelineEvent {
+  id          String              @id @default(cuid())
+  applicantId String
+  applicant   InternshipApplicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  action      String              // e.g. "APPLICATION_SUBMITTED", "STATUS_CHANGED", "ROLE_ASSIGNED", "INTERVIEW_RECORDED", "OFFER_ISSUED", "OFFER_ACCEPTED", "CERTIFICATE_ISSUED", "NOTE_LOGGED"
+  actor       String              // "System" | "Admin" | admin name/email
+  note        String?             @db.Text
+  createdAt   DateTime            @default(now())
+}
+
+
