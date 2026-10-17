@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getPublishedInternshipRoles } from '@/lib/services/internshipService';
 
-export const revalidate = 60; // Cache for 60 seconds
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   try {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { getAdminSession } from '@/lib/auth';
 import { getAdminInternshipRoles } from '@/lib/services/internshipService';
@@ -82,6 +83,14 @@ export async function POST(request: Request) {
         order: Number(order) || 0,
       },
     });
+
+    // Revalidate public cache
+    try {
+      revalidatePath('/internships');
+      revalidatePath('/api/internships/roles');
+    } catch (e) {
+      console.warn('Revalidation notice:', e);
+    }
 
     return NextResponse.json({
       success: true,

@@ -17,6 +17,7 @@ import { GithubIcon } from '@/components/ui/SocialIcons';
 
 interface InternshipApplicationFormProps {
   selectedRoleTitle?: string | null;
+  roles?: { title: string }[] | string[];
 }
 
 const COMMON_SKILLS = [
@@ -30,7 +31,7 @@ const COMMON_SKILLS = [
   'UI/UX Design',
 ];
 
-const ROLES_DROPDOWN = [
+const DEFAULT_ROLES_DROPDOWN = [
   'Software Engineering Intern — Web & Backend Architecture',
   'AI Systems Intern — Agentic Workflows & RAG Pipelines',
   'Automation & Integration Intern — Operations & Systems',
@@ -39,14 +40,44 @@ const ROLES_DROPDOWN = [
   'Open to all roles (Match me based on my skills)',
 ];
 
-export function InternshipApplicationForm({ selectedRoleTitle }: InternshipApplicationFormProps) {
+export function InternshipApplicationForm({ selectedRoleTitle, roles }: InternshipApplicationFormProps) {
+  const initialRoleList = roles && roles.length > 0
+    ? roles.map((r) => (typeof r === 'string' ? r : r.title))
+    : [];
+
+  const [roleList, setRoleList] = useState<string[]>(initialRoleList);
+
+  useEffect(() => {
+    if (roles && roles.length > 0) {
+      setRoleList(roles.map((r) => (typeof r === 'string' ? r : r.title)));
+    }
+
+    let isMounted = true;
+    fetch('/api/internships/roles', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.roles && Array.isArray(data.roles) && data.roles.length > 0) {
+          const titles = data.roles.map((r: { title: string }) => r.title);
+          setRoleList(titles);
+        }
+      })
+      .catch((err) => console.error('Failed to sync live internship roles in form:', err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [roles]);
+
+  const activeRolesDropdown = roleList.length > 0 ? roleList : DEFAULT_ROLES_DROPDOWN;
+
   // Form State (9 concise inputs)
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [institution, setInstitution] = useState('');
   const [yearOfStudy, setYearOfStudy] = useState('3rd Year');
-  const [roleAppliedFor, setRoleAppliedFor] = useState(selectedRoleTitle || ROLES_DROPDOWN[0]);
+  const [roleAppliedFor, setRoleAppliedFor] = useState(selectedRoleTitle || activeRolesDropdown[0]);
   const [selectedSkills, setSelectedSkills] = useState<string[]>(['TypeScript', 'Next.js']);
   const [projectLink, setProjectLink] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');
@@ -61,6 +92,13 @@ export function InternshipApplicationForm({ selectedRoleTitle }: InternshipAppli
       setRoleAppliedFor(selectedRoleTitle);
     }
   }, [selectedRoleTitle]);
+
+  // Keep selected role synchronized if options change
+  useEffect(() => {
+    if (activeRolesDropdown.length > 0 && !activeRolesDropdown.includes(roleAppliedFor)) {
+      setRoleAppliedFor(activeRolesDropdown[0]);
+    }
+  }, [activeRolesDropdown, roleAppliedFor]);
 
   // Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -338,7 +376,7 @@ export function InternshipApplicationForm({ selectedRoleTitle }: InternshipAppli
                   onChange={(e) => setRoleAppliedFor(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl bg-white border border-neutral-300 text-neutral-900 text-base font-medium focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
                 >
-                  {ROLES_DROPDOWN.map((role) => (
+                  {activeRolesDropdown.map((role) => (
                     <option key={role} value={role}>
                       {role}
                     </option>

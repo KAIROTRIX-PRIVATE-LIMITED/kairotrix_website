@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { getAdminSession } from '@/lib/auth';
 
@@ -42,6 +43,13 @@ export async function PATCH(
       },
     });
 
+    try {
+      revalidatePath('/internships');
+      revalidatePath('/api/internships/roles');
+    } catch (e) {
+      console.warn('Revalidation notice:', e);
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Internship role updated successfully.',
@@ -79,6 +87,13 @@ export async function DELETE(
         data: { status: 'ARCHIVED' },
       });
 
+      try {
+        revalidatePath('/internships');
+        revalidatePath('/api/internships/roles');
+      } catch (e) {
+        console.warn('Revalidation notice:', e);
+      }
+
       return NextResponse.json({
         success: true,
         message: `Role has ${assignedCount} assigned applicant(s). Archived to preserve historical placement records.`,
@@ -87,6 +102,13 @@ export async function DELETE(
     }
 
     await prisma.internshipRole.delete({ where: { id } });
+
+    try {
+      revalidatePath('/internships');
+      revalidatePath('/api/internships/roles');
+    } catch (e) {
+      console.warn('Revalidation notice:', e);
+    }
 
     return NextResponse.json({
       success: true,

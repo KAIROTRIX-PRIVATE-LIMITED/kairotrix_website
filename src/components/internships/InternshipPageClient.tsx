@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -51,9 +51,37 @@ const YEAR_OPTIONS = [
 ];
 
 export function InternshipPageClient({ roles = [] }: InternshipPageClientProps) {
-  // Use admin roles if available, else standard fallback domains
-  const availableRoles = roles.length > 0 
-    ? roles.map((r) => r.title)
+  // Dynamic live roles synced with database
+  const [roleTitles, setRoleTitles] = useState<string[]>(
+    roles.length > 0 ? roles.map((r) => r.title) : []
+  );
+
+  useEffect(() => {
+    if (roles.length > 0) {
+      setRoleTitles(roles.map((r) => r.title));
+    }
+
+    // Always query fresh roles to guarantee immediate sync with admin panel changes
+    let isMounted = true;
+    fetch('/api/internships/roles', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.roles && Array.isArray(data.roles) && data.roles.length > 0) {
+          const titles = data.roles.map((r: { title: string }) => r.title);
+          setRoleTitles(titles);
+        }
+      })
+      .catch((err) => console.error('Failed to sync live internship roles:', err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [roles]);
+
+  // Use dynamic admin roles if available, else standard fallback domains
+  const availableRoles = roleTitles.length > 0 
+    ? roleTitles
     : DEFAULT_ROLES;
 
   // Form State
@@ -63,6 +91,13 @@ export function InternshipPageClient({ roles = [] }: InternshipPageClientProps) 
   const [institution, setInstitution] = useState('');
   const [yearOfStudy, setYearOfStudy] = useState('3rd Year');
   const [roleAppliedFor, setRoleAppliedFor] = useState(availableRoles[0] || DEFAULT_ROLES[0]);
+
+  // Ensure roleAppliedFor stays valid when dynamic roles update
+  useEffect(() => {
+    if (availableRoles.length > 0 && !availableRoles.includes(roleAppliedFor)) {
+      setRoleAppliedFor(availableRoles[0]);
+    }
+  }, [availableRoles, roleAppliedFor]);
   const [projectLink, setProjectLink] = useState('');
   const [duration, setDuration] = useState('3 Months (Recommended)');
   const [resumeUrl, setResumeUrl] = useState('');

@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { getPublishedInternshipRoles } from '@/lib/services/internshipService';
 import { InternshipPageClient } from '@/components/internships/InternshipPageClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Internship Program — Build Skills by Building Real Technology | KAIROTRIX',
   description:
