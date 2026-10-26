@@ -6,6 +6,7 @@ import {
   ExternalLink,
   ChevronRight,
   FileText,
+  Download,
   Phone,
   Mail,
   Clock,
@@ -169,17 +170,30 @@ export function ApplicantsTable({
                     })}
                   </span>
 
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectApplicant(app);
-                    }}
-                    className="px-3.5 py-1.5 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-xs font-semibold text-neutral-700 flex items-center gap-1 group-hover:border-brand-500 group-hover:text-brand-700 transition-colors"
-                  >
-                    <span>View</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <a
+                      href={`/api/admin/internships/applicants/${app.id}/resume?action=download`}
+                      download={app.resumeName || 'resume.pdf'}
+                      onClick={(e) => e.stopPropagation()}
+                      title={`Download ${app.resumeName || 'Resume'}`}
+                      className="px-2.5 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200/90 text-brand-700 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Resume</span>
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectApplicant(app);
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-xs font-semibold text-neutral-700 flex items-center gap-1 group-hover:border-brand-500 group-hover:text-brand-700 transition-colors cursor-pointer"
+                    >
+                      <span>View</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             );

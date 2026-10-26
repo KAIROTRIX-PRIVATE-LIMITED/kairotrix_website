@@ -37,8 +37,7 @@ const DEFAULT_ROLES = [
 
 const DURATION_OPTIONS = [
   '1 Month',
-  '2 Months',
-  '3 Months (Recommended)',
+  '3 Months',
   '6 Months',
 ];
 

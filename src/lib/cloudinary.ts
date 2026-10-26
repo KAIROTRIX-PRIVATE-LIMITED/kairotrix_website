@@ -130,4 +130,41 @@ export function optimizeMediaUrl(url: string): string {
   return url.replace('/upload/', '/upload/f_auto,q_auto/');
 }
 
+/**
+ * Parses Cloudinary URL into its constituent parts (resourceType, publicId, format)
+ */
+export function parseCloudinaryAssetUrl(
+  url: string,
+  fallbackFormat: string = 'pdf'
+): {
+  resourceType: 'image' | 'raw' | 'video';
+  publicId: string;
+  format: string;
+} | null {
+  if (!url || typeof url !== 'string') return null;
+  const match = url.match(
+    /res\.cloudinary\.com\/[^/]+\/(image|raw|video)\/upload\/(?:v\d+\/)?(.+?)(?:\.([a-zA-Z0-9]+))?$/
+  );
+  if (!match) return null;
+  const resourceType = match[1] as 'image' | 'raw' | 'video';
+  const publicId = match[2];
+  const format = match[3] || fallbackFormat;
+  return { resourceType, publicId, format };
+}
+
+/**
+ * Generates an authenticated download URL for private or restricted assets (e.g. resumes, PDFs, raw documents)
+ */
+export function getAuthenticatedDownloadUrl(
+  publicId: string,
+  format: string = 'pdf',
+  resourceType: 'image' | 'raw' | 'video' = 'image'
+): string {
+  return cloudinary.utils.private_download_url(publicId, format, {
+    resource_type: resourceType,
+    type: 'upload',
+  });
+}
+
 export default cloudinary;
+
