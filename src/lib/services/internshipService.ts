@@ -1,5 +1,14 @@
 import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
+import {
+  DailyRecordEntry,
+  DEFAULT_WHATSAPP_TEMPLATE,
+  DEFAULT_EMAIL_SUBJECT_TEMPLATE,
+  DEFAULT_EMAIL_BODY_TEMPLATE,
+  DEFAULT_OFFER_EMAIL_SUBJECT_TEMPLATE,
+  DEFAULT_OFFER_EMAIL_BODY_TEMPLATE,
+  DEFAULT_FOUNDER_BCC_EMAILS,
+} from '@/types/internship';
 
 export interface CreateApplicantInput {
   fullName: string;
@@ -253,3 +262,342 @@ export async function getAdminInternshipRoles() {
     orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
   });
 }
+
+/**
+ * Get or initialize Internship Program Configuration & Communication Templates
+ */
+export async function getInternshipSettings() {
+  let config: any = await prisma.internshipProgramConfig.findUnique({
+    where: { id: 'default' },
+  });
+
+  if (!config) {
+    config = await prisma.internshipProgramConfig.create({
+      data: {
+        id: 'default',
+        isAcceptingApplications: true,
+        offerLetterPrefix: 'KT/INT/2026/',
+        offerLetterNextNumber: 4,
+        offerLetterSignatoryTitle: 'Chief Operating Officer',
+        whatsappTemplate: DEFAULT_WHATSAPP_TEMPLATE,
+        emailSubjectTemplate: DEFAULT_EMAIL_SUBJECT_TEMPLATE,
+        emailBodyTemplate: DEFAULT_EMAIL_BODY_TEMPLATE,
+        offerEmailSubjectTemplate: DEFAULT_OFFER_EMAIL_SUBJECT_TEMPLATE,
+        offerEmailBodyTemplate: DEFAULT_OFFER_EMAIL_BODY_TEMPLATE,
+      },
+    });
+  } else {
+    // If any template or config is missing/null, fill with default
+    const needsUpdate: Prisma.InternshipProgramConfigUpdateInput = {};
+    if (!config.whatsappTemplate) needsUpdate.whatsappTemplate = DEFAULT_WHATSAPP_TEMPLATE;
+    if (!config.emailSubjectTemplate) needsUpdate.emailSubjectTemplate = DEFAULT_EMAIL_SUBJECT_TEMPLATE;
+    if (!config.emailBodyTemplate) needsUpdate.emailBodyTemplate = DEFAULT_EMAIL_BODY_TEMPLATE;
+    if (!config.offerEmailSubjectTemplate) needsUpdate.offerEmailSubjectTemplate = DEFAULT_OFFER_EMAIL_SUBJECT_TEMPLATE;
+    if (!config.offerEmailBodyTemplate) needsUpdate.offerEmailBodyTemplate = DEFAULT_OFFER_EMAIL_BODY_TEMPLATE;
+
+    if (Object.keys(needsUpdate).length > 0) {
+      config = await prisma.internshipProgramConfig.update({
+        where: { id: 'default' },
+        data: needsUpdate,
+      });
+    }
+  }
+
+  // Ensure founderBccEmails is reliably read even if runtime Prisma client was loaded before schema update
+  let bccVal = config?.founderBccEmails;
+  if (!bccVal) {
+    try {
+      const rows: any = await prisma.$queryRawUnsafe(
+        `SELECT "founderBccEmails" FROM "InternshipProgramConfig" WHERE id = 'default' LIMIT 1`
+      );
+      if (rows?.[0]?.founderBccEmails) {
+        bccVal = rows[0].founderBccEmails;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
+  return {
+    ...config,
+    founderBccEmails: bccVal || DEFAULT_FOUNDER_BCC_EMAILS,
+  };
+}
+
+/**
+ * Update Internship Settings & Templates
+ */
+export async function updateInternshipSettings(data: {
+  isAcceptingApplications?: boolean;
+  whatsappTemplate?: string;
+  emailSubjectTemplate?: string;
+  emailBodyTemplate?: string;
+  offerEmailSubjectTemplate?: string;
+  offerEmailBodyTemplate?: string;
+  offerLetterPrefix?: string;
+  offerLetterNextNumber?: number;
+  offerLetterSignatoryTitle?: string;
+  founderBccEmails?: string;
+  bannerAnnouncement?: string | null;
+}) {
+  const { founderBccEmails, ...prismaData } = data;
+
+  const result = await prisma.internshipProgramConfig.upsert({
+    where: { id: 'default' },
+    update: { ...prismaData },
+    create: {
+      id: 'default',
+      isAcceptingApplications: prismaData.isAcceptingApplications ?? true,
+      offerLetterPrefix: prismaData.offerLetterPrefix || 'KT/INT/2026/',
+      offerLetterNextNumber: prismaData.offerLetterNextNumber ?? 4,
+      offerLetterSignatoryTitle: prismaData.offerLetterSignatoryTitle || 'Chief Operating Officer',
+      whatsappTemplate: prismaData.whatsappTemplate,
+      emailSubjectTemplate: prismaData.emailSubjectTemplate,
+      emailBodyTemplate: prismaData.emailBodyTemplate,
+      offerEmailSubjectTemplate: prismaData.offerEmailSubjectTemplate,
+      offerEmailBodyTemplate: prismaData.offerEmailBodyTemplate,
+      bannerAnnouncement: prismaData.bannerAnnouncement,
+    },
+  });
+
+  // Update founderBccEmails directly in PostgreSQL to prevent runtime Prisma client schema mismatch
+  if (founderBccEmails !== undefined) {
+    try {
+      await prisma.$executeRawUnsafe(
+        `UPDATE "InternshipProgramConfig" SET "founderBccEmails" = $1 WHERE id = 'default'`,
+        founderBccEmails
+      );
+    } catch (e) {
+      console.warn('Could not update founderBccEmails via raw query:', e);
+    }
+  }
+
+  return {
+    ...result,
+    founderBccEmails:
+      founderBccEmails ?? (result as any)?.founderBccEmails ?? DEFAULT_FOUNDER_BCC_EMAILS,
+  };
+}
+
+/**
+ * Preview next Offer Reference ID based on current settings
+ */
+export async function getNextOfferRefPreview(): Promise<string> {
+  const config = await getInternshipSettings();
+  const prefix = config.offerLetterPrefix || 'KT/INT/2026/';
+  const nextNum = config.offerLetterNextNumber || 4;
+  return `${prefix}${String(nextNum).padStart(3, '0')}`;
+}
+
+export interface PublishOfferInput {
+  applicantId: string;
+  offerRef: string;
+  designation: string;
+  duration: string;
+  startDate: string;
+  endDate: string;
+  periodText: string;
+  issueDate: string;
+  workMode: string;
+  workingHours: string;
+  stipend: string;
+  acceptanceDueDate: string;
+  signatoryTitle: string;
+  terms?: string[];
+  pdfDataUrl?: string;
+}
+
+/**
+ * Publish Offer Letter for Applicant:
+ * - Updates candidate offer details and status to OFFERED
+ * - Increments next offer sequence number in settings
+ * - Creates an audit timeline event
+ */
+export async function publishOfferLetter(input: PublishOfferInput) {
+  return await prisma.$transaction(async (tx) => {
+    const offerDetailsPayload = {
+      offerRef: input.offerRef,
+      designation: input.designation,
+      duration: input.duration,
+      startDate: input.startDate,
+      endDate: input.endDate,
+      period: input.periodText,
+      issueDate: input.issueDate,
+      workMode: input.workMode,
+      workingHours: input.workingHours,
+      stipend: input.stipend,
+      acceptanceDueDate: input.acceptanceDueDate,
+      signatoryTitle: input.signatoryTitle,
+      terms: input.terms || [],
+      pdfDataUrl: input.pdfDataUrl || null,
+    };
+
+    const applicant = await tx.internshipApplicant.update({
+      where: { id: input.applicantId },
+      data: {
+        offerRef: input.offerRef,
+        offerDetails: offerDetailsPayload,
+        offerStatus: 'PENDING',
+        offerIssuedAt: new Date(),
+        status: 'OFFERED',
+      },
+    });
+
+    // Increment next offer letter number if it matches current sequence
+    const config = await tx.internshipProgramConfig.findUnique({
+      where: { id: 'default' },
+    });
+
+    if (config) {
+      const currentNext = config.offerLetterNextNumber || 4;
+      await tx.internshipProgramConfig.update({
+        where: { id: 'default' },
+        data: {
+          offerLetterNextNumber: currentNext + 1,
+        },
+      });
+    }
+
+    // Add Timeline Event
+    await tx.internshipTimelineEvent.create({
+      data: {
+        applicantId: input.applicantId,
+        action: 'OFFER_ISSUED',
+        actor: 'Admin',
+        note: `Internship Offer Letter (${input.offerRef}) published for ${input.designation}. Period: ${input.periodText}. Work Mode: ${input.workMode}.`,
+      },
+    });
+
+    return applicant;
+  });
+}
+
+/**
+ * Mark applicant as Hired / Accepted:
+ * - Sets status to ACCEPTED
+ * - Sets hiredAt date
+ * - Records timeline event
+ */
+export async function markApplicantAsHired(applicantId: string) {
+  return await prisma.$transaction(async (tx) => {
+    const applicant = await tx.internshipApplicant.update({
+      where: { id: applicantId },
+      data: {
+        status: 'ACCEPTED',
+        offerStatus: 'ACCEPTED',
+        hiredAt: new Date(),
+        offerAcceptedAt: new Date(),
+      },
+    });
+
+    await tx.internshipTimelineEvent.create({
+      data: {
+        applicantId,
+        action: 'OFFER_ACCEPTED',
+        actor: 'Admin',
+        note: `Applicant marked as HIRED / ACCEPTED. Moved to Active Interns directory.`,
+      },
+    });
+
+    return applicant;
+  });
+}
+
+/**
+ * Fetch all Active & Hired Interns
+ */
+export async function getActiveInterns() {
+  return await prisma.internshipApplicant.findMany({
+    where: {
+      OR: [
+        { status: { in: ['ACCEPTED', 'ACTIVE', 'COMPLETED'] } },
+        { hiredAt: { not: null } },
+      ],
+    },
+    include: {
+      assignedRole: true,
+      timeline: {
+        orderBy: { createdAt: 'desc' },
+      },
+    },
+    orderBy: [{ hiredAt: 'desc' }, { createdAt: 'desc' }],
+  });
+}
+
+/**
+ * Add Daily Record or Note to an Intern (HRMS Log)
+ */
+export async function addDailyRecordToIntern(
+  applicantId: string,
+  note: string,
+  author: string = 'Admin'
+) {
+  const applicant = await prisma.internshipApplicant.findUnique({
+    where: { id: applicantId },
+  });
+
+  if (!applicant) throw new Error('Applicant not found');
+
+  const existingRecords: DailyRecordEntry[] = Array.isArray(applicant.dailyRecords)
+    ? (applicant.dailyRecords as unknown as DailyRecordEntry[])
+    : [];
+
+  const newRecord: DailyRecordEntry = {
+    id: `rec_${Date.now()}`,
+    date: new Date().toISOString(),
+    note: note.trim(),
+    author,
+  };
+
+  const updatedRecords = [newRecord, ...existingRecords];
+
+  return await prisma.$transaction(async (tx) => {
+    const updated = await tx.internshipApplicant.update({
+      where: { id: applicantId },
+      data: {
+        dailyRecords: updatedRecords as unknown as Prisma.InputJsonValue,
+      },
+    });
+
+    await tx.internshipTimelineEvent.create({
+      data: {
+        applicantId,
+        action: 'DAILY_RECORD_ADDED',
+        actor: author,
+        note: `Daily Record logged: "${note.trim().slice(0, 100)}${note.length > 100 ? '...' : ''}"`,
+      },
+    });
+
+    return updated;
+  });
+}
+
+/**
+ * Mark Intern as Completed
+ */
+export async function markInternCompleted(
+  applicantId: string,
+  feedback?: string
+) {
+  return await prisma.$transaction(async (tx) => {
+    const updated = await tx.internshipApplicant.update({
+      where: { id: applicantId },
+      data: {
+        status: 'COMPLETED',
+        completionFeedback: feedback || 'Successfully completed internship period.',
+      },
+    });
+
+    await tx.internshipTimelineEvent.create({
+      data: {
+        applicantId,
+        action: 'INTERNSHIP_COMPLETED',
+        actor: 'Admin',
+        note: `Internship successfully marked as COMPLETED. Certificate pending official template issuance.`,
+      },
+    });
+
+    return updated;
+  });
+}
+

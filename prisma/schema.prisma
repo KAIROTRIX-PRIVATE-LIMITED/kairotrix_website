@@ -159,12 +159,27 @@ model CompanyDocument {
 // === INTERNSHIP PROGRAM & APPLICANT MANAGEMENT MODELS ===
 
 model InternshipProgramConfig {
-  id                      String   @id @default("default")
-  isAcceptingApplications Boolean  @default(true)
-  bannerAnnouncement      String?  @db.Text
-  complianceNotice        String?  @db.Text
-  termsAndConditions      String?  @db.Text
-  updatedAt               DateTime @updatedAt
+  id                         String   @id @default("default")
+  isAcceptingApplications    Boolean  @default(true)
+  bannerAnnouncement         String?  @db.Text
+  complianceNotice           String?  @db.Text
+  termsAndConditions         String?  @db.Text
+
+  // Predefined Outreach Templates
+  whatsappTemplate           String?  @db.Text
+  emailSubjectTemplate       String?  @db.Text
+  emailBodyTemplate          String?  @db.Text
+
+  // Offer Letter Settings & Templates
+  offerEmailSubjectTemplate  String?  @db.Text
+  offerEmailBodyTemplate     String?  @db.Text
+  offerLetterPrefix          String?  @default("KT/INT/2026/")
+  offerLetterNextNumber      Int?     @default(4)
+  offerLetterSignatoryTitle  String?  @default("Chief Operating Officer")
+  cooSignatureData           String?  @db.Text
+  founderBccEmails           String?  @default("jeyaprakash2630@gmail.com,sowmiyapgowda0504@gmail.com,afzalmohamed098@gmail.com") @db.Text
+
+  updatedAt                  DateTime @updatedAt
 }
 
 model InternshipRole {
@@ -231,10 +246,13 @@ model InternshipApplicant {
   assignedAt          DateTime?
 
   // Written Internship Offer & Terms
+  offerRef            String?                   // e.g. "KT/INT/2026/003"
   offerDetails        Json?                     // { role, duration, stipend, supervisor, expectations, startDate, endDate, completionCriteria }
   offerStatus         String?                   // "PENDING" | "ACCEPTED" | "DECLINED"
   offerIssuedAt       DateTime?
   offerAcceptedAt     DateTime?
+  hiredAt             DateTime?
+  dailyRecords        Json?                     // [{ id, date, note, author }]
 
   // Completion Criteria & Certificate Management
   certificateIssued       Boolean               @default(false)

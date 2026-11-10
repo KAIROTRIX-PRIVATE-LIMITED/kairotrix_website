@@ -98,7 +98,7 @@ export function InternshipPageClient({ roles = [] }: InternshipPageClientProps) 
     }
   }, [availableRoles, roleAppliedFor]);
   const [projectLink, setProjectLink] = useState('');
-  const [duration, setDuration] = useState('3 Months (Recommended)');
+  const [duration, setDuration] = useState('3 Months');
   const [resumeUrl, setResumeUrl] = useState('');
   const [resumeName, setResumeName] = useState('');
   const [isUploadingResume, setIsUploadingResume] = useState(false);
@@ -384,17 +384,9 @@ export function InternshipPageClient({ roles = [] }: InternshipPageClientProps) 
                   >
                     {/* Header */}
                     <div className="flex items-center justify-between pb-5 mb-5 border-b border-neutral-100">
-                      <div>
-                        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0B0B0F]">
+                      <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0B0B0F]">
                           Apply for internship
                         </h2>
-                        <p className="text-xs text-neutral-500 mt-0.5">
-                          Takes under 2 minutes · Direct review by tech leads
-                        </p>
-                      </div>
-                      <span className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-purple-50 text-[#6D28D9] border border-purple-200/70">
-                        General Application
-                      </span>
                     </div>
 
                     {/* Error Banner */}

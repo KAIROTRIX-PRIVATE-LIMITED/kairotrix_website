@@ -47,6 +47,8 @@
   --font-mono: var(--font-geist-mono), 'JetBrains Mono', monospace;
   --font-tech: var(--font-orbitron), 'Orbitron', monospace, sans-serif;
   --font-display: var(--font-display), var(--font-geist-sans), 'Plus Jakarta Sans', sans-serif;
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-opensans: 'Open Sans', var(--font-geist-sans), sans-serif;
 
   /* === ANIMATION DURATIONS === */
   --duration-fast: 150ms;
@@ -112,6 +114,14 @@
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+@utility font-montserrat {
+  font-family: var(--font-montserrat);
+}
+
+@utility font-opensans {
+  font-family: var(--font-opensans);
 }
 
 /* Base Document Styling — Fixed Light Theme */
@@ -458,3 +468,84 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(147, 51, 234, 0.6);
 }
+
+/* ── Print Styles for Official Offer Letter ────────────────────────────────── */
+#offer-letter-print-portal {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0mm !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    max-width: 210mm !important;
+    max-height: 297mm !important;
+    background: #FFFFFF !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: hidden !important;
+  }
+
+  /* When offer letter modal is open, hide all non-portal DOM elements to guarantee 1 page */
+  body.offer-letter-modal-open > *:not(#offer-letter-print-portal),
+  body:has(#offer-letter-print-portal) > *:not(#offer-letter-print-portal) {
+    display: none !important;
+  }
+
+  /* Dedicated print portal: strictly 1 single A4 sheet (210mm x 297mm) */
+  #offer-letter-print-portal {
+    display: block !important;
+    visibility: visible !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    max-width: 210mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #FFFFFF !important;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: avoid !important;
+    break-inside: avoid !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    z-index: 99999999 !important;
+  }
+
+  #offer-letter-print-portal #offer-letter-print-sheet,
+  #offer-letter-print-portal .offer-letter-sheet {
+    width: 210mm !important;
+    height: 297mm !important;
+    max-width: 210mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    padding: 24px 48px 16px 48px !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
+    background-color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+

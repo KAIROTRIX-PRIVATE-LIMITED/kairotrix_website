@@ -7,17 +7,24 @@ import {
   RefreshCw,
   Loader2,
   AlertCircle,
+  Settings,
+  UserCheck,
 } from 'lucide-react';
 import { ApplicantsTable } from '@/components/admin/internships/ApplicantsTable';
 import { ApplicantDetailDrawer } from '@/components/admin/internships/ApplicantDetailDrawer';
 import { RolesManager } from '@/components/admin/internships/RolesManager';
+import { InternshipSettingsTab } from '@/components/admin/internships/InternshipSettingsTab';
+import { ActiveInternsTable } from '@/components/admin/internships/ActiveInternsTable';
 
 export default function AdminInternshipsPage() {
-  const [activeTab, setActiveTab] = useState<'applicants' | 'roles'>('applicants');
+  const [activeTab, setActiveTab] = useState<'applicants' | 'active' | 'roles' | 'settings'>('applicants');
 
   // Data State
   const [applicants, setApplicants] = useState<any[]>([]);
+  const [activeInterns, setActiveInterns] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
+  const [settings, setSettings] = useState<any>(null);
+  const [nextOfferRef, setNextOfferRef] = useState<string>('KT/INT/2026/004');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,9 +45,11 @@ export default function AdminInternshipsPage() {
       if (statusFilter !== 'ALL') params.append('status', statusFilter);
       if (searchQuery.trim()) params.append('search', searchQuery.trim());
 
-      const [applicantsRes, rolesRes] = await Promise.all([
+      const [applicantsRes, rolesRes, activeRes, settingsRes] = await Promise.all([
         fetch(`/api/admin/internships/applicants?${params.toString()}`),
         fetch('/api/admin/internships/roles'),
+        fetch('/api/admin/internships/active'),
+        fetch('/api/admin/internships/settings'),
       ]);
 
       if (!applicantsRes.ok) throw new Error('Failed to load applicants');
@@ -48,9 +57,14 @@ export default function AdminInternshipsPage() {
 
       const applicantsData = await applicantsRes.json();
       const rolesData = await rolesRes.json();
+      const activeData = activeRes.ok ? await activeRes.json() : { interns: [] };
+      const settingsData = settingsRes.ok ? await settingsRes.json() : { settings: null, nextOfferRef: 'KT/INT/2026/004' };
 
       setApplicants(applicantsData.applicants || []);
       setRoles(rolesData.roles || []);
+      setActiveInterns(activeData.interns || []);
+      setSettings(settingsData.settings || null);
+      if (settingsData.nextOfferRef) setNextOfferRef(settingsData.nextOfferRef);
 
       if (selectedApplicant) {
         const updated = (applicantsData.applicants || []).find(
@@ -89,10 +103,10 @@ export default function AdminInternshipsPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight">
-            Internship Applications
+            Internship Management & Automation
           </h1>
           <p className="text-xs sm:text-sm text-neutral-600 mt-1">
-            View submitted applications, open candidate resumes, and reach out directly.
+            View applications, reach out via WhatsApp/Email, publish official offer letters, and maintain intern records.
           </p>
         </div>
 
@@ -107,12 +121,12 @@ export default function AdminInternshipsPage() {
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-neutral-200 pb-px">
+      {/* 4 Tabs */}
+      <div className="flex items-center gap-2 border-b border-neutral-200 pb-px overflow-x-auto">
         <button
           type="button"
           onClick={() => setActiveTab('applicants')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
             activeTab === 'applicants'
               ? 'border-brand-600 text-brand-700 bg-brand-50/50 font-bold'
               : 'border-transparent text-neutral-600 hover:text-neutral-900'
@@ -124,8 +138,21 @@ export default function AdminInternshipsPage() {
 
         <button
           type="button"
+          onClick={() => setActiveTab('active')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
+            activeTab === 'active'
+              ? 'border-brand-600 text-brand-700 bg-brand-50/50 font-bold'
+              : 'border-transparent text-neutral-600 hover:text-neutral-900'
+          }`}
+        >
+          <UserCheck className="w-4 h-4" />
+          <span>Active Interns ({activeInterns.length})</span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => setActiveTab('roles')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
             activeTab === 'roles'
               ? 'border-brand-600 text-brand-700 bg-brand-50/50 font-bold'
               : 'border-transparent text-neutral-600 hover:text-neutral-900'
@@ -133,6 +160,19 @@ export default function AdminInternshipsPage() {
         >
           <Briefcase className="w-4 h-4" />
           <span>Manage Roles ({roles.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('settings')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
+            activeTab === 'settings'
+              ? 'border-brand-600 text-brand-700 bg-brand-50/50 font-bold'
+              : 'border-transparent text-neutral-600 hover:text-neutral-900'
+          }`}
+        >
+          <Settings className="w-4 h-4" />
+          <span>Templates & Settings</span>
         </button>
       </div>
 
@@ -148,18 +188,29 @@ export default function AdminInternshipsPage() {
       {isLoading && applicants.length === 0 ? (
         <div className="p-16 flex flex-col items-center justify-center text-neutral-500 gap-3">
           <Loader2 className="w-6 h-6 text-brand-600 animate-spin" />
-          <span className="text-xs">Loading applications...</span>
+          <span className="text-xs">Loading internship system...</span>
         </div>
       ) : (
         <>
           {activeTab === 'applicants' && (
             <ApplicantsTable
               applicants={applicants}
+              settings={settings}
+              defaultNextOfferRef={nextOfferRef}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               statusFilter={statusFilter}
               onStatusFilterChange={setStatusFilter}
               onSelectApplicant={(app) => setSelectedApplicant(app)}
+              onRefresh={fetchData}
+            />
+          )}
+
+          {activeTab === 'active' && (
+            <ActiveInternsTable
+              interns={activeInterns}
+              defaultNextOfferRef={nextOfferRef}
+              onRefresh={fetchData}
             />
           )}
 
@@ -169,13 +220,24 @@ export default function AdminInternshipsPage() {
               onRefresh={fetchData}
             />
           )}
+
+          {activeTab === 'settings' && (
+            <InternshipSettingsTab
+              key={settings?.updatedAt || 'internship-settings-view'}
+              settings={settings}
+              nextOfferRefPreview={nextOfferRef}
+              onRefresh={fetchData}
+            />
+          )}
         </>
       )}
 
-      {/* Simplified Detail Drawer */}
+      {/* Detail Drawer */}
       {selectedApplicant && (
         <ApplicantDetailDrawer
           applicant={selectedApplicant}
+          settings={settings}
+          defaultNextOfferRef={nextOfferRef}
           onClose={() => setSelectedApplicant(null)}
           onRefresh={fetchData}
         />
