@@ -249,13 +249,28 @@ export function OfferLetterStudioModal({
         throw new Error('Offer letter template element could not be found.');
       }
 
-      const canvas = await html2canvas(targetElement, {
-        scale: 2, // 2x Retina clarity (1588 x 2246 px)
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#FFFFFF',
-        logging: false,
-      });
+      // Temporarily position targetElement behind modal during the 200ms snapshot
+      const prevLeft = targetElement.style.left;
+      const prevTop = targetElement.style.top;
+      const prevZ = targetElement.style.zIndex;
+      targetElement.style.left = '0px';
+      targetElement.style.top = '0px';
+      targetElement.style.zIndex = '-9999';
+
+      let canvas;
+      try {
+        canvas = await html2canvas(targetElement, {
+          scale: 2, // 2x Retina clarity (1588 x 2246 px)
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#FFFFFF',
+          logging: false,
+        });
+      } finally {
+        targetElement.style.left = prevLeft || '-99999px';
+        targetElement.style.top = prevTop || '-99999px';
+        targetElement.style.zIndex = prevZ || '-9999';
+      }
 
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
@@ -1033,16 +1048,16 @@ export function OfferLetterStudioModal({
 
       </div>
 
-      {/* Hidden Unscaled Capture Container for High-DPI Canvas/PDF Generation */}
+      {/* Offscreen Unscaled Capture Container for High-DPI Canvas/PDF Generation (Kept completely offscreen to eliminate any screen overlap) */}
       <div
         ref={pdfCaptureRef}
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
+          top: '-99999px',
+          left: '-99999px',
           width: '794px',
           height: '1123px',
-          zIndex: -100,
+          zIndex: -9999,
           pointerEvents: 'none',
           backgroundColor: '#FFFFFF',
           overflow: 'hidden',

@@ -14,10 +14,8 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
-  Printer,
   UserCheck,
 } from 'lucide-react';
-import { OfferLetterStudioModal } from './OfferLetterStudioModal';
 
 interface ActiveIntern {
   id: string;
@@ -48,7 +46,6 @@ export function ActiveInternsTable({
   onRefresh,
 }: ActiveInternsTableProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedInternForOffer, setSelectedInternForOffer] = useState<ActiveIntern | null>(null);
   const [expandedInternId, setExpandedInternId] = useState<string | null>(null);
 
   // New Note Modal / Inline state
@@ -259,17 +256,7 @@ export function ActiveInternsTable({
                   </div>
 
                   {/* Right Column: Quick Action buttons */}
-                  <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-between md:justify-end pt-2 md:pt-0 border-t md:border-t-0 border-neutral-100">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedInternForOffer(intern)}
-                      className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200 text-xs font-semibold text-neutral-800 flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
-                      title="View / Print Offer Letter"
-                    >
-                      <Printer className="w-3.5 h-3.5 text-brand-600" />
-                      <span>Offer Letter</span>
-                    </button>
-
+                  <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-neutral-100">
                     <button
                       type="button"
                       onClick={() => setExpandedInternId(isExpanded ? null : intern.id)}
@@ -422,19 +409,6 @@ export function ActiveInternsTable({
           })
         )}
       </div>
-
-      {/* Offer Letter Studio Modal for viewing/re-printing */}
-      {selectedInternForOffer && (
-        <OfferLetterStudioModal
-          applicant={selectedInternForOffer}
-          defaultNextOfferRef={selectedInternForOffer.offerRef || defaultNextOfferRef}
-          onClose={() => setSelectedInternForOffer(null)}
-          onSuccess={() => {
-            setSelectedInternForOffer(null);
-            onRefresh();
-          }}
-        />
-      )}
     </div>
   );
 }

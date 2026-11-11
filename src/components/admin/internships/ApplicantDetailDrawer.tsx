@@ -360,16 +360,6 @@ export function ApplicantDetailDrawer({
                 <p className="text-xs text-emerald-700 leading-relaxed">
                   This intern has accepted the offer and is recorded in the Active Interns directory with daily progress logs.
                 </p>
-                {applicant.offerRef && (
-                  <button
-                    type="button"
-                    onClick={() => setIsOfferStudioOpen(true)}
-                    className="px-3 py-1.5 rounded-xl bg-white border border-emerald-300 text-emerald-800 text-xs font-semibold flex items-center gap-1.5 shadow-2xs hover:bg-emerald-50 cursor-pointer"
-                  >
-                    <Printer className="w-3.5 h-3.5 text-brand-600" />
-                    <span>View Offer Letter ({applicant.offerRef})</span>
-                  </button>
-                )}
               </div>
             )}
 
@@ -420,85 +410,6 @@ export function ApplicantDetailDrawer({
                 </div>
               )}
             </div>
-
-            {/* Official Offer Letter Card (Visible when Offer is Extended, Hidden Once Hired) */}
-            {(applicant.offerRef || currentStatus === 'OFFERED') && currentStatus !== 'ACCEPTED' && (
-              <div className="p-4 rounded-2xl bg-purple-50/70 border border-purple-200 shadow-2xs space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-purple-100 border border-purple-200 flex items-center justify-center text-brand-700">
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-neutral-950">
-                        Official Internship Offer Letter
-                      </h4>
-                      <p className="text-[11px] font-mono text-brand-800 font-bold">
-                        {applicant.offerRef || 'Draft Reference'}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white border border-purple-200 text-brand-700">
-                    Offer Extended
-                  </span>
-                </div>
-
-                <div className="bg-white rounded-xl p-3 border border-purple-100 space-y-1.5 text-xs text-neutral-700 font-opensans">
-                  <div className="flex justify-between">
-                    <span className="text-neutral-500 font-medium">Designation:</span>
-                    <span className="font-bold text-[#7500A6]">{roleName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-500 font-medium">Issue Date:</span>
-                    <span className="font-mono font-bold text-neutral-900">
-                      {applicant.offerDetails?.issueDate || todayFormatted}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-500 font-medium">Acceptance Due:</span>
-                    <span className="font-mono font-bold text-[#7500A6]">
-                      {applicant.offerDetails?.acceptanceDueDate || applicant.offerDetails?.issueDate || todayFormatted}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsOfferStudioOpen(true)}
-                    className="flex-1 py-2 px-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold text-center flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-                  >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>View / Print Offer Letter</span>
-                  </button>
-                  <a
-                    href={buildGmailComposeUrl({
-                      to: applicant.email,
-                      subject: (settings?.offerEmailSubjectTemplate || DEFAULT_OFFER_EMAIL_SUBJECT_TEMPLATE)
-                        .replace(/{{name}}/g, applicant.fullName)
-                        .replace(/{{role}}/g, roleName)
-                        .replace(/{{offerRef}}/g, applicant.offerRef || 'KT/INT/2026/OFFER'),
-                      body: (settings?.offerEmailBodyTemplate || DEFAULT_OFFER_EMAIL_BODY_TEMPLATE)
-                        .replace(/{{name}}/g, applicant.fullName)
-                        .replace(/{{role}}/g, roleName)
-                        .replace(/{{offerRef}}/g, applicant.offerRef || 'KT/INT/2026/OFFER')
-                        .replace(/{{duration}}/g, internshipPeriod)
-                        .replace(/{{period}}/g, applicant.offerDetails?.period || '')
-                        .replace(/{{date}}/g, todayFormatted)
-                        .replace(/{{today}}/g, todayFormatted),
-                      bcc: settings?.founderBccEmails,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="py-2 px-3 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-300 text-xs font-semibold text-neutral-800 text-center flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                    title="Send / Resend Offer via Gmail Web"
-                  >
-                    <Mail className="w-3.5 h-3.5 text-brand-600" />
-                    <span>Gmail</span>
-                  </a>
-                </div>
-              </div>
-            )}
 
             {/* Candidate Submitted Résumé Section */}
             <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-2xs">

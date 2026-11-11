@@ -3,15 +3,10 @@
 import React, { useState } from 'react';
 import {
   Search,
-  ExternalLink,
   ChevronRight,
-  FileText,
   Download,
   Phone,
   Mail,
-  Clock,
-  Briefcase,
-  User,
   MessageCircle,
   Printer,
   Sparkles,
@@ -24,7 +19,6 @@ import {
   DEFAULT_WHATSAPP_TEMPLATE,
   DEFAULT_EMAIL_SUBJECT_TEMPLATE,
   DEFAULT_EMAIL_BODY_TEMPLATE,
-  buildGmailComposeUrl,
 } from '@/types/internship';
 
 interface Applicant {
@@ -83,7 +77,7 @@ export function ApplicantsTable({
   const [selectedForOffer, setSelectedForOffer] = useState<Applicant | null>(null);
   const [outreachModalApplicant, setOutreachModalApplicant] = useState<Applicant | null>(null);
 
-  // Manual mark as Contacted (No automatic status change on click!)
+  // Manual mark as Contacted
   const handleManualMarkContacted = async (e: React.MouseEvent, appId: string) => {
     e.stopPropagation();
     try {
@@ -111,6 +105,160 @@ export function ApplicantsTable({
     }
   };
 
+  // Reusable Action Buttons
+  const renderActionButtons = (
+    app: Applicant,
+    waPhone: string,
+    waMessage: string,
+    offerRef?: string | null
+  ) => {
+    return (
+      <div className="flex items-center gap-1.5">
+        {/* STEP 1: Status = REVIEW (New application) */}
+        {app.status === 'REVIEW' && (
+          <>
+            {waPhone && (
+              <a
+                href={`https://wa.me/${waPhone}?text=${encodeURIComponent(waMessage)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                title="Open WhatsApp with outreach template"
+                className="h-8 w-8 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+              </a>
+            )}
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOutreachModalApplicant(app);
+              }}
+              title="Send Official Outreach Email (Server SMTP | kairotrix.official@gmail.com | BCC: 3 Founders)"
+              className="h-8 w-8 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-brand-700 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+            >
+              <Mail className="w-3.5 h-3.5" />
+            </button>
+
+            {app.phone && (
+              <a
+                href={`tel:${app.phone}`}
+                onClick={(e) => e.stopPropagation()}
+                title={`Call ${app.phone}`}
+                className="h-8 w-8 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-700 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              >
+                <Phone className="w-3.5 h-3.5" />
+              </a>
+            )}
+
+            <button
+              type="button"
+              onClick={(e) => handleManualMarkContacted(e, app.id)}
+              title="Mark applicant as Contacted"
+              className="h-8 px-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer shrink-0 whitespace-nowrap"
+            >
+              <Check className="w-3.5 h-3.5" />
+              <span>Mark Contacted</span>
+            </button>
+          </>
+        )}
+
+        {/* STEP 2: Status = CONTACTED or SHORTLISTED -> Unlock "Publish Offer Letter" */}
+        {(app.status === 'CONTACTED' || app.status === 'SHORTLISTED') && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedForOffer(app);
+              }}
+              title="Publish Offer Letter"
+              className="h-8 px-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 whitespace-nowrap"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Publish Offer Letter</span>
+            </button>
+
+            {waPhone && (
+              <a
+                href={`https://wa.me/${waPhone}?text=${encodeURIComponent(waMessage)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                title="Message on WhatsApp"
+                className="h-8 w-8 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-neutral-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </>
+        )}
+
+        {/* STEP 3: Status = OFFERED -> Show "View Offer" & "Mark Hired" */}
+        {app.status === 'OFFERED' && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedForOffer(app);
+              }}
+              title={`View / Print Offer Letter (${offerRef || ''})`}
+              className="h-8 px-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-brand-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 whitespace-nowrap"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>View Offer</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => handleManualMarkHired(e, app.id)}
+              title="Candidate accepted offer - mark as Hired"
+              className="h-8 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 whitespace-nowrap"
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              <span>Mark Hired</span>
+            </button>
+          </>
+        )}
+
+        {/* STEP 4: Status = ACCEPTED -> Candidate is Hired */}
+        {app.status === 'ACCEPTED' && (
+          <span className="h-8 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1 shrink-0 whitespace-nowrap">
+            <Check className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Hired</span>
+          </span>
+        )}
+
+        {/* Resume Download */}
+        <a
+          href={`/api/admin/internships/applicants/${app.id}/resume?action=download`}
+          download={app.resumeName || 'resume.pdf'}
+          onClick={(e) => e.stopPropagation()}
+          title={`Download ${app.resumeName || 'Resume'}`}
+          className="h-8 w-8 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-neutral-700 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+        >
+          <Download className="w-3.5 h-3.5" />
+        </a>
+
+        {/* View Details Drawer Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectApplicant(app);
+          }}
+          className="h-8 px-2.5 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-xs font-semibold text-neutral-700 flex items-center gap-1 group-hover:border-brand-500 group-hover:text-brand-700 transition-colors cursor-pointer shrink-0 whitespace-nowrap"
+        >
+          <span>View</span>
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-4">
       {/* Search & Filter Bar */}
@@ -127,27 +275,32 @@ export function ApplicantsTable({
           />
         </div>
 
-        {/* Status filter */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-neutral-500 font-medium">Status:</span>
-          <select
-            value={statusFilter}
-            onChange={(e) => onStatusFilterChange(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-neutral-50 border border-neutral-300 text-xs font-semibold text-neutral-800 focus:outline-none focus:ring-1 focus:ring-brand-500"
-          >
-            <option value="ALL">All Applicants</option>
-            <option value="REVIEW">New</option>
-            <option value="CONTACTED">Contacted</option>
-            <option value="SHORTLISTED">Shortlisted</option>
-            <option value="OFFERED">Offer Extended</option>
-            <option value="ACCEPTED">Hired / Accepted</option>
-            <option value="REJECTED">Not Selected</option>
-          </select>
+        {/* Status filter & Counter */}
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+          <span className="text-xs text-neutral-500 font-mono hidden sm:inline">
+            {applicants.length} {applicants.length === 1 ? 'applicant' : 'applicants'}
+          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-neutral-500 font-medium">Status:</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => onStatusFilterChange(e.target.value)}
+              className="px-3 py-1.5 rounded-xl bg-neutral-50 border border-neutral-300 text-xs font-semibold text-neutral-800 focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer"
+            >
+              <option value="ALL">All Applicants</option>
+              <option value="REVIEW">New</option>
+              <option value="CONTACTED">Contacted</option>
+              <option value="SHORTLISTED">Shortlisted</option>
+              <option value="OFFERED">Offer Extended</option>
+              <option value="ACCEPTED">Hired / Accepted</option>
+              <option value="REJECTED">Not Selected</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Applications List */}
-      <div className="rounded-2xl border border-neutral-200/90 bg-white overflow-hidden shadow-2xs divide-y divide-neutral-100">
+      {/* Applications Table Card */}
+      <div className="rounded-2xl border border-neutral-200/90 bg-white overflow-hidden shadow-2xs">
         {applicants.length === 0 ? (
           <div className="p-12 text-center space-y-2">
             <p className="text-sm font-semibold text-neutral-900">No applicants found</p>
@@ -156,276 +309,235 @@ export function ApplicantsTable({
             </p>
           </div>
         ) : (
-          applicants.map((app) => {
-            const statusObj = STATUS_BADGES[app.status] || {
-              label: app.status,
-              className: 'bg-neutral-100 text-neutral-700 border-neutral-200',
-            };
-            const roleName = app.preferredDomains?.[0] || app.roleAppliedFor || 'AI/ML Intern';
-            const duration = app.weeklyAvailability || app.duration || '1 Month';
-            const offerRef = app.offerRef || app.offerDetails?.offerRef;
+          <>
+            {/* Desktop Structured Tabular Grid (lg and above) */}
+            <div className="hidden lg:block overflow-x-auto">
+              <div className="min-w-[1020px]">
+                {/* Table Header Row */}
+                <div className="grid grid-cols-[minmax(250px,2fr)_minmax(140px,1.2fr)_95px_135px_80px_minmax(250px,auto)] items-center gap-4 px-5 py-3 bg-neutral-50/90 border-b border-neutral-200 text-[11px] font-bold text-neutral-500 uppercase tracking-wider font-mono">
+                  <div>Candidate</div>
+                  <div>Track / Domain</div>
+                  <div>Duration</div>
+                  <div>Status</div>
+                  <div>Applied</div>
+                  <div className="text-right">Actions</div>
+                </div>
 
-            // Clean phone for WhatsApp
-            const rawPhone = app.phone ? app.phone.replace(/[^0-9]/g, '') : '';
-            const waPhone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+                {/* Table Body Rows */}
+                <div className="divide-y divide-neutral-100">
+                  {applicants.map((app) => {
+                    const statusObj = STATUS_BADGES[app.status] || {
+                      label: app.status,
+                      className: 'bg-neutral-100 text-neutral-700 border-neutral-200',
+                    };
+                    const roleName = app.preferredDomains?.[0] || app.roleAppliedFor || 'AI/ML Intern';
+                    const duration = app.weeklyAvailability || app.duration || '1 Month';
+                    const offerRef = app.offerRef || app.offerDetails?.offerRef;
 
-            const today = new Date();
-            const todayFormatted = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+                    // Clean phone for WhatsApp
+                    const rawPhone = app.phone ? app.phone.replace(/[^0-9]/g, '') : '';
+                    const waPhone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
 
-            // Predefined Template interpolation
-            const waMessage = (settings?.whatsappTemplate || DEFAULT_WHATSAPP_TEMPLATE)
-              .replace(/{{name}}/g, app.fullName)
-              .replace(/{{role}}/g, roleName)
-              .replace(/{{institution}}/g, app.institution)
-              .replace(/{{duration}}/g, duration)
-              .replace(/{{date}}/g, todayFormatted)
-              .replace(/{{today}}/g, todayFormatted);
+                    const today = new Date();
+                    const todayFormatted = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
 
-            const emailSubject = (settings?.emailSubjectTemplate || DEFAULT_EMAIL_SUBJECT_TEMPLATE)
-              .replace(/{{name}}/g, app.fullName)
-              .replace(/{{role}}/g, roleName)
-              .replace(/{{date}}/g, todayFormatted)
-              .replace(/{{today}}/g, todayFormatted);
+                    const waMessage = (settings?.whatsappTemplate || DEFAULT_WHATSAPP_TEMPLATE)
+                      .replace(/{{name}}/g, app.fullName)
+                      .replace(/{{role}}/g, roleName)
+                      .replace(/{{institution}}/g, app.institution)
+                      .replace(/{{duration}}/g, duration)
+                      .replace(/{{date}}/g, todayFormatted)
+                      .replace(/{{today}}/g, todayFormatted);
 
-            const emailBody = (settings?.emailBodyTemplate || DEFAULT_EMAIL_BODY_TEMPLATE)
-              .replace(/{{name}}/g, app.fullName)
-              .replace(/{{role}}/g, roleName)
-              .replace(/{{institution}}/g, app.institution)
-              .replace(/{{duration}}/g, duration)
-              .replace(/{{date}}/g, todayFormatted)
-              .replace(/{{today}}/g, todayFormatted);
+                    return (
+                      <div
+                        key={app.id}
+                        onClick={() => onSelectApplicant(app)}
+                        className="grid grid-cols-[minmax(250px,2fr)_minmax(140px,1.2fr)_95px_135px_80px_minmax(250px,auto)] items-center gap-4 px-5 py-3 hover:bg-neutral-50/80 transition-colors cursor-pointer group"
+                      >
+                        {/* Col 1: Candidate Info */}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-xl bg-purple-50/90 border border-purple-200/80 text-brand-700 flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                            {app.fullName.charAt(0).toUpperCase()}
+                          </div>
 
-            return (
-              <div
-                key={app.id}
-                onClick={() => onSelectApplicant(app)}
-                className="p-4 sm:p-5 hover:bg-neutral-50/70 transition-colors cursor-pointer flex flex-col md:flex-row items-start md:items-center justify-between gap-4 group"
-              >
-                {/* Left Column: Candidate Info */}
-                <div className="flex items-start gap-3.5 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 text-brand-700 flex items-center justify-center font-bold text-sm shrink-0">
-                    {app.fullName.charAt(0).toUpperCase()}
-                  </div>
+                          <div className="min-w-0">
+                            <h4 className="text-sm font-bold text-neutral-900 group-hover:text-brand-700 transition-colors truncate">
+                              {app.fullName}
+                            </h4>
+                            <p
+                              className="text-[11px] text-neutral-500 truncate"
+                              title={`${app.institution} • ${app.yearOfStudy}`}
+                            >
+                              {app.institution} • {app.yearOfStudy}
+                            </p>
+                            <div className="flex items-center gap-3 mt-0.5 text-[10px] text-neutral-400 font-mono truncate">
+                              {app.phone && (
+                                <span className="flex items-center gap-1 shrink-0">
+                                  <Phone className="w-2.5 h-2.5 text-neutral-400" />
+                                  <span>{app.phone}</span>
+                                </span>
+                              )}
+                              <span className="flex items-center gap-1 truncate" title={app.email}>
+                                <Mail className="w-2.5 h-2.5 text-neutral-400 shrink-0" />
+                                <span className="truncate">{app.email}</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
 
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-bold text-neutral-950 group-hover:text-brand-700 transition-colors">
-                        {app.fullName}
+                        {/* Col 2: Track / Domain */}
+                        <div className="min-w-0">
+                          <span
+                            className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold text-brand-700 bg-purple-50/80 border border-purple-200/80 truncate max-w-full"
+                            title={roleName}
+                          >
+                            {roleName}
+                          </span>
+                        </div>
+
+                        {/* Col 3: Duration */}
+                        <div>
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium text-neutral-600 bg-neutral-100 border border-neutral-200/80 whitespace-nowrap">
+                            {duration}
+                          </span>
+                        </div>
+
+                        {/* Col 4: Status & Offer Ref */}
+                        <div className="flex flex-col items-start gap-1 min-w-0">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold border ${statusObj.className} whitespace-nowrap`}
+                          >
+                            {statusObj.label}
+                          </span>
+                          {offerRef && (
+                            <span
+                              className="inline-flex items-center px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold bg-purple-100 text-brand-800 border border-purple-200/80 truncate max-w-[125px]"
+                              title={`Offer Ref: ${offerRef}`}
+                            >
+                              {offerRef}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Col 5: Applied Date */}
+                        <div className="text-xs text-neutral-500 font-mono font-medium whitespace-nowrap">
+                          {new Date(app.createdAt).toLocaleDateString('en-IN', {
+                            day: 'numeric',
+                            month: 'short',
+                          })}
+                        </div>
+
+                        {/* Col 6: Actions (Right-aligned) */}
+                        <div className="flex items-center justify-end">
+                          {renderActionButtons(app, waPhone, waMessage, offerRef)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile / Tablet Card View (< lg) */}
+            <div className="lg:hidden divide-y divide-neutral-100">
+              {applicants.map((app) => {
+                const statusObj = STATUS_BADGES[app.status] || {
+                  label: app.status,
+                  className: 'bg-neutral-100 text-neutral-700 border-neutral-200',
+                };
+                const roleName = app.preferredDomains?.[0] || app.roleAppliedFor || 'AI/ML Intern';
+                const duration = app.weeklyAvailability || app.duration || '1 Month';
+                const offerRef = app.offerRef || app.offerDetails?.offerRef;
+
+                const rawPhone = app.phone ? app.phone.replace(/[^0-9]/g, '') : '';
+                const waPhone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+
+                const today = new Date();
+                const todayFormatted = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+
+                const waMessage = (settings?.whatsappTemplate || DEFAULT_WHATSAPP_TEMPLATE)
+                  .replace(/{{name}}/g, app.fullName)
+                  .replace(/{{role}}/g, roleName)
+                  .replace(/{{institution}}/g, app.institution)
+                  .replace(/{{duration}}/g, duration)
+                  .replace(/{{date}}/g, todayFormatted)
+                  .replace(/{{today}}/g, todayFormatted);
+
+                return (
+                  <div
+                    key={app.id}
+                    onClick={() => onSelectApplicant(app)}
+                    className="p-4 hover:bg-neutral-50/70 transition-colors cursor-pointer space-y-3"
+                  >
+                    {/* Top Row: Candidate Avatar, Name, Status, Date */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-purple-50/90 border border-purple-200/80 text-brand-700 flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                          {app.fullName.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-sm font-bold text-neutral-900 truncate">
+                            {app.fullName}
+                          </h4>
+                          <p className="text-[11px] text-neutral-500 truncate">
+                            {app.institution} • {app.yearOfStudy}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${statusObj.className} whitespace-nowrap`}>
+                          {statusObj.label}
+                        </span>
+                        <span className="text-[10px] text-neutral-400 font-mono">
+                          {new Date(app.createdAt).toLocaleDateString('en-IN', {
+                            day: 'numeric',
+                            month: 'short',
+                          })}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Middle Row: Track, Duration, Offer Ref Chips */}
+                    <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                      <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold text-brand-700 bg-purple-50 border border-purple-200/80">
+                        {roleName}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusObj.className}`}>
-                        {statusObj.label}
+                      <span className="px-2.5 py-0.5 rounded-md text-xs font-medium text-neutral-600 bg-neutral-100 border border-neutral-200/80">
+                        {duration}
                       </span>
                       {offerRef && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-100 text-brand-800 border border-purple-200">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-purple-100 text-brand-800 border border-purple-200/80">
                           {offerRef}
                         </span>
                       )}
                     </div>
 
-                    <p className="text-xs text-neutral-600 mt-0.5 truncate">
-                      {app.institution} • {app.yearOfStudy}
-                    </p>
-
-                    <div className="flex items-center gap-3 mt-1.5 text-xs text-neutral-500 font-mono flex-wrap">
+                    {/* Contact Details */}
+                    <div className="flex items-center gap-3 text-[11px] text-neutral-500 font-mono flex-wrap">
                       {app.phone && (
                         <span className="flex items-center gap-1">
                           <Phone className="w-3 h-3 text-neutral-400" />
                           <span>{app.phone}</span>
                         </span>
                       )}
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 truncate">
                         <Mail className="w-3 h-3 text-neutral-400" />
-                        <span className="truncate max-w-[200px]">{app.email}</span>
+                        <span className="truncate">{app.email}</span>
                       </span>
+                    </div>
+
+                    {/* Bottom Row: Actions */}
+                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-neutral-100">
+                      <span className="text-[10.5px] font-mono text-neutral-400">Actions</span>
+                      {renderActionButtons(app, waPhone, waMessage, offerRef)}
                     </div>
                   </div>
-                </div>
-
-                {/* Middle Column: Role & Duration */}
-                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-start sm:items-center gap-2 shrink-0">
-                  <span className="px-2.5 py-1 rounded-lg text-xs font-semibold text-brand-700 bg-purple-50/80 border border-purple-200">
-                    {roleName}
-                  </span>
-                  <span className="px-2.5 py-1 rounded-lg text-xs font-medium text-neutral-600 bg-neutral-100 border border-neutral-200">
-                    {duration}
-                  </span>
-                </div>
-
-                {/* Right Column: Step-by-Step Contextual Actions */}
-                <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-between md:justify-end pt-2 md:pt-0 border-t md:border-t-0 border-neutral-100">
-                  <span className="text-[11px] text-neutral-400 font-mono hidden xl:inline">
-                    {new Date(app.createdAt).toLocaleDateString('en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                    })}
-                  </span>
-
-                  {/* STEP 1: Status = REVIEW (New application) -> Show WhatsApp, Mail, Call ONLY with templates */}
-                  {app.status === 'REVIEW' && (
-                    <div className="flex items-center gap-1.5">
-                      {/* WhatsApp Button */}
-                      {waPhone && (
-                        <a
-                          href={`https://wa.me/${waPhone}?text=${encodeURIComponent(waMessage)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          title="Open WhatsApp with outreach template"
-                          className="p-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 transition-colors cursor-pointer"
-                        >
-                          <MessageCircle className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-
-                      {/* Email Button: Opens OutreachEmailModal for direct server dispatch from kairotrix.official@gmail.com */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOutreachModalApplicant(app);
-                        }}
-                        title="Send Official Outreach Email (Server SMTP | kairotrix.official@gmail.com | BCC: 3 Founders)"
-                        className="p-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-brand-700 transition-colors cursor-pointer"
-                      >
-                        <Mail className="w-3.5 h-3.5" />
-                      </button>
-
-                      {/* Call Button */}
-                      {app.phone && (
-                        <a
-                          href={`tel:${app.phone}`}
-                          onClick={(e) => e.stopPropagation()}
-                          title={`Call ${app.phone}`}
-                          className="p-1.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-700 transition-colors cursor-pointer"
-                        >
-                          <Phone className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-
-                      {/* Manual Mark Contacted Button */}
-                      <button
-                        type="button"
-                        onClick={(e) => handleManualMarkContacted(e, app.id)}
-                        title="Mark applicant as Contacted"
-                        className="px-2.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                      >
-                        <Check className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Mark Contacted</span>
-                      </button>
-                    </div>
-                  )}
-
-                  {/* STEP 2: Status = CONTACTED or SHORTLISTED -> Unlock "Publish Offer Letter" */}
-                  {(app.status === 'CONTACTED' || app.status === 'SHORTLISTED') && (
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedForOffer(app);
-                        }}
-                        title="Publish Offer Letter"
-                        className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
-                      >
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>Publish Offer Letter</span>
-                      </button>
-
-                      {/* Optional WhatsApp shortcut if follow-up is needed */}
-                      {waPhone && (
-                        <a
-                          href={`https://wa.me/${waPhone}?text=${encodeURIComponent(waMessage)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          title="Message on WhatsApp"
-                          className="p-1.5 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-neutral-600 transition-colors"
-                        >
-                          <MessageCircle className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-                    </div>
-                  )}
-
-                  {/* STEP 3: Status = OFFERED -> Show "View Offer" & "Mark Hired" */}
-                  {app.status === 'OFFERED' && (
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedForOffer(app);
-                        }}
-                        title={`View / Print Offer Letter (${offerRef || ''})`}
-                        className="px-2.5 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-brand-700 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                      >
-                        <Printer className="w-3.5 h-3.5" />
-                        <span>View Offer</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={(e) => handleManualMarkHired(e, app.id)}
-                        title="Candidate accepted offer - mark as Hired"
-                        className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer"
-                      >
-                        <UserCheck className="w-3.5 h-3.5" />
-                        <span>Mark Hired</span>
-                      </button>
-                    </div>
-                  )}
-
-                  {/* STEP 4: Status = ACCEPTED -> Candidate is Hired */}
-                  {app.status === 'ACCEPTED' && (
-                    <div className="flex items-center gap-1.5">
-                      <span className="px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1">
-                        <Check className="w-3 h-3 text-emerald-600" />
-                        <span>Hired</span>
-                      </span>
-
-                      {offerRef && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedForOffer(app);
-                          }}
-                          title="View Offer Letter"
-                          className="p-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-brand-700 transition-colors"
-                        >
-                          <Printer className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Resume Download */}
-                  <a
-                    href={`/api/admin/internships/applicants/${app.id}/resume?action=download`}
-                    download={app.resumeName || 'resume.pdf'}
-                    onClick={(e) => e.stopPropagation()}
-                    title={`Download ${app.resumeName || 'Resume'}`}
-                    className="p-1.5 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-neutral-700 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                  </a>
-
-                  {/* View Details Drawer Button */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectApplicant(app);
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 text-xs font-semibold text-neutral-700 flex items-center gap-1 group-hover:border-brand-500 group-hover:text-brand-700 transition-colors cursor-pointer"
-                  >
-                    <span>View</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            );
-          })
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
 
