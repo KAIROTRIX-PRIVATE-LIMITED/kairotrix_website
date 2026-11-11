@@ -20,6 +20,7 @@ import {
   Sparkles,
   Printer,
   UserCheck,
+  ChevronRight,
 } from 'lucide-react';
 import { OfferLetterStudioModal } from './OfferLetterStudioModal';
 import { OutreachEmailModal } from './OutreachEmailModal';
@@ -58,6 +59,7 @@ interface ApplicantDetailDrawerProps {
   settings?: any;
   defaultNextOfferRef?: string;
   onClose: () => void;
+  onNavigateToActiveTab?: () => void;
   onRefresh: () => void;
 }
 
@@ -75,6 +77,7 @@ export function ApplicantDetailDrawer({
   settings,
   defaultNextOfferRef = 'KT/INT/2026/004',
   onClose,
+  onNavigateToActiveTab,
   onRefresh,
 }: ApplicantDetailDrawerProps) {
   const [currentStatus, setCurrentStatus] = useState(applicant.status || 'REVIEW');
@@ -352,10 +355,22 @@ export function ApplicantDetailDrawer({
 
             {/* STAGE 4: Candidate Hired & Active */}
             {currentStatus === 'ACCEPTED' && (
-              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-xs text-emerald-900">
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span>Step 4: Active Hired Intern</span>
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 font-bold text-xs text-emerald-900">
+                    <Check className="w-4 h-4 text-emerald-600" />
+                    <span>Step 4: Active Hired Intern</span>
+                  </div>
+                  {onNavigateToActiveTab && (
+                    <button
+                      type="button"
+                      onClick={onNavigateToActiveTab}
+                      className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors cursor-pointer"
+                    >
+                      <span>View in Active Interns</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  )}
                 </div>
                 <p className="text-xs text-emerald-700 leading-relaxed">
                   This intern has accepted the offer and is recorded in the Active Interns directory with daily progress logs.

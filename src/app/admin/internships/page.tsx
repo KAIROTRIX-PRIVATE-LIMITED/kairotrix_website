@@ -133,7 +133,7 @@ export default function AdminInternshipsPage() {
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>Applications ({applicants.length})</span>
+          <span>Applications ({applicants.filter((a) => a.status !== 'ACCEPTED').length})</span>
         </button>
 
         <button
@@ -202,6 +202,7 @@ export default function AdminInternshipsPage() {
               statusFilter={statusFilter}
               onStatusFilterChange={setStatusFilter}
               onSelectApplicant={(app) => setSelectedApplicant(app)}
+              onNavigateToActiveTab={() => setActiveTab('active')}
               onRefresh={fetchData}
             />
           )}
@@ -239,6 +240,10 @@ export default function AdminInternshipsPage() {
           settings={settings}
           defaultNextOfferRef={nextOfferRef}
           onClose={() => setSelectedApplicant(null)}
+          onNavigateToActiveTab={() => {
+            setSelectedApplicant(null);
+            setActiveTab('active');
+          }}
           onRefresh={fetchData}
         />
       )}
